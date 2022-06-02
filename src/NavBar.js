@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -9,10 +9,17 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
   const [show, setShow] = useState(true);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [height, setHeight] = useState(0);
+
+  const ref = useRef(null)
+
+  useEffect(() => {
+    setHeight(ref.current.clientHeight)
+  })
 
   return (
     <div>
-      <Navbar bg="dark" variant="dark" fixed="top">
+      <Navbar bg="dark" variant="dark" fixed="top" ref={ref}>
         <Navbar.Brand>
           <NavLink to="/" style={{ color: "white", textDecoration: "None" }}>
             Conservation Prioritization Tool
@@ -23,7 +30,7 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             <NavLink to="/" className="ml-3 mt-2" onClick={handleShow}>
               About
             </NavLink>
-            <NavLink to="/" className="ml-3 mt-2">
+            <NavLink to="/tool" className="ml-3 mt-2">
               Map
             </NavLink>
             {reportLink && (
@@ -81,7 +88,10 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             )}
           </Nav>
         </Navbar.Collapse>
+        
       </Navbar>
+
+      <div id="filler" style={{height:height}}></div>
 
       <div className="content">
         <Modal centered show={show} onHide={handleClose} size="lg">
