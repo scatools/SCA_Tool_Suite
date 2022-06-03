@@ -4,11 +4,13 @@ import NavBar from "./NavBar";
 import Routes from "./Routes";
 import LoadingOverlay from "react-loading-overlay";
 import { connect } from "react-redux";
+import Homepage from "./Homepage";
 
 function App(props) {
   const [reportLink, setReportLink] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(null);
+
   return (
     <LoadingOverlay
       className="myLoading"
@@ -22,20 +24,19 @@ function App(props) {
       spinner
       text="Loading..."
     >
-      <div className="App">
+      <div className="App" style={{minHeight:"100vh", display:"flex", flexDirection:"column"}}>
         <NavBar
           reportLink={reportLink}
           loggedIn={loggedIn}
           userLoggedIn={userLoggedIn}
         />
-        <div style={{ position: "relative", top: "55px" }}>
-          <Routes
-            setReportLink={setReportLink}
-            setLoggedIn={setLoggedIn}
-            userLoggedIn={userLoggedIn}
-            setUserLoggedIn={setUserLoggedIn}
-          />
-        </div>
+        <Routes
+          setReportLink={setReportLink}
+          setLoggedIn={setLoggedIn}
+          userLoggedIn={userLoggedIn}
+          setUserLoggedIn={setUserLoggedIn}
+          
+        />
       </div>
     </LoadingOverlay>
   );
