@@ -10,6 +10,7 @@ import Register from "./Register";
 import UserData from "./UserData";
 import UserReport from "./UserReport";
 import Assessment from "./Assessment";
+import Homepage from "./Homepage";
 
 const Routes = ({
   setReportLink,
@@ -26,11 +27,15 @@ const Routes = ({
   const [reportScript, setReportScript] = useState("");
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
+ 
 
   return (
     <>
     <Switch>
       <Route exact path="/">
+        <Homepage/>
+      </Route>
+      <Route exact path="/tool">
         <Main
           aoiSelected={aoiSelected}
           setAoiSelected={setAoiSelected}
