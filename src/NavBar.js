@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/Modal";
 
 const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
   const assessment = useSelector((state) => state.assessment);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [height, setHeight] = useState(0);
@@ -22,7 +22,7 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
       <Navbar bg="dark" variant="dark" fixed="top" ref={ref}>
         <Navbar.Brand>
           <NavLink to="/" style={{ color: "white", textDecoration: "None" }}>
-            Conservation Prioritization Tool
+            Strategic Conservation Assessment Tool
           </NavLink>
         </Navbar.Brand>
         <Navbar.Collapse id="basic-navbar-nav">
@@ -52,19 +52,6 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
                 target="_blank"
               >
                 Strategic Conservation Assessment (SCA) Project
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item
-                href="https://sca-cit.herokuapp.com/"
-                target="_blank"
-              >
-                Conservation Planning Inventory Tool (CIT)
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                href="https://sca-cvt.herokuapp.com/"
-                target="_blank"
-              >
-                Conservation Visualization Tool (CVT)
               </NavDropdown.Item>
             </NavDropdown>
             {loggedIn ? (
