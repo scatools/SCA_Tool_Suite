@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -6,17 +6,24 @@ import Modal from "react-bootstrap/Modal";
 
 const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
   const assessment = useSelector((state) => state.assessment);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const user = useSelector((state) => state.user);
+  const [height, setHeight] = useState(0);
+
+  const ref = useRef(null)
+
+  useEffect(() => {
+    setHeight(ref.current.clientHeight)
+  })
 
   return (
     <div>
-      <Navbar bg="dark" variant="dark" fixed="top">
+      <Navbar bg="dark" variant="dark" fixed="top" ref={ref}>
         <Navbar.Brand>
           <NavLink to="/" style={{ color: "white", textDecoration: "None" }}>
-            Conservation Prioritization Tool
+            Strategic Conservation Assessment Tool
           </NavLink>
         </Navbar.Brand>
         <Navbar.Collapse id="basic-navbar-nav">
@@ -24,7 +31,7 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             <NavLink to="/" className="ml-3 mt-2" onClick={handleShow}>
               About
             </NavLink>
-            <NavLink to="/" className="ml-3 mt-2">
+            <NavLink to="/tool" className="ml-3 mt-2">
               Map
             </NavLink>
             {reportLink && (
@@ -46,19 +53,6 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
                 target="_blank"
               >
                 Strategic Conservation Assessment (SCA) Project
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item
-                href="https://sca-cit.herokuapp.com/"
-                target="_blank"
-              >
-                Conservation Planning Inventory Tool (CIT)
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                href="https://sca-cvt.herokuapp.com/"
-                target="_blank"
-              >
-                Conservation Visualization Tool (CVT)
               </NavDropdown.Item>
             </NavDropdown>
             {user.loggedIn ? (
@@ -82,7 +76,10 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             )}
           </Nav>
         </Navbar.Collapse>
+        
       </Navbar>
+
+      <div id="filler" style={{height:height}}></div>
 
       <div className="content">
         <Modal centered show={show} onHide={handleClose} size="lg">
