@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
+import Homepage from "../Components/Homepage";
 import Help from "../Components/Help";
 import Report from "../Assessment/Report";
+import Assessment from "../Assessment/Assessment";
 import Login from "../User/Login";
 import Logout from "../User/Logout";
 import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
-import Assessment from "../Assessment/Assessment";
 
 const Routes = ({
   setReportLink,
@@ -35,6 +36,9 @@ const Routes = ({
     <>
       <Switch>
         <Route exact path="/">
+          <Homepage/>
+        </Route>
+        <Route exact path="/tool">
           <Main
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}

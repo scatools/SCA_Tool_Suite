@@ -4,7 +4,6 @@ import NavBar from "../Components/NavBar";
 import Routes from "./Routes";
 import LoadingOverlay from "react-loading-overlay";
 import { connect } from "react-redux";
-import Homepage from "./Homepage";
 
 function App(props) {
   const [reportLink, setReportLink] = useState(false);
