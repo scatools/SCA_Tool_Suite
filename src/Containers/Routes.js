@@ -31,15 +31,17 @@ const Routes = ({
   const [reportScript, setReportScript] = useState("");
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
+  const [useCase, setUseCase] = useState(null);
 
   return (
     <>
       <Switch>
         <Route exact path="/">
-          <Homepage/>
+          <Homepage setUseCase={setUseCase} setView={setView}/>
         </Route>
         <Route exact path="/tool">
           <Main
+            useCase={useCase}
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             aoiAssembled={aoiAssembled}

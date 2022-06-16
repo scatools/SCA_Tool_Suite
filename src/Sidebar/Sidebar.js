@@ -6,6 +6,7 @@ import { GoReport } from "react-icons/go";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import SidebarDismiss from "./SidebarDismiss";
+import UseCaseView from "./Views/UseCase/UseCaseView";
 import AddAOIView from "./Views/AddAOI/AddAOIView";
 import CurrentAOIView from "./Views/CurrentAOI/CurrentAOIView";
 import CreateAssessView from "./Views/CreateAssessment/CreateAssessView";
@@ -30,15 +31,16 @@ const alertIcon = (
 );
 
 const Sidebar = ({
-  aoiAssembled,
-  setAoiAssembled,
   activeSidebar,
   setActiveSidebar,
+  useCase,
   setActiveTable,
   setDrawingMode,
   featureList,
   aoiSelected,
   setAoiSelected,
+  aoiAssembled,
+  setAoiAssembled,
   editAOI,
   setEditAOI,
   setViewport,
@@ -80,6 +82,9 @@ const Sidebar = ({
       <div className="ControlWrapper">
         <SidebarMode view={view} setView={setView} />
         <hr />
+        {view === "selectUseCase" && (
+          <UseCaseView useCase={useCase} setView={setView} />
+        )}
         {view === "add" && (
           <AddAOIView
             setDrawingMode={setDrawingMode}
