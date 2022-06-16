@@ -89,6 +89,8 @@ const Routes = ({
         <Route exact path="/help">
           <Help />
         </Route>
+        <Route exact path="/plans">
+        </Route>
         <Route exact path="/report">
           <Report
             aoiSelected={aoiSelected}

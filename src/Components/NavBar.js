@@ -34,6 +34,9 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             <NavLink to="/tool" className="ml-3 mt-2">
               Map
             </NavLink>
+            <NavLink to="/plans" className="ml-3 mt-2">
+              Plans
+            </NavLink>
             {reportLink && (
               <NavLink to="/report" className="ml-3 mt-2">
                 Report
