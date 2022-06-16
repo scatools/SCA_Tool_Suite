@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, ButtonGroup, Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
-const VisualizationCases = () => {
+const VisualizationCases = ({ setView, setUseCase }) => {
   return (
     <div>
       <h4>On which scale would you like this visualization to be based?</h4>
@@ -10,10 +10,10 @@ const VisualizationCases = () => {
         <Button variant="outline-light">
           I would like to create the visualization within the entire Gulf Coast Region
         </Button>
-        <Button variant="outline-light">
+        <Button variant="outline-light" onClick={() => {setUseCase("visualizationByState")}}>
           I would like to create the visualization within a single Gulf Coast State
         </Button>
-        <Button variant="outline-light">
+        <Button variant="outline-light" onClick={() => {setView("add")}}>
           I would like to create the visualization within a certain Area of Interest
         </Button>
       </Container>

@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import InventoryCases from "./InventoryCases";
 import VisualizationCases from "./VisualizationCases";
+import VisualizationByState from "./VisualizationByState";
 
-const UseCaseView = ({ useCase, setView }) => {
+const UseCaseView = ({ useCase, setUseCase, setView }) => {
   useEffect(() =>{
     if (useCase === "prioritization") {
       setView("add");
@@ -13,10 +14,13 @@ const UseCaseView = ({ useCase, setView }) => {
   return (
     <Container>
       {useCase === "inventory" && (
-        <InventoryCases />
+        <InventoryCases setView={setView} />
       )}
       {useCase === "visualization" && (
-        <VisualizationCases />
+        <VisualizationCases setView={setView} setUseCase={setUseCase} />
+      )}
+      {useCase === "visualizationByState" && (
+        <VisualizationByState />
       )}
     </Container>
   );

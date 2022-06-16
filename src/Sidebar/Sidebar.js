@@ -34,6 +34,7 @@ const Sidebar = ({
   activeSidebar,
   setActiveSidebar,
   useCase,
+  setUseCase,
   setActiveTable,
   setDrawingMode,
   featureList,
@@ -83,7 +84,7 @@ const Sidebar = ({
         <SidebarMode view={view} setView={setView} />
         <hr />
         {view === "selectUseCase" && (
-          <UseCaseView useCase={useCase} setView={setView} />
+          <UseCaseView useCase={useCase} setUseCase={setUseCase} setView={setView} />
         )}
         {view === "add" && (
           <AddAOIView

@@ -42,6 +42,7 @@ const Routes = ({
         <Route exact path="/tool">
           <Main
             useCase={useCase}
+            setUseCase={setUseCase}
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             aoiAssembled={aoiAssembled}

@@ -13,6 +13,7 @@ const arrowIcon = (
 
 const Main = ({
   useCase,
+  setUseCase,
   aoiSelected,
   setAoiSelected,
   aoiAssembled,
@@ -69,6 +70,7 @@ const Main = ({
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
         useCase={useCase}
+        setUseCase={setUseCase}
         setActiveTable={setActiveTable}
         setDrawingMode={setDrawingMode}
         featureList={featureList}
