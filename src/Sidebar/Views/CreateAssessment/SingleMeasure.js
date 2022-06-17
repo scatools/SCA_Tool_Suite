@@ -620,7 +620,7 @@ const SingleMeasure = ({
           dispatch(changeMeasures([dataMeasList[dataI]], state));
         }}
       />
-      {useCase != "visualization" && useCase != "visualizationByState" && (
+      {useCase != "visualization" && (
         <div style={{ float: "left" }}>
           {plusCircle}
           <span>Add Custom Measure</span>

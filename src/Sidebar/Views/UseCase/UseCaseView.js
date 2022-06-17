@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import InventoryCases from "./InventoryCases";
 import VisualizationCases from "./VisualizationCases";
-import VisualizationByState from "./VisualizationByState";
 
 const UseCaseView = ({ useCase, setUseCase, setView }) => {
   useEffect(() =>{
@@ -17,10 +16,7 @@ const UseCaseView = ({ useCase, setUseCase, setView }) => {
         <InventoryCases setView={setView} />
       )}
       {useCase === "visualization" && (
-        <VisualizationCases setView={setView} setUseCase={setUseCase} />
-      )}
-      {useCase === "visualizationByState" && (
-        <VisualizationByState setView={setView} />
+        <VisualizationCases setView={setView}/>
       )}
     </Container>
   );

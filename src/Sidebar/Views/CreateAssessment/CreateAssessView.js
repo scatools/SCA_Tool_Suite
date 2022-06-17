@@ -16,7 +16,7 @@ const CreateAssessView = ({
 }) => {
   const [assessStep, setAssessStep] = useState("selectAOI");
   useEffect(() => {
-    if (useCase === "visualization" || useCase === "visualizationByState") {
+    if (useCase === "visualization") {
       setAssessStep("selectRestoreWeights");
     }
   }, [useCase]);

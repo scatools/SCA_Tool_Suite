@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Container } from "react-bootstrap";
 
-const VisualizationByState = ({ setView }) => {
+const VisualizationByState = ({ setView, setVisualizeStep }) => {
   const [selectedState, setSelectedState] = useState(null);
   const onClick = (e) => {
     setSelectedState(e.target.value);

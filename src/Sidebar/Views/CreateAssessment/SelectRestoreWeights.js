@@ -161,7 +161,7 @@ const SelectRestoreWeights = ({
         )}
       </span>
       <Container className="add-assess-cont">
-        {useCase != "visualization" && useCase != "visualizationByState" && (
+        {useCase != "visualization" && (
           <Button variant="secondary" onClick={() => setAssessStep("selectAOI")}>
             {arrowIcon} Select AOIs
           </Button>
