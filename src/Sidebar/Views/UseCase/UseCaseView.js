@@ -20,7 +20,7 @@ const UseCaseView = ({ useCase, setUseCase, setView }) => {
         <VisualizationCases setView={setView} setUseCase={setUseCase} />
       )}
       {useCase === "visualizationByState" && (
-        <VisualizationByState />
+        <VisualizationByState setView={setView} />
       )}
     </Container>
   );

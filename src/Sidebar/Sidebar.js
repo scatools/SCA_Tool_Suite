@@ -131,6 +131,7 @@ const Sidebar = ({
         )}
         {view === "createAssess" && (
           <CreateAssessView
+            useCase={useCase}
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}

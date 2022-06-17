@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SelectAOIForAssess from "./SelectAOIForAssess";
 import SelectRestoreWeights from "./SelectRestoreWeights";
 import SelectDataMeasures from "./SelectDataMeasures";
@@ -6,6 +6,7 @@ import ReviewAssessSettings from "./ReviewAssessSettings";
 import { Container } from "react-bootstrap";
 
 const CreateAssessView = ({
+  useCase,
   aoiAssembled,
   setAoiAssembled,
   customizedMeasures,
@@ -14,10 +15,14 @@ const CreateAssessView = ({
   setAlertType
 }) => {
   const [assessStep, setAssessStep] = useState("selectAOI");
+  useEffect(() => {
+    if (useCase === "visualization" || useCase === "visualizationByState") {
+      setAssessStep("selectRestoreWeights");
+    }
+  }, [useCase]);
 
   return (
     <Container>
-      {console.log(assessStep)}
       {assessStep === "selectAOI" && (
         <SelectAOIForAssess
           setAssessStep={setAssessStep}
@@ -31,6 +36,7 @@ const CreateAssessView = ({
 
       {assessStep === "selectRestoreWeights" && (
         <SelectRestoreWeights
+          useCase={useCase}
           setAssessStep={setAssessStep}
           setAlertText={setAlertText}
           setAlertType={setAlertType}

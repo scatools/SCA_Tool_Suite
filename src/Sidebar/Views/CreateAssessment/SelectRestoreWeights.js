@@ -9,6 +9,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const SelectRestoreWeights = ({
+  useCase,
   setAssessStep,
   setAlertText,
   setAlertType,
@@ -160,9 +161,11 @@ const SelectRestoreWeights = ({
         )}
       </span>
       <Container className="add-assess-cont">
-        <Button variant="secondary" onClick={() => setAssessStep("selectAOI")}>
-          {arrowIcon} Select AOIs
-        </Button>
+        {useCase != "visualization" && useCase != "visualizationByState" && (
+          <Button variant="secondary" onClick={() => setAssessStep("selectAOI")}>
+            {arrowIcon} Select AOIs
+          </Button>
+        )}
 
         {sumWeights === 100 ? (
           <Button variant="primary" onClick={() => handleNext()}>
