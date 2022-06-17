@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import SingleMeasure from "./SingleMeasure";
 
 const SelectDataMeasures = ({
+  useCase,
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
@@ -148,6 +149,7 @@ const SelectDataMeasures = ({
       </p>
 
       <SingleMeasure
+        useCase={useCase}
         customizedMeasures={customizedMeasures}
         customizeMeasure={customizeMeasure}
         setAssessStep={setAssessStep}

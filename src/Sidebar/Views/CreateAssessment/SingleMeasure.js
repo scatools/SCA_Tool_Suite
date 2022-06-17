@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 const SingleMeasure = ({
+  useCase,
   customizedMeasures,
   customizeMeasure,
   setAssessStep,
@@ -619,10 +620,12 @@ const SingleMeasure = ({
           dispatch(changeMeasures([dataMeasList[dataI]], state));
         }}
       />
-      <div style={{ float: "left" }}>
-        {plusCircle}
-        <span>Add Custom Measure</span>
-      </div>
+      {useCase != "visualization" && useCase != "visualizationByState" && (
+        <div style={{ float: "left" }}>
+          {plusCircle}
+          <span>Add Custom Measure</span>
+        </div>
+      )}
       <br />
       {weights[dataMeasList[dataI]].selected &&
         weights[dataMeasList[dataI]].selected.map((measure) => (
