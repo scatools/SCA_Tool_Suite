@@ -45,11 +45,13 @@ const Main = ({
   const [hexDeselection, setHexDeselection] = useState(false);
   const [hexIDDeselected, setHexIDDeselected] = useState([]);
   const [hexFilterList, setHexFilterList] = useState([]);
+  const [visualizationLayer, setVisualizationLayer] = useState(null);
+  const [visualizationFillColor, setVisualizationFillColor] = useState(null);
 
   const autoDraw = async () => {
     setMode(new DrawPolygonMode());
     // Use crosshair as cursor style when drawing new shapes over SCA boundary
-    setInteractiveLayerIds(["sca-boundry"]);
+    setInteractiveLayerIds(["sca-boundary"]);
   };
 
   const editMode = async () => {
@@ -97,6 +99,8 @@ const Main = ({
         autoDraw={autoDraw}
         stopDraw={stopDraw}
         editMode={editMode}
+        setVisualizationLayer={setVisualizationLayer}
+        setVisualizationFillColor={setVisualizationFillColor}
         view={view}
         setView={setView}
         setAlertText={setAlertText}
@@ -119,6 +123,7 @@ const Main = ({
           {arrowIcon}
         </Button>
         <Map
+          useCase={useCase}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
           aoiSelected={aoiSelected}
@@ -137,6 +142,8 @@ const Main = ({
           hexDeselection={hexDeselection}
           hexIDDeselected={hexIDDeselected}
           hexFilterList={hexFilterList}
+          visualizationLayer={visualizationLayer}
+          visualizationFillColor={visualizationFillColor}
         />
       </div>
     </div>

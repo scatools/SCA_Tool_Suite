@@ -61,6 +61,8 @@ const Sidebar = ({
   autoDraw,
   stopDraw,
   editMode,
+  setVisualizationLayer,
+  setVisualizationFillColor,
   view,
   setView,
   setAlertText,
@@ -84,7 +86,11 @@ const Sidebar = ({
         <SidebarMode view={view} setView={setView} />
         <hr />
         {view === "selectUseCase" && (
-          <UseCaseView useCase={useCase} setUseCase={setUseCase} setView={setView} />
+          <UseCaseView
+            useCase={useCase}
+            setVisualizationLayer={setVisualizationLayer}
+            setView={setView}
+          />
         )}
         {view === "add" && (
           <AddAOIView
@@ -135,6 +141,7 @@ const Sidebar = ({
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}
+            setVisualizationFillColor={setVisualizationFillColor}
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}

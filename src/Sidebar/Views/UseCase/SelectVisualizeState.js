@@ -1,7 +1,19 @@
 import React, { useState } from "react";
 import { Button, Container } from "react-bootstrap";
+import {
+  alVisualizationLayer,
+  alVisualizationHighlight,
+  flVisualizationLayer,
+  flVisualizationHighlight,
+  laVisualizationLayer,
+  laVisualizationHighlight,
+  msVisualizationLayer,
+  msVisualizationHighlight,
+  txVisualizationLayer,
+  txVisualizationHighlight,
+} from "../../../Map/layerStyle";
 
-const VisualizationByState = ({ setView, setVisualizeStep }) => {
+const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationLayer }) => {
   const [selectedState, setSelectedState] = useState(null);
   const onClick = (e) => {
     setSelectedState(e.target.value);

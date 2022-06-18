@@ -15,6 +15,7 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  useCase,
   drawingMode,
   setFeatureList,
   aoiSelected,
@@ -33,6 +34,8 @@ const Map = ({
   hexDeselection,
   hexIDDeselected,
   hexFilterList,
+  visualizationLayer,
+  visualizationFillColor
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -227,6 +230,35 @@ const Map = ({
     );
   };
 
+  const renderVisualization = () => {
+    return (
+      <>
+        <Source
+          type="vector"
+          url="mapbox://chuck0520.2jhtgjk6"
+          maxzoom={22}
+          minzoom={0}
+        >
+          <Layer
+            {...visualizationLayer}
+            paint={{
+              "fill-color": visualizationFillColor,
+              "fill-opacity": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                1,
+                0.5
+                // parseInt(opacity)/100,
+              ],
+            }}
+          />
+          {/* <Layer {...gcrVisualizationHighlight} filter={filter} /> */}
+        </Source>
+        {/* <Legend opacity={opacity}></Legend> */}
+      </>
+    );
+  };
+
   useEffect(() => {
     if (editorRef.current) {
       const featureList = editorRef.current.getFeatures();
@@ -370,7 +402,7 @@ const Map = ({
             minzoom={0}
           >
             <Layer
-              id="sca-boundry"
+              id="sca-boundary"
               source-layer="SCA_Boundry-13ifc0"
               type="fill"
               paint={{
@@ -454,6 +486,7 @@ const Map = ({
         {aoiList.length > 0 && hexGrid && renderHexGrid()}
         {drawingMode && renderDrawTools()}
         {hucBoundary && hovered && renderPopup()}
+        {useCase === "visualization" && visualizationLayer && visualizationFillColor && renderVisualization()}
       </MapGL>
     </>
   );

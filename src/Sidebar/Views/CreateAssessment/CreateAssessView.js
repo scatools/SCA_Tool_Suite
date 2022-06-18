@@ -10,6 +10,7 @@ const CreateAssessView = ({
   aoiAssembled,
   setAoiAssembled,
   customizedMeasures,
+  setVisualizationFillColor,
   setView,
   setAlertText,
   setAlertType
@@ -54,9 +55,11 @@ const CreateAssessView = ({
 
       {assessStep === "reviewAssessSettings" && (
         <ReviewAssessSettings
+          useCase={useCase}
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}
+          setVisualizationFillColor={setVisualizationFillColor}
         />
       )}
     </Container>

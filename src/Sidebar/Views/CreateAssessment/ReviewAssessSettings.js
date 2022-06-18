@@ -25,9 +25,11 @@ const RESTOREGoal = [
 ];
 
 const ReviewAssessSettings = ({
+  useCase,
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
+  setVisualizationFillColor
 }) => {
   const weights = useSelector((state) => state.weights);
   const aoi = useSelector((state) => state.aoi);
@@ -35,6 +37,72 @@ const ReviewAssessSettings = ({
   const dispatch = useDispatch();
 
   const history = useHistory();
+
+  const createVisualization = async () => {
+    const weightList = {
+      high: 1,
+      medium: 0.67,
+      low: 0.33,
+    };
+
+    const intermediate = Object.entries(weights)
+      .filter((goal) => goal[1].weight !== 0)
+      .map((goal) => [
+        "*",
+        goal[1].weight / 100,
+        [
+          "/",
+          [
+            "+",
+            0,
+            ...goal[1].selected.map((measure) => {
+              if (measure.utility === "1") {
+                return [
+                  "*",
+                  weightList[measure.weight],
+                  ["number", ["get", measure.value]],
+                ];
+              } else {
+                return [
+                  "+",
+                  1,
+                  [
+                    "*",
+                    -1 * weightList[measure.weight],
+                    ["number", ["get", measure.value]],
+                  ],
+                ];
+              }
+            }),
+          ],
+          goal[1].selected.length,
+        ],
+      ]);
+    
+    const fillColor = [
+      "step",
+      ["+", 0, ...intermediate],
+      "#ffeda0",
+      0.1,
+      "#f8d685",
+      0.2,
+      "#f1bf6d",
+      0.3,
+      "#eaa757",
+      0.4,
+      "#e28e45",
+      0.5,
+      "#db7537",
+      0.6,
+      "#d2592e",
+      0.7,
+      "#c83a28",
+      0.8,
+      "#bd0026",
+    ];
+
+    await setVisualizationFillColor(fillColor);
+  };
 
   const createAssessment = () => {
     dispatch(setLoader(true));
@@ -291,9 +359,9 @@ const ReviewAssessSettings = ({
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
-              <th class="align-top">Measure Name</th>
-              <th class="align-top">Goal Related</th>
-              <th class="align-top">
+              <th className="align-top">Measure Name</th>
+              <th className="align-top">Goal Related</th>
+              <th className="align-top">
                 Utility &nbsp;
                 <GoInfo data-tip data-for="utility" />
                 <ReactTooltip id="utility" type="dark">
@@ -303,7 +371,7 @@ const ReviewAssessSettings = ({
                   </span>
                 </ReactTooltip>
               </th>
-              <th class="align-top">
+              <th className="align-top">
                 Weights &nbsp;
                 <GoInfo data-tip data-for="measureWeights" />
                 <ReactTooltip id="measureWeights" type="dark">
@@ -682,14 +750,25 @@ const ReviewAssessSettings = ({
           >
             {arrowIcon} Edit Data Measures
           </Button>
-          <Button
-            className="ml-2"
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={createAssessment}
-          >
-            Generate Assessment
-          </Button>
+          {useCase === "visualization" ? (
+            <Button
+              className="ml-2"
+              variant="primary"
+              style={{ float: "right" }}
+              onClick={createVisualization}
+            >
+              Generate Visualization
+            </Button>
+          ) : (
+            <Button
+              className="ml-2"
+              variant="primary"
+              style={{ float: "right" }}
+              onClick={createAssessment}
+            >
+              Generate Assessment
+            </Button>
+          )}
         </div>
       </Container>
     </>
