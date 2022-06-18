@@ -254,7 +254,7 @@ const Map = ({
           />
           {/* <Layer {...gcrVisualizationHighlight} filter={filter} /> */}
         </Source>
-        {/* <Legend opacity={opacity}></Legend> */}
+        <Legend aoiList={[]} aoiColors={[]} useCase={useCase}></Legend>
       </>
     );
   };
@@ -438,7 +438,7 @@ const Map = ({
             </Source>
           ))}
         {aoiFullList.length > 0 && (
-          <Legend aoiList={aoiFullList} aoiColors={aoiColors}></Legend>
+          <Legend aoiList={aoiFullList} aoiColors={aoiColors} useCase={null}></Legend>
         )}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source
