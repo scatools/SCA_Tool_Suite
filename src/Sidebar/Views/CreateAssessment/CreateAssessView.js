@@ -60,6 +60,7 @@ const CreateAssessView = ({
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}
           setVisualizationFillColor={setVisualizationFillColor}
+          setView={setView}
         />
       )}
     </Container>

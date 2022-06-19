@@ -29,7 +29,8 @@ const ReviewAssessSettings = ({
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
-  setVisualizationFillColor
+  setVisualizationFillColor,
+  setView
 }) => {
   const weights = useSelector((state) => state.weights);
   const aoi = useSelector((state) => state.aoi);
@@ -755,7 +756,10 @@ const ReviewAssessSettings = ({
               className="ml-2"
               variant="primary"
               style={{ float: "right" }}
-              onClick={createVisualization}
+              onClick={() => {
+                createVisualization();
+                setView("visualize");
+              }}
             >
               Generate Visualization
             </Button>

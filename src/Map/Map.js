@@ -20,8 +20,6 @@ const Map = ({
   setFeatureList,
   aoiSelected,
   editAOI,
-  viewport,
-  setViewport,
   hucBoundary,
   hucIDSelected,
   filterList,
@@ -35,7 +33,13 @@ const Map = ({
   hexIDDeselected,
   hexFilterList,
   visualizationLayer,
-  visualizationFillColor
+  visualizationFillColor,
+  visualizationOpacity,
+  zoom,
+  setZoom,
+  viewport,
+  setViewport,
+  setInstruction
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -69,6 +73,47 @@ const Map = ({
     (aoi) => aoi.id === aoiSelected
   );
 
+  const getCursor = ({ isHovering, isDragging }) => {
+    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
+  };
+
+  const onHover = (e) => {
+    setHovered(true);
+    if (e.features) {
+      const featureHovered = e.features[0];
+      if (featureHovered) {
+        setHoveredProperty(featureHovered.properties);
+        setHoveredGeometry(featureHovered.geometry);
+      }
+    }
+  };
+
+  const onClick = (e) => {
+    if (e.features) {
+      const featureClicked = e.features[0];
+      if (featureClicked) {
+        setClickedProperty(featureClicked.properties);
+      }
+    }
+  };
+
+  const onDelete = () => {
+    const selectedIndex = selectedFeatureIndex;
+    if (selectedIndex !== null && selectedIndex >= 0) {
+      editorRef.current.deleteFeatures(selectedIndex);
+    }
+  };
+
+  const onUpdate = ({ editType }) => {
+    if (editType === "addFeature") {
+      setMode(new EditingMode());
+    }
+  };
+
+  const onViewStateChange = (e) => {
+    setZoom(e.viewState.zoom.toFixed(1));
+  };
+
   const onToggle = (value) => {
     if (value === 0) {
       setBasemapStyle("light-v10");
@@ -83,19 +128,6 @@ const Map = ({
 
   const onSelect = (options) => {
     setSelectedFeatureIndex(options && options.selectedFeatureIndex);
-  };
-
-  const onDelete = () => {
-    const selectedIndex = selectedFeatureIndex;
-    if (selectedIndex !== null && selectedIndex >= 0) {
-      editorRef.current.deleteFeatures(selectedIndex);
-    }
-  };
-
-  const onUpdate = ({ editType }) => {
-    if (editType === "addFeature") {
-      setMode(new EditingMode());
-    }
   };
 
   const renderDrawTools = () => {
@@ -117,31 +149,6 @@ const Map = ({
         </div>
       </div>
     );
-  };
-
-  const getCursor = ({ isHovering, isDragging }) => {
-    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
-  };
-
-  const onHover = (e) => {
-    setHovered(true);
-    if (e.features) {
-      const featureHovered = e.features[0];
-      if (featureHovered) {
-        setHoveredProperty(featureHovered.properties);
-        setHoveredGeometry(featureHovered.geometry);
-      }
-    }
-  };
-
-  const onClick = (e) => {
-    if (e.features) {
-      const featureClicked = e.features[0];
-      // console.log(featureClicked);
-      if (featureClicked) {
-        setClickedProperty(featureClicked.properties);
-      }
-    }
   };
 
   const renderPopup = () => {
@@ -247,14 +254,18 @@ const Map = ({
                 "case",
                 ["boolean", ["feature-state", "hover"], false],
                 1,
-                0.5
-                // parseInt(opacity)/100,
+                parseInt(visualizationOpacity)/100,
               ],
             }}
           />
           {/* <Layer {...gcrVisualizationHighlight} filter={filter} /> */}
         </Source>
-        <Legend aoiList={[]} aoiColors={[]} useCase={useCase}></Legend>
+        <Legend
+          aoiList={[]}
+          aoiColors={[]}
+          useCase={useCase}
+          visualizationOpacity={visualizationOpacity}
+        ></Legend>
       </>
     );
   };
@@ -342,6 +353,14 @@ const Map = ({
     hexFilterList.push(hexFilter);
     // console.log(hexFilterList);
   }, [hexFilter, hexFilterList]);
+  
+  useEffect(() => {
+    if (zoom >= 10) {
+      setInstruction("Click to explore the details of a single hexagonal area.");
+    } else {
+      setInstruction("Please zoom in to level 10 to explore the details of a single hexagonal area.");
+    };
+  }, [zoom]);
 
   return (
     <>
@@ -374,13 +393,14 @@ const Map = ({
         style={{ position: "fixed" }}
         width="100vw"
         height="94.3vh"
-        mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
-        onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
+        getCursor={getCursor}
+        onLoad={loadHucBoundary}
         onHover={onHover}
         onClick={onClick}
-        onLoad={loadHucBoundary}
-        getCursor={getCursor}
+        onViewStateChange={onViewStateChange}
+        onViewportChange={(nextViewport) => setViewport(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
       >
         <Editor
@@ -438,7 +458,12 @@ const Map = ({
             </Source>
           ))}
         {aoiFullList.length > 0 && (
-          <Legend aoiList={aoiFullList} aoiColors={aoiColors} useCase={null}></Legend>
+          <Legend
+            aoiList={aoiFullList}
+            aoiColors={aoiColors}
+            useCase={null}
+            visualizationOpacity={0}
+          ></Legend>
         )}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source

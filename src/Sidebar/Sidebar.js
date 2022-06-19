@@ -10,6 +10,7 @@ import UseCaseView from "./Views/UseCase/UseCaseView";
 import AddAOIView from "./Views/AddAOI/AddAOIView";
 import CurrentAOIView from "./Views/CurrentAOI/CurrentAOIView";
 import CreateAssessView from "./Views/CreateAssessment/CreateAssessView";
+import AdjustVisualization from "./Views/VisualizeAOI/AdjustVisualization";
 import SidebarMode from "./SidebarMode";
 
 const arrowIcon = (
@@ -63,6 +64,10 @@ const Sidebar = ({
   editMode,
   setVisualizationLayer,
   setVisualizationFillColor,
+  visualizationOpacity,
+  setVisualizationOpacity,
+  zoom,
+  instruction,
   view,
   setView,
   setAlertText,
@@ -145,6 +150,14 @@ const Sidebar = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+          />
+        )}
+        {view === "visualize" && (
+          <AdjustVisualization
+            visualizationOpacity={visualizationOpacity}
+            setVisualizationOpacity={setVisualizationOpacity}
+            zoom={zoom}
+            instruction={instruction}
           />
         )}
       </div>
