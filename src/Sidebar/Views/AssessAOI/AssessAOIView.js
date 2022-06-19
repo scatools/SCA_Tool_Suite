@@ -5,7 +5,7 @@ import SelectDataMeasures from "./SelectDataMeasures";
 import ReviewAssessSettings from "./ReviewAssessSettings";
 import { Container } from "react-bootstrap";
 
-const CreateAssessView = ({
+const AssessAOIView = ({
   useCase,
   aoiAssembled,
   setAoiAssembled,
@@ -67,4 +67,4 @@ const CreateAssessView = ({
   );
 };
 
-export default CreateAssessView;
+export default AssessAOIView;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { Button } from "react-bootstrap";
 import Map from "../Map/Map";
-import AoiDetailTable from "../Sidebar/Views/CurrentAOI/AoiDetailTable";
+import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
 import { DrawPolygonMode, EditingMode } from "react-map-gl-draw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBug } from "@fortawesome/free-solid-svg-icons";

@@ -11,7 +11,7 @@ const SelectVisualizeScale = ({ setView, setVisualizeStep, setVisualizationLayer
         <Button
           variant="outline-light"
           onClick={() => {
-            setView("createAssess");
+            setView("assess");
             setVisualizationLayer(gcrVisualizationLayer);
           }}
         >

@@ -8,9 +8,9 @@ import { faRedo, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import SidebarDismiss from "./SidebarDismiss";
 import UseCaseView from "./Views/UseCase/UseCaseView";
 import AddAOIView from "./Views/AddAOI/AddAOIView";
-import CurrentAOIView from "./Views/CurrentAOI/CurrentAOIView";
-import CreateAssessView from "./Views/CreateAssessment/CreateAssessView";
-import AdjustVisualization from "./Views/VisualizeAOI/AdjustVisualization";
+import ListAOIView from "./Views/ListAOI/ListAOIView";
+import AssessAOIView from "./Views/AssessAOI/AssessAOIView";
+import VisualizeAOIView from "./Views/VisualizeAOI/VisualizeAOIView";
 import SidebarMode from "./SidebarMode";
 
 const arrowIcon = (
@@ -115,8 +115,8 @@ const Sidebar = ({
             setAlertType={setAlertType}
           />
         )}
-        {view === "viewCurrent" && (
-          <CurrentAOIView
+        {view === "list" && (
+          <ListAOIView
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             setActiveTable={setActiveTable}
@@ -140,8 +140,8 @@ const Sidebar = ({
             setAlertType={setAlertType}
           />
         )}
-        {view === "createAssess" && (
-          <CreateAssessView
+        {view === "assess" && (
+          <AssessAOIView
             useCase={useCase}
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
@@ -153,7 +153,7 @@ const Sidebar = ({
           />
         )}
         {view === "visualize" && (
-          <AdjustVisualization
+          <VisualizeAOIView
             visualizationOpacity={visualizationOpacity}
             setVisualizationOpacity={setVisualizationOpacity}
             zoom={zoom}

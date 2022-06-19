@@ -10,7 +10,7 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const arrowLeft = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 const arrowRight = <FontAwesomeIcon icon={faArrowRight} size="lg" />;
 
-const CurrentAOIView = ({
+const ListAOIView = ({
   aoiSelected,
   setAoiSelected,
   setActiveTable,
@@ -38,7 +38,7 @@ const CurrentAOIView = ({
   let dismissButton = document.querySelector("#dismiss-detail");
 
   useEffect(() => {
-    if (view === "viewCurrent" && aoiList.length > 0) {
+    if (view === "list" && aoiList.length > 0) {
       let viewThisAoi = aoiList[0].id;
       setAoiSelected(viewThisAoi);
       let aoiBbox = bbox({
@@ -133,7 +133,7 @@ const CurrentAOIView = ({
         <Button variant="secondary" onClick={() => setView("add")}>
           {arrowLeft} Add More AOIs
         </Button>
-        <Button variant="primary" onClick={() => setView("createAssess")}>
+        <Button variant="primary" onClick={() => setView("assess")}>
           Evaluate AOIs {arrowRight}
         </Button>
       </Container>
@@ -141,4 +141,4 @@ const CurrentAOIView = ({
   );
 };
 
-export default CurrentAOIView;
+export default ListAOIView;

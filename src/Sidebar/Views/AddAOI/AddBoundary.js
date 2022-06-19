@@ -74,7 +74,7 @@ const AddBoundary = ({
         })
       );
       dispatch(setLoader(false));
-      setView("viewCurrent");
+      setView("list");
       setHucNameSelected([]);
       setHucIDSelected([]);
       setFilterList([]);
@@ -127,7 +127,7 @@ const AddBoundary = ({
         );
         dispatch(setLoader(false));
       });
-      setView("viewCurrent");
+      setView("list");
       setHucNameSelected([]);
       setHucIDSelected([]);
       setFilterList([]);

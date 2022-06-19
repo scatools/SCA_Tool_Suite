@@ -670,7 +670,6 @@ const SingleMeasure = ({
                   >
                     {measure.left}
                   </ToggleButton>
-                  {console.log(measure)}
                   <ToggleButton
                     type="radio"
                     data-tip

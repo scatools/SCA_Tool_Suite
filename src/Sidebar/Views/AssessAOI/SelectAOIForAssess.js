@@ -56,7 +56,7 @@ const SelectAOIForAssess = ({
       />
       <br />
       <Container className="add-assess-cont">
-        <Button variant="secondary" onClick={() => setView("viewCurrent")}>
+        <Button variant="secondary" onClick={() => setView("list")}>
           {arrowIcon} Review/Edit AOIs
         </Button>
         {aoiAssembled && aoiAssembled.length > 1 ? (

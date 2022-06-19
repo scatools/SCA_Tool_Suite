@@ -67,7 +67,7 @@ const AddZip = ({
         );
 
         // clearTimeout(loadTimer);
-        setView("viewCurrent");
+        setView("list");
         dispatch(setLoader(false));
       };
 

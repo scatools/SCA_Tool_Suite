@@ -72,7 +72,7 @@ const AddDraw = ({
           })
         );
         setDrawingMode(false);
-        setView("viewCurrent");
+        setView("list");
       } else {
         clearTimeout(myTimeoutError);
         setAlertType("danger");

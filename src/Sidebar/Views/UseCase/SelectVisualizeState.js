@@ -17,7 +17,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationLayer
   const [selectedState, setSelectedState] = useState(null);
   const onClick = (e) => {
     setSelectedState(e.target.value);
-    setView("createAssess");
+    setView("assess");
   };
 
   return (

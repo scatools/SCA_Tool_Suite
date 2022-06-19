@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
 
-const AdjustVisualization = ({
+const VisualizeAOIView = ({
   visualizationOpacity,
   setVisualizationOpacity,
   zoom,
@@ -25,4 +25,4 @@ const AdjustVisualization = ({
   );
 };
 
-export default AdjustVisualization;
+export default VisualizeAOIView;

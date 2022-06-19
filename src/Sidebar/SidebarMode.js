@@ -24,9 +24,9 @@ const SidebarMode = ({ view, setView }) => {
             <ToggleButton
               type="radio"
               variant="outline-secondary"
-              name="viewCurrent"
-              value="viewCurrent"
-              checked={view === "viewCurrent"}
+              name="list"
+              value="list"
+              checked={view === "list"}
               onChange={(e) => setView(e.currentTarget.value)}
             >
               Review/Edit Current AOIs
@@ -36,9 +36,9 @@ const SidebarMode = ({ view, setView }) => {
               disabled
               type="radio"
               variant="outline-secondary"
-              name="viewCurrent"
-              value="viewCurrent"
-              checked={view === "viewCurrent"}
+              name="list"
+              value="list"
+              checked={view === "list"}
               onChange={(e) => setView(e.currentTarget.value)}
             >
               Review/Edit Current AOIs
@@ -49,9 +49,9 @@ const SidebarMode = ({ view, setView }) => {
             <ToggleButton
               type="radio"
               variant="outline-secondary"
-              name="createAssess"
-              value="createAssess"
-              checked={view === "createAssess"}
+              name="assess"
+              value="assess"
+              checked={view === "assess"}
               onChange={(e) => setView(e.currentTarget.value)}
             >
               Evaluate AOIs
@@ -61,9 +61,9 @@ const SidebarMode = ({ view, setView }) => {
               disabled
               type="radio"
               variant="outline-secondary"
-              name="createAssess"
-              value="createAssess"
-              checked={view === "createAssess"}
+              name="assess"
+              value="assess"
+              checked={view === "assess"}
               onChange={(e) => setView(e.currentTarget.value)}
             >
               Evaluate AOIs
