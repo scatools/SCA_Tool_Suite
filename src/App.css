@@ -674,6 +674,51 @@ a img.logo {
   min-width: 800px;
 }
 
+.plan-table {
+	display: flex;
+	width: 100%;
+	height: 94.2%;
+	align-items: stretch;
+}
+
+.plan-table-wrapper {
+	width: 100%;
+}
+
+.filter-button {
+  margin: 20px 20px 0px;
+}
+
+#filter-pane {
+	display: flex;
+	color: #fff !important;
+	width: 100%;
+  height: 10%;
+	background-color: #37383f;
+	justify-content: space-between;
+}
+
+.filter-pane-header {
+	display: flex;
+	margin: 5px;
+	padding: 10px;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.filter-pane-content {
+	display: flex;
+	padding: 10px;
+  justify-content: space-between;
+}
+
+.filter-pane-component {
+	display: flex;
+	padding: 10px;
+  justify-content: space-between;
+	align-items: center;
+}
+
 /* Homepage */
 .card-home{
   cursor: pointer;

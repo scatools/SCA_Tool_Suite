@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-// import SideBar from './SideBar';
+import FilterPane from './FilterPane';
 import CustomPagination from './CustomPagination';
 
 const PlanTable = () => {
@@ -59,10 +59,12 @@ const PlanTable = () => {
 	}
 
 	return (
-		<div className="wrapper">
-			{/* {showFilterPane && <SideBar currentFilterConfig={filterConfig} onFilterConfigChange={onFilterConfigChange}/>} */}
-			<div style={{ margin: '10px 50px', width: "100%"}}>
-				<Button variant="secondary" onClick={toggleFilterPane}>Filter</Button>
+		<div className="plan-table-wrapper">
+			{showFilterPane && (
+				<FilterPane currentFilterConfig={filterConfig} onFilterConfigChange={onFilterConfigChange}/>
+			)}
+			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>Filter</Button>
+			<div className="plan-table">
 				<Table hover borderless striped>
 					<thead>
 						<tr style={{ borderBottom: '1px solid black' }}>
@@ -127,10 +129,10 @@ const PlanTable = () => {
 						)}
 					</tbody>
 				</Table>
-				{!!tableDetails && (
-					<CustomPagination totalCount={totalCount} onPageChange={onPageChange} currentPage={currentPage} />
-				)}
 			</div>
+			{!!tableDetails && (
+				<CustomPagination totalCount={totalCount} onPageChange={onPageChange} currentPage={currentPage} />
+			)}
 		</div>
 	);
 };
