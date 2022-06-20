@@ -19,6 +19,7 @@
     "concurrently": "^6.2.1",
     "crypto-js": "^4.1.1",
     "dangerously-set-html-content": "^1.0.9",
+    "html-react-parser": "^1.4.14",
     "html2canvas": "^1.3.2",
     "jquery": "^3.6.0",
     "jspdf": "^2.3.1",
@@ -48,12 +49,16 @@
     "survey-react": "^1.9.5"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"cd ../backend && nodemon server.js\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "preinstall": "npx npm-force-resolutions",
-    "publishToHeroku": "cd ../ && git subtree push --prefix frontend heroku-frontend main || true"
+    "publishToHeroku": "git push heroku main"
+  },
+  "engines": {
+    "node": "16.0.0",
+    "npm": "7.10.0"
   },
   "eslintConfig": {
     "extends": "react-app"
