@@ -6,6 +6,7 @@ import Homepage from "../Components/Homepage";
 import Help from "../Components/Help";
 import Report from "../Assessment/Report";
 import Assessment from "../Assessment/Assessment";
+import PlanTable from "../Plans/PlanTable";
 import Login from "../User/Login";
 import Logout from "../User/Logout";
 import Register from "../User/Register";
@@ -90,6 +91,7 @@ const Routes = ({
           <Help />
         </Route>
         <Route exact path="/plans">
+          <PlanTable />
         </Route>
         <Route exact path="/report">
           <Report
