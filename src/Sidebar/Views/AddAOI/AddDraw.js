@@ -5,7 +5,7 @@ import {
   calculateArea,
   aggregate,
   getStatus,
-} from "../../../helper/aggregateHex";
+} from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 import { setLoader, input_aoi } from "../../../Redux/action";
 import { useDispatch } from "react-redux";
@@ -72,7 +72,7 @@ const AddDraw = ({
           })
         );
         setDrawingMode(false);
-        setView("viewCurrent");
+        setView("list");
       } else {
         clearTimeout(myTimeoutError);
         setAlertType("danger");

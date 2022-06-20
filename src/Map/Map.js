@@ -15,12 +15,11 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  useCase,
   drawingMode,
   setFeatureList,
   aoiSelected,
   editAOI,
-  viewport,
-  setViewport,
   hucBoundary,
   hucIDSelected,
   filterList,
@@ -33,6 +32,14 @@ const Map = ({
   hexDeselection,
   hexIDDeselected,
   hexFilterList,
+  visualizationLayer,
+  visualizationFillColor,
+  visualizationOpacity,
+  zoom,
+  setZoom,
+  viewport,
+  setViewport,
+  setInstruction
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -66,6 +73,47 @@ const Map = ({
     (aoi) => aoi.id === aoiSelected
   );
 
+  const getCursor = ({ isHovering, isDragging }) => {
+    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
+  };
+
+  const onHover = (e) => {
+    setHovered(true);
+    if (e.features) {
+      const featureHovered = e.features[0];
+      if (featureHovered) {
+        setHoveredProperty(featureHovered.properties);
+        setHoveredGeometry(featureHovered.geometry);
+      }
+    }
+  };
+
+  const onClick = (e) => {
+    if (e.features) {
+      const featureClicked = e.features[0];
+      if (featureClicked) {
+        setClickedProperty(featureClicked.properties);
+      }
+    }
+  };
+
+  const onDelete = () => {
+    const selectedIndex = selectedFeatureIndex;
+    if (selectedIndex !== null && selectedIndex >= 0) {
+      editorRef.current.deleteFeatures(selectedIndex);
+    }
+  };
+
+  const onUpdate = ({ editType }) => {
+    if (editType === "addFeature") {
+      setMode(new EditingMode());
+    }
+  };
+
+  const onViewStateChange = (e) => {
+    setZoom(e.viewState.zoom.toFixed(1));
+  };
+
   const onToggle = (value) => {
     if (value === 0) {
       setBasemapStyle("light-v10");
@@ -80,19 +128,6 @@ const Map = ({
 
   const onSelect = (options) => {
     setSelectedFeatureIndex(options && options.selectedFeatureIndex);
-  };
-
-  const onDelete = () => {
-    const selectedIndex = selectedFeatureIndex;
-    if (selectedIndex !== null && selectedIndex >= 0) {
-      editorRef.current.deleteFeatures(selectedIndex);
-    }
-  };
-
-  const onUpdate = ({ editType }) => {
-    if (editType === "addFeature") {
-      setMode(new EditingMode());
-    }
   };
 
   const renderDrawTools = () => {
@@ -114,31 +149,6 @@ const Map = ({
         </div>
       </div>
     );
-  };
-
-  const getCursor = ({ isHovering, isDragging }) => {
-    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
-  };
-
-  const onHover = (e) => {
-    setHovered(true);
-    if (e.features) {
-      const featureHovered = e.features[0];
-      if (featureHovered) {
-        setHoveredProperty(featureHovered.properties);
-        setHoveredGeometry(featureHovered.geometry);
-      }
-    }
-  };
-
-  const onClick = (e) => {
-    if (e.features) {
-      const featureClicked = e.features[0];
-      // console.log(featureClicked);
-      if (featureClicked) {
-        setClickedProperty(featureClicked.properties);
-      }
-    }
   };
 
   const renderPopup = () => {
@@ -227,6 +237,39 @@ const Map = ({
     );
   };
 
+  const renderVisualization = () => {
+    return (
+      <>
+        <Source
+          type="vector"
+          url="mapbox://chuck0520.2jhtgjk6"
+          maxzoom={22}
+          minzoom={0}
+        >
+          <Layer
+            {...visualizationLayer}
+            paint={{
+              "fill-color": visualizationFillColor,
+              "fill-opacity": [
+                "case",
+                ["boolean", ["feature-state", "hover"], false],
+                1,
+                parseInt(visualizationOpacity)/100,
+              ],
+            }}
+          />
+          {/* <Layer {...gcrVisualizationHighlight} filter={filter} /> */}
+        </Source>
+        <Legend
+          aoiList={[]}
+          aoiColors={[]}
+          useCase={useCase}
+          visualizationOpacity={visualizationOpacity}
+        ></Legend>
+      </>
+    );
+  };
+
   useEffect(() => {
     if (editorRef.current) {
       const featureList = editorRef.current.getFeatures();
@@ -310,6 +353,14 @@ const Map = ({
     hexFilterList.push(hexFilter);
     // console.log(hexFilterList);
   }, [hexFilter, hexFilterList]);
+  
+  useEffect(() => {
+    if (zoom >= 10) {
+      setInstruction("Click to explore the details of a single hexagonal area.");
+    } else {
+      setInstruction("Please zoom in to level 10 to explore the details of a single hexagonal area.");
+    };
+  }, [zoom]);
 
   return (
     <>
@@ -342,13 +393,14 @@ const Map = ({
         style={{ position: "fixed" }}
         width="100vw"
         height="94.3vh"
-        mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
-        onViewportChange={(nextViewport) => setViewport(nextViewport)}
         mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
+        getCursor={getCursor}
+        onLoad={loadHucBoundary}
         onHover={onHover}
         onClick={onClick}
-        onLoad={loadHucBoundary}
-        getCursor={getCursor}
+        onViewStateChange={onViewStateChange}
+        onViewportChange={(nextViewport) => setViewport(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
       >
         <Editor
@@ -370,7 +422,7 @@ const Map = ({
             minzoom={0}
           >
             <Layer
-              id="sca-boundry"
+              id="sca-boundary"
               source-layer="SCA_Boundry-13ifc0"
               type="fill"
               paint={{
@@ -406,7 +458,12 @@ const Map = ({
             </Source>
           ))}
         {aoiFullList.length > 0 && (
-          <Legend aoiList={aoiFullList} aoiColors={aoiColors}></Legend>
+          <Legend
+            aoiList={aoiFullList}
+            aoiColors={aoiColors}
+            useCase={null}
+            visualizationOpacity={0}
+          ></Legend>
         )}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source
@@ -454,6 +511,7 @@ const Map = ({
         {aoiList.length > 0 && hexGrid && renderHexGrid()}
         {drawingMode && renderDrawTools()}
         {hucBoundary && hovered && renderPopup()}
+        {useCase === "visualization" && visualizationLayer && visualizationFillColor && renderVisualization()}
       </MapGL>
     </>
   );

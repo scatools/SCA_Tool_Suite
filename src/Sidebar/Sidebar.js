@@ -6,9 +6,11 @@ import { GoReport } from "react-icons/go";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRedo, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import SidebarDismiss from "./SidebarDismiss";
+import UseCaseView from "./Views/UseCase/UseCaseView";
 import AddAOIView from "./Views/AddAOI/AddAOIView";
-import CurrentAOIView from "./Views/CurrentAOI/CurrentAOIView";
-import CreateAssessView from "./Views/CreateAssessment/CreateAssessView";
+import ListAOIView from "./Views/ListAOI/ListAOIView";
+import AssessAOIView from "./Views/AssessAOI/AssessAOIView";
+import VisualizeAOIView from "./Views/VisualizeAOI/VisualizeAOIView";
 import SidebarMode from "./SidebarMode";
 
 const arrowIcon = (
@@ -30,15 +32,17 @@ const alertIcon = (
 );
 
 const Sidebar = ({
-  aoiAssembled,
-  setAoiAssembled,
   activeSidebar,
   setActiveSidebar,
+  useCase,
+  setUseCase,
   setActiveTable,
   setDrawingMode,
   featureList,
   aoiSelected,
   setAoiSelected,
+  aoiAssembled,
+  setAoiAssembled,
   editAOI,
   setEditAOI,
   setViewport,
@@ -58,6 +62,12 @@ const Sidebar = ({
   autoDraw,
   stopDraw,
   editMode,
+  setVisualizationLayer,
+  setVisualizationFillColor,
+  visualizationOpacity,
+  setVisualizationOpacity,
+  zoom,
+  instruction,
   view,
   setView,
   setAlertText,
@@ -80,6 +90,13 @@ const Sidebar = ({
       <div className="ControlWrapper">
         <SidebarMode view={view} setView={setView} />
         <hr />
+        {view === "selectUseCase" && (
+          <UseCaseView
+            useCase={useCase}
+            setVisualizationLayer={setVisualizationLayer}
+            setView={setView}
+          />
+        )}
         {view === "add" && (
           <AddAOIView
             setDrawingMode={setDrawingMode}
@@ -98,8 +115,8 @@ const Sidebar = ({
             setAlertType={setAlertType}
           />
         )}
-        {view === "viewCurrent" && (
-          <CurrentAOIView
+        {view === "list" && (
+          <ListAOIView
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             setActiveTable={setActiveTable}
@@ -123,14 +140,24 @@ const Sidebar = ({
             setAlertType={setAlertType}
           />
         )}
-        {view === "createAssess" && (
-          <CreateAssessView
+        {view === "assess" && (
+          <AssessAOIView
+            useCase={useCase}
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}
+            setVisualizationFillColor={setVisualizationFillColor}
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+          />
+        )}
+        {view === "visualize" && (
+          <VisualizeAOIView
+            visualizationOpacity={visualizationOpacity}
+            setVisualizationOpacity={setVisualizationOpacity}
+            zoom={zoom}
+            instruction={instruction}
           />
         )}
       </div>

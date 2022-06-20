@@ -8,7 +8,7 @@ import {
   calculateArea,
   aggregate,
   getStatus,
-} from "../../../helper/aggregateHex";
+} from "../../../Helper/aggregateHex";
 import shp from "shpjs";
 import { v4 as uuid } from "uuid";
 import TimeoutError from "../../../Components/TimeoutError";
@@ -67,7 +67,7 @@ const AddZip = ({
         );
 
         // clearTimeout(loadTimer);
-        setView("viewCurrent");
+        setView("list");
         dispatch(setLoader(false));
       };
 

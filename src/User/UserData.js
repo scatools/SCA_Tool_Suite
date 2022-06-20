@@ -13,7 +13,7 @@ import {
   calculateArea,
   aggregate,
   getStatus,
-} from "../Helper Functions/aggregateHex";
+} from "../Helper/aggregateHex";
 import { input_aoi, setLoader } from "../Redux/action";
 import "../App.css";
 

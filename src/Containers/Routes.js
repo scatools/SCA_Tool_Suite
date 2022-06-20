@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
+import Homepage from "../Components/Homepage";
 import Help from "../Components/Help";
 import Report from "../Assessment/Report";
+import Assessment from "../Assessment/Assessment";
+import PlanTable from "../Plans/PlanTable";
 import Login from "../User/Login";
 import Logout from "../User/Logout";
 import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
-import Assessment from "../Assessment/Assessment";
 
 const Routes = ({
   setReportLink,
@@ -30,12 +32,18 @@ const Routes = ({
   const [reportScript, setReportScript] = useState("");
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
+  const [useCase, setUseCase] = useState(null);
 
   return (
     <>
       <Switch>
         <Route exact path="/">
+          <Homepage setUseCase={setUseCase} setView={setView}/>
+        </Route>
+        <Route exact path="/tool">
           <Main
+            useCase={useCase}
+            setUseCase={setUseCase}
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             aoiAssembled={aoiAssembled}
@@ -81,6 +89,9 @@ const Routes = ({
         </Route>
         <Route exact path="/help">
           <Help />
+        </Route>
+        <Route exact path="/plans">
+          <PlanTable />
         </Route>
         <Route exact path="/report">
           <Report

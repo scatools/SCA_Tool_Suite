@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { Button } from "react-bootstrap";
 import Map from "../Map/Map";
-import AoiDetailTable from "../Sidebar/Views/CurrentAOI/AoiDetailTable";
+import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
 import { DrawPolygonMode, EditingMode } from "react-map-gl-draw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBug } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,8 @@ const arrowIcon = (
 );
 
 const Main = ({
+  useCase,
+  setUseCase,
   aoiSelected,
   setAoiSelected,
   aoiAssembled,
@@ -31,11 +33,6 @@ const Main = ({
   const [drawingMode, setDrawingMode] = useState(false);
   const [featureList, setFeatureList] = useState([]);
   const [editAOI, setEditAOI] = useState(false);
-  const [viewport, setViewport] = useState({
-    latitude: 27.8,
-    longitude: -88.4,
-    zoom: 5,
-  });
   const [hucBoundary, setHucBoundary] = useState(false);
   const [hucIDSelected, setHucIDSelected] = useState([]);
   const [filterList, setFilterList] = useState([]);
@@ -43,11 +40,23 @@ const Main = ({
   const [hexDeselection, setHexDeselection] = useState(false);
   const [hexIDDeselected, setHexIDDeselected] = useState([]);
   const [hexFilterList, setHexFilterList] = useState([]);
+  const [visualizationLayer, setVisualizationLayer] = useState(null);
+  const [visualizationFillColor, setVisualizationFillColor] = useState(null);
+  const [visualizationOpacity, setVisualizationOpacity] = useState(50);
+  const [zoom, setZoom] = useState(5);
+  const [viewport, setViewport] = useState({
+    latitude: 27.8,
+    longitude: -88.4,
+    zoom: zoom,
+  });
+  const [instruction, setInstruction] = useState(
+    "Please zoom in to level 10 to explore the details of a single hexagonal area."
+  );
 
   const autoDraw = async () => {
     setMode(new DrawPolygonMode());
     // Use crosshair as cursor style when drawing new shapes over SCA boundary
-    setInteractiveLayerIds(["sca-boundry"]);
+    setInteractiveLayerIds(["sca-boundary"]);
   };
 
   const editMode = async () => {
@@ -67,6 +76,8 @@ const Main = ({
       <Sidebar
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
+        useCase={useCase}
+        setUseCase={setUseCase}
         setActiveTable={setActiveTable}
         setDrawingMode={setDrawingMode}
         featureList={featureList}
@@ -93,6 +104,12 @@ const Main = ({
         autoDraw={autoDraw}
         stopDraw={stopDraw}
         editMode={editMode}
+        setVisualizationLayer={setVisualizationLayer}
+        setVisualizationFillColor={setVisualizationFillColor}
+        visualizationOpacity={visualizationOpacity}
+        setVisualizationOpacity={setVisualizationOpacity}
+        zoom={zoom}
+        instruction={instruction}
         view={view}
         setView={setView}
         setAlertText={setAlertText}
@@ -115,12 +132,11 @@ const Main = ({
           {arrowIcon}
         </Button>
         <Map
+          useCase={useCase}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
           aoiSelected={aoiSelected}
           editAOI={editAOI}
-          viewport={viewport}
-          setViewport={setViewport}
           hucBoundary={hucBoundary}
           hucIDSelected={hucIDSelected}
           filterList={filterList}
@@ -133,6 +149,14 @@ const Main = ({
           hexDeselection={hexDeselection}
           hexIDDeselected={hexIDDeselected}
           hexFilterList={hexFilterList}
+          visualizationLayer={visualizationLayer}
+          visualizationFillColor={visualizationFillColor}
+          visualizationOpacity={visualizationOpacity}
+          zoom={zoom}
+          setZoom={setZoom}
+          viewport={viewport}
+          setViewport={setViewport}
+          setInstruction={setInstruction}
         />
       </div>
     </div>

@@ -8,7 +8,7 @@ import {
   calculateArea,
   aggregate,
   getStatus,
-} from "../../../helper/aggregateHex";
+} from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 
 const AddBoundary = ({
@@ -74,7 +74,7 @@ const AddBoundary = ({
         })
       );
       dispatch(setLoader(false));
-      setView("viewCurrent");
+      setView("list");
       setHucNameSelected([]);
       setHucIDSelected([]);
       setFilterList([]);
@@ -127,7 +127,7 @@ const AddBoundary = ({
         );
         dispatch(setLoader(false));
       });
-      setView("viewCurrent");
+      setView("list");
       setHucNameSelected([]);
       setHucIDSelected([]);
       setFilterList([]);
