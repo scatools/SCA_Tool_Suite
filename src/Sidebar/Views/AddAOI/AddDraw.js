@@ -8,7 +8,7 @@ import {
 } from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 import { setLoader, input_aoi } from "../../../Redux/action";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TimeoutError from "../../../Components/TimeoutError";
 
 const AddDraw = ({
@@ -24,6 +24,7 @@ const AddDraw = ({
   setAlertText,
   setAlertType,
 }) => {
+  const aoiList = Object.values(useSelector((state) => state.aoi))  
   const dispatch = useDispatch();
   const [drawData, setDrawData] = useState("");
 
@@ -42,43 +43,53 @@ const AddDraw = ({
       setAlertText("At least one polygon is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      setAlertText(false);
-      const newList = featureList;
-      const planArea = calculateArea(newList);
-      console.log(planArea);
-      const data = {
-        type: "MultiPolygon",
-        coordinates: newList.map((feature) => feature.geometry.coordinates),
-      };
-
-      // For development on local server
-      // const res = await axios.post('http://localhost:5000/data', { data });
-      // For production on Heroku
-      if (planArea < 5500) {
-        const res = await axios.post(
-          "https://sca-cpt-backend.herokuapp.com/data",
-          { data }
-        );
-        // const planArea = calculateArea(newList);
-        dispatch(
-          input_aoi({
-            name: drawData,
-            geometry: newList,
-            hexagons: res.data.data,
-            rawScore: aggregate(res.data.data, planArea),
-            scaleScore: getStatus(aggregate(res.data.data, planArea)),
-            speciesName: res.data.speciesName,
-            id: uuid(),
-          })
-        );
-        setDrawingMode(false);
-        setView("list");
-      } else {
+      if(aoiList.length < 10){
+        setAlertText(false);
+        const newList = featureList;
+        const planArea = calculateArea(newList);
+        console.log(planArea);
+        const data = {
+          type: "MultiPolygon",
+          coordinates: newList.map((feature) => feature.geometry.coordinates),
+        };
+  
+        // For development on local server
+        // const res = await axios.post('http://localhost:5000/data', { data });
+        // For production on Heroku
+        if (planArea < 5500) {
+          const res = await axios.post(
+            "https://sca-cpt-backend.herokuapp.com/data",
+            { data }
+          );
+          // const planArea = calculateArea(newList);
+          dispatch(
+            input_aoi({
+              name: drawData,
+              geometry: newList,
+              hexagons: res.data.data,
+              rawScore: aggregate(res.data.data, planArea),
+              scaleScore: getStatus(aggregate(res.data.data, planArea)),
+              speciesName: res.data.speciesName,
+              id: uuid(),
+            })
+          );
+          setDrawingMode(false);
+          setView("viewCurrent"); 
+  
+        } else {
+          clearTimeout(myTimeoutError);
+          setAlertType("danger");
+          setAlertText("Your AOI is too large. Reduce the size and try again.");
+          window.setTimeout(() => setAlertText(false), 4000);
+        }
+      }
+      else{
         clearTimeout(myTimeoutError);
         setAlertType("danger");
-        setAlertText("Your AOI is too large. Reduce the size and try again.");
+        setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
         window.setTimeout(() => setAlertText(false), 4000);
       }
+      
     }
 
     dispatch(setLoader(false));

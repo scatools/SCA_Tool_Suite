@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import Dropzone from "react-dropzone";
 import { Container } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setLoader, input_aoi } from "../../../Redux/action";
 import {
@@ -23,7 +23,7 @@ const AddZip = ({
   setAlertType,
 }) => {
   const dispatch = useDispatch();
-
+  const aoiList = Object.values(useSelector((state) => state.aoi)) 
   const onDrop = useCallback(
     async (acceptedFiles) => {
       const handleSubmitShapefile = async (
@@ -71,41 +71,57 @@ const AddZip = ({
         dispatch(setLoader(false));
       };
 
-      for (let file of acceptedFiles) {
-        const reader = new FileReader();
-        reader.onload = async () => {
-          setTimeout(() => timeoutHandler(), 20000);
-          const result = await shp(reader.result);
-          if (result) {
-            // console.log(result.features);
-            // Features are stored as [0:{}, 1:{}, 2:{}, ...]
-            for (var num in result.features) {
-              var featureGeometry = result.features[num].geometry;
-              var featureGeometryType = result.features[num].geometry.type;
-              var featureNumber = parseInt(num) + 1;
-              var featureName = null;
-              // Check if each feature has a name-like property
-              for (var property in result.features[num].properties) {
-                if (
-                  property.indexOf("name") !== -1 ||
-                  property.indexOf("Name") !== -1 ||
-                  property.indexOf("NAME") !== -1
-                ) {
-                  featureName = result.features[num].properties[property];
+      (() => {
+        for (let file of acceptedFiles) {
+          const reader = new FileReader();
+          reader.onload = async () => {
+            const myTimeoutError = setTimeout(() => timeoutHandler(), 20000);
+            const result = await shp(reader.result);
+            if (result) {
+              // console.log(result.features);
+              // Features are stored as [0:{}, 1:{}, 2:{}, ...]
+              let index = 0;
+              for (var num in result.features) {
+                
+                if(aoiList.length + index < 10){
+                  index += 1;
+                  var featureGeometry = result.features[num].geometry;
+                  var featureGeometryType = result.features[num].geometry.type;
+                  var featureNumber = parseInt(num) + 1;
+                  var featureName = null;
+                  // Check if each feature has a name-like property
+                  for (var property in result.features[num].properties) {
+                    if (
+                      property.indexOf("name") != -1 ||
+                      property.indexOf("Name") != -1 ||
+                      property.indexOf("NAME") != -1
+                    ) {
+                      featureName = result.features[num].properties[property];
+                    }
+                  }
+                  // Add geometry type as a parameter to cater to both Polygon and MultiPolygon
+                  handleSubmitShapefile(
+                    featureGeometry,
+                    featureGeometryType,
+                    featureNumber,
+                    featureName
+                  );
+                }
+                else{
+                  clearTimeout(myTimeoutError);
+                  setAlertType("danger");
+                  setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+                  window.setTimeout(() => setAlertText(false), 4000);
+                  dispatch(setLoader(false));
+                  return
                 }
               }
-              // Add geometry type as a parameter to cater to both Polygon and MultiPolygon
-              handleSubmitShapefile(
-                featureGeometry,
-                featureGeometryType,
-                featureNumber,
-                featureName
-              );
+            
             }
-          }
-        };
-        reader.readAsArrayBuffer(file);
+          };
+          reader.readAsArrayBuffer(file);
       }
+    })();
       dispatch(setLoader(true));
       // let loadTimer = setTimeout(() => timeoutHandler(), 20);
     },

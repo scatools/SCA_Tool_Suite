@@ -22,7 +22,12 @@ const SelectAOIForAssess = ({
   }));
 
   const handleNext = () => {
-    if (aoiAssembled && aoiAssembled.length > 1) {
+    if(aoiAssembled && aoiAssembled.length  >= 11){
+      setAlertType("danger");
+      setAlertText("Max amount of AOIs is 10, remove AOIs for comparison");
+      window.setTimeout(() => setAlertText(false), 4000);
+    }  
+    else if (aoiAssembled && aoiAssembled.length > 1) {
       setAssessStep("selectRestoreWeights");
     } else {
       setAlertType("danger");
