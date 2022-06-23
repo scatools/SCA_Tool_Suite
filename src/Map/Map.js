@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import bbox from "@turf/bbox";
 import shp from "shpjs";
 import Legend from "../Components/Legend";
+import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
 
 const MAPBOX_TOKEN =
@@ -43,6 +44,8 @@ const Map = ({
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
+	const [showTableContainer, setShowTableContainer] = useState(false);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
   const [hovered, setHovered] = useState(false);
@@ -89,12 +92,16 @@ const Map = ({
   };
 
   const onClick = (e) => {
-    if (e.features) {
+    if (useCase === "inventory") {
+      setInteractiveLayerIds([]);
+      setCoordinates(e.lngLat);
+      setShowTableContainer(true);
+    } else if (e.features) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
-      }
-    }
+      };
+    };
   };
 
   const onDelete = () => {
@@ -387,6 +394,12 @@ const Map = ({
             eachSwitchWidth={80}
           />
         </div>
+      )}
+      {showTableContainer && (
+        <TableContainer
+          coordinates={coordinates}
+          setShowTableContainer={setShowTableContainer}
+        />
       )}
       <MapGL
         {...viewport}
