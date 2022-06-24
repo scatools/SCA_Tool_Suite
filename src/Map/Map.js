@@ -33,6 +33,7 @@ const Map = ({
   hexDeselection,
   hexIDDeselected,
   hexFilterList,
+  visualizationSource,
   visualizationLayer,
   visualizationFillColor,
   visualizationOpacity,
@@ -247,12 +248,7 @@ const Map = ({
   const renderVisualization = () => {
     return (
       <>
-        <Source
-          type="vector"
-          url="mapbox://chuck0520.2jhtgjk6"
-          maxzoom={22}
-          minzoom={0}
-        >
+        <Source {...visualizationSource}>
           <Layer
             {...visualizationLayer}
             paint={{
@@ -450,33 +446,35 @@ const Map = ({
         )}
         {aoiFullList.length > 0 &&
           !hucBoundary &&
+          visualizationOpacity === 0 &&
           aoiFullList.map((aoi, index) => (
-            <Source
-              type="geojson"
-              data={{
-                type: "FeatureCollection",
-                features: aoi.geometry,
-              }}
-            >
-              {aoi.id && (
-                <Layer
-                  id={aoi.id}
-                  type="fill"
-                  paint={{
-                    "fill-color": aoiColors[index],
-                    "fill-opacity": 0.5,
-                  }}
-                />
-              )}
-            </Source>
-          ))}
-        {aoiFullList.length > 0 && (
-          <Legend
-            aoiList={aoiFullList}
-            aoiColors={aoiColors}
-            useCase={null}
-            visualizationOpacity={0}
-          ></Legend>
+            <>
+              <Source
+                type="geojson"
+                data={{
+                  type: "FeatureCollection",
+                  features: aoi.geometry,
+                }}
+              >
+                {aoi.id && (
+                  <Layer
+                    id={aoi.id}
+                    type="fill"
+                    paint={{
+                      "fill-color": aoiColors[index],
+                      "fill-opacity": 0.5,
+                    }}
+                  />
+                )}
+              </Source>
+              <Legend
+                aoiList={aoiFullList}
+                aoiColors={aoiColors}
+                useCase={null}
+                visualizationOpacity={0}
+              ></Legend>
+            </>
+          )
         )}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source
@@ -524,7 +522,13 @@ const Map = ({
         {aoiList.length > 0 && hexGrid && renderHexGrid()}
         {drawingMode && renderDrawTools()}
         {hucBoundary && hovered && renderPopup()}
-        {useCase === "visualization" && visualizationLayer && visualizationFillColor && renderVisualization()}
+        {useCase === "visualization" && 
+          visualizationSource && 
+          visualizationLayer && 
+          visualizationFillColor && 
+          visualizationOpacity > 0 &&
+          renderVisualization()
+        }
       </MapGL>
     </>
   );
