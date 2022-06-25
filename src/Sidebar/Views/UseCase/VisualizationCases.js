@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import SelectVisualizeScale from "./SelectVisualizeScale";
 import SelectVisualizeState from "./SelectVisualizeState";
 
-const VisualizationCases = ({ setView, setVisualizationLayer }) => {
+const VisualizationCases = ({
+  setView,
+  setVisualizationScale,
+  setVisualizationSource,
+  setVisualizationLayer
+}) => {
   const [visualizeStep, setVisualizeStep] = useState("selectScale");
   return (
     <div>
@@ -10,6 +15,8 @@ const VisualizationCases = ({ setView, setVisualizationLayer }) => {
         <SelectVisualizeScale
           setView={setView}
           setVisualizeStep={setVisualizeStep}
+          setVisualizationScale={setVisualizationScale}
+          setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
         />
       )}
@@ -17,6 +24,7 @@ const VisualizationCases = ({ setView, setVisualizationLayer }) => {
         <SelectVisualizeState
           setView={setView}
           setVisualizeStep={setVisualizeStep}
+          setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
         />
       )}

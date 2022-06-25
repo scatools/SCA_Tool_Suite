@@ -11,6 +11,7 @@ const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 const SelectRestoreWeights = ({
   useCase,
   setAssessStep,
+  visualizationScale,
   setAlertText,
   setAlertType,
 }) => {
@@ -161,12 +162,11 @@ const SelectRestoreWeights = ({
         )}
       </span>
       <Container className="add-assess-cont">
-        {useCase != "visualization" && (
+        {visualizationScale != "region" && visualizationScale != "state" && (
           <Button variant="secondary" onClick={() => setAssessStep("selectAOI")}>
-            {arrowIcon} Select AOIs
+            {arrowIcon} {visualizationScale === "aoi" ? "Select AOI" : "Select AOIs"}
           </Button>
         )}
-
         {sumWeights === 100 ? (
           <Button variant="primary" onClick={() => handleNext()}>
             Next

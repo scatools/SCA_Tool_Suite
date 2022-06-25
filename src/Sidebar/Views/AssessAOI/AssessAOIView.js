@@ -10,25 +10,36 @@ const AssessAOIView = ({
   aoiAssembled,
   setAoiAssembled,
   customizedMeasures,
+  visualizationScale,
+  setVisualizationSource,
+  setVisualizationLayer,
   setVisualizationFillColor,
+  setVisualizationOpacity,
   setView,
   setAlertText,
   setAlertType
 }) => {
   const [assessStep, setAssessStep] = useState("selectAOI");
   useEffect(() => {
-    if (useCase === "visualization") {
+    if (
+      useCase === "visualization" && (
+        visualizationScale === "region" || visualizationScale === "state"
+      )
+    ) {
       setAssessStep("selectRestoreWeights");
     }
-  }, [useCase]);
+  }, [useCase, visualizationScale]);
 
   return (
     <Container>
       {assessStep === "selectAOI" && (
         <SelectAOIForAssess
+          useCase={useCase}
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           setAoiAssembled={setAoiAssembled}
+          setVisualizationSource={setVisualizationSource}
+          setVisualizationLayer={setVisualizationLayer}
           setView={setView}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
@@ -39,6 +50,7 @@ const AssessAOIView = ({
         <SelectRestoreWeights
           useCase={useCase}
           setAssessStep={setAssessStep}
+          visualizationScale={visualizationScale}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
         />
@@ -60,6 +72,7 @@ const AssessAOIView = ({
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}
           setVisualizationFillColor={setVisualizationFillColor}
+          setVisualizationOpacity={setVisualizationOpacity}
           setView={setView}
         />
       )}

@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, CloseButton } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import BeatLoader from 'react-spinners/BeatLoader';
 import axios from 'axios';
 import FilterPane from './FilterPane';
 import CustomPagination from './CustomPagination';
 
-const PlanTable = () => {
+const TableContainer = ({ coordinates, setShowTableContainer }) => {
 	const history = useHistory();
-
-	// state to store query data
 	const [tableDetails, setTableDetails] = useState();
 	const [totalCount, setTotalCount] = useState(0);
-
-	// state to store current page for pagination
 	const [currentPage, setCurrentPage] = useState(1);
-
-	// state to control visibility of filter pane
 	const [showFilterPane, setShowFilterPane] = useState(false);
-
-	// state to control filtering input 
 	const [filterConfig, setFilterConfig] = useState({
 		state: "All",
 		time: "All",
@@ -38,57 +31,61 @@ const PlanTable = () => {
 		setShowFilterPane(showFilterPane => !showFilterPane);
 	};
 
-	// useEffect for launching query and fetch data from backend
-	useEffect(
-		() => {
-			const asyncFunc = async () => {
-				const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan`, {
+	useEffect(() => {
+		const planQueryByPOI = async () => {
+			if (coordinates[0] && coordinates[1]) {
+				const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan/spatial`, {
 					params: {
 						start: 10 * (currentPage - 1),
 						end: 10 * currentPage,
 						state: filterConfig.state,
 						time: filterConfig.time,
-						priority: filterConfig.priority
+						priority: filterConfig.priority,
+						lng: coordinates[0],
+						lat: coordinates[1]
 					}
 				});
 				setTableDetails(response.data.data);
 				setTotalCount(response.data.totalRowCount);
-			};
-			asyncFunc();
-		},
-		[currentPage, filterConfig]
-	);
+				if (response.data.totalRowCount !== 0) {
+					setShowTableContainer(true);
+				} else {
+					setShowTableContainer(false);
+				}
+			}
+		};
+		planQueryByPOI();
+	}, [currentPage, filterConfig, coordinates]);
 
 	return (
-		<div className="plan-table-wrapper">
+		<div className="table-container-wrapper">
 			{showFilterPane && (
 				<FilterPane
 					currentFilterConfig={filterConfig}
 					onFilterConfigChange={onFilterConfigChange}
-					size="large"
+					size="small"
 				/>
 			)}
-			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>Filter</Button>
-			<div className="plan-table">
+			<div className="map-table-filter-button">
+				<Button variant="secondary" onClick={toggleFilterPane}>
+					Filter
+				</Button>
+			</div>
+			<div id="map-table-container">
+				<CloseButton onClick={() => setShowTableContainer(false)} />
 				<Table hover borderless striped>
 					<thead>
 						<tr style={{ borderBottom: '1px solid black' }}>
 							<th>Plan Name</th>
-							<th>Primary Planning Method</th>
-							<th>Plan Time Frame</th>
-							<th>Agency Lead</th>
+							<th>Related State</th>
 							<th>Plan Details</th>
-							<th>Original Document</th>
 						</tr>
 					</thead>
 					<tbody style={{ borderBottom: '1px solid black' }}>
 						{!!tableDetails ? (
 							tableDetails.map((row) => (
 								<tr key={row.id}>
-									<td>{row.plan_name}</td>
-									<td>{row.planning_method}</td>
-									<td>{row.plan_timeframe}</td>
-									<td style={{ width: '15%' }}>
+									<td style={{ width: '50%' }}>
 										<div
 											style={{
 												overflow: 'hidden',
@@ -99,9 +96,10 @@ const PlanTable = () => {
 											}}
 											title={row.agency_lead}
 										>
-											{row.agency_lead}
+											{row.plan_name}
 										</div>
 									</td>
+									<td>{row.related_state}</td>
 									<td>
 										<Button
 											onClick={() => {
@@ -111,35 +109,28 @@ const PlanTable = () => {
 											Learn more
 										</Button>
 									</td>
-									<td>
-										<Button
-											onClick={() => {
-												window.open(
-													row.plan_url.includes('static/assets/')
-														? `https://s3.amazonaws.com/planinventory/${row.plan_url}`
-														: row.plan_url,
-													'_blank'
-												);
-											}}
-										>
-											Raw document
-										</Button>
-									</td>
 								</tr>
 							))
 						) : (
 							<tr>
-								<td colSpan="6">Loading table...</td>
+								<td colSpan="3" align="center">
+									Loading table
+									<BeatLoader size={5} />
+								</td>
 							</tr>
 						)}
 					</tbody>
 				</Table>
+				{!!tableDetails && (
+					<CustomPagination
+						totalCount={totalCount}
+						onPageChange={onPageChange}
+						currentPage={currentPage}
+					/>
+				)}
 			</div>
-			{!!tableDetails && (
-				<CustomPagination totalCount={totalCount} onPageChange={onPageChange} currentPage={currentPage} />
-			)}
 		</div>
 	);
 };
 
-export default PlanTable;
+export default TableContainer;

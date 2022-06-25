@@ -30,6 +30,7 @@ const ReviewAssessSettings = ({
   aoiAssembled,
   customizedMeasures,
   setVisualizationFillColor,
+  setVisualizationOpacity,
   setView
 }) => {
   const weights = useSelector((state) => state.weights);
@@ -103,6 +104,7 @@ const ReviewAssessSettings = ({
     ];
 
     await setVisualizationFillColor(fillColor);
+    setVisualizationOpacity(50);
   };
 
   const createAssessment = () => {
