@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
-const FilterPane = ({currentFilterConfig, onFilterConfigChange}) => {
-  const [filterConfigInForm, setFilterConfigInForm] = useState({...currentFilterConfig});
+const FilterPane = ({ currentFilterConfig, onFilterConfigChange, size }) => {
+	const [filterConfigInForm, setFilterConfigInForm] = useState({ ...currentFilterConfig });
 
 	return (
-		<nav id="filter-pane">
-			<div className="filter-pane-header">
-				<h5>Filter Configuration:</h5>
-			</div>
-			<div className="filter-pane-content">
-				<div className="filter-pane-component">
+		<nav id={size+"-filter-pane"}>
+			{size === "large" && (
+				<div className={size+"-filter-pane-header"}>
+					<h5>Filter Configuration:</h5>
+				</div>
+			)}
+			<div className={size+"-filter-pane-content"}>
+				<div className={size+"-filter-pane-component"}>
 					<span>Related State:</span>
 					<select
 						className="form-control"
 						value={filterConfigInForm.state}
-						onChange={(event)=>{
-							setFilterConfigInForm({...filterConfigInForm, state: event.target.value})
+						onChange={(event) => {
+							setFilterConfigInForm({ ...filterConfigInForm, state: event.target.value })
 						}}
 					>
 						<option value="ALL">All Scale</option>
@@ -28,13 +30,13 @@ const FilterPane = ({currentFilterConfig, onFilterConfigChange}) => {
 						<option value="SE">Southeast Regional</option>
 					</select>
 				</div>
-				<div className="filter-pane-component">
+				<div className={size+"-filter-pane-component"}>
 					<span>Time Frame:</span>
 					<select
 						className="form-control"
 						value={filterConfigInForm.time}
-						onChange={(event)=>{
-							setFilterConfigInForm({...filterConfigInForm, time: event.target.value})
+						onChange={(event) => {
+							setFilterConfigInForm({ ...filterConfigInForm, time: event.target.value })
 						}}
 					>
 						<option value="All">
@@ -46,10 +48,10 @@ const FilterPane = ({currentFilterConfig, onFilterConfigChange}) => {
 					</select>
 				</div>
 				<div
-					className="filter-pane-component"
+					className={size+"-filter-pane-component"}
 					value={filterConfigInForm.priority}
-					onChange={(event)=>{
-						setFilterConfigInForm({...filterConfigInForm, priority: event.target.value})
+					onChange={(event) => {
+						setFilterConfigInForm({ ...filterConfigInForm, priority: event.target.value })
 					}}
 				>
 					<span>Priority:</span>
@@ -65,10 +67,11 @@ const FilterPane = ({currentFilterConfig, onFilterConfigChange}) => {
 						<option value="ECO">Gulf Economy Related Plans</option>
 					</select>
 				</div>
-				<div className="filter-pane-component">
+				<div className={size+"-filter-pane-component"}>
 					<Button
 						variant="secondary"
-						onClick={()=>onFilterConfigChange(filterConfigInForm)}
+						style={{ minWidth: "20%" }}
+						onClick={() => onFilterConfigChange(filterConfigInForm)}
 					>
 						Apply Filter
 					</Button>

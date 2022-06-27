@@ -9,6 +9,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import bbox from "@turf/bbox";
 import shp from "shpjs";
 import Legend from "../Components/Legend";
+import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
 
 const MAPBOX_TOKEN =
@@ -32,6 +33,7 @@ const Map = ({
   hexDeselection,
   hexIDDeselected,
   hexFilterList,
+  visualizationSource,
   visualizationLayer,
   visualizationFillColor,
   visualizationOpacity,
@@ -43,6 +45,8 @@ const Map = ({
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
+	const [showTableContainer, setShowTableContainer] = useState(false);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
   const [hovered, setHovered] = useState(false);
@@ -89,12 +93,16 @@ const Map = ({
   };
 
   const onClick = (e) => {
-    if (e.features) {
+    if (useCase === "inventory") {
+      setInteractiveLayerIds([]);
+      setCoordinates(e.lngLat);
+      setShowTableContainer(true);
+    } else if (e.features) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
-      }
-    }
+      };
+    };
   };
 
   const onDelete = () => {
@@ -240,12 +248,7 @@ const Map = ({
   const renderVisualization = () => {
     return (
       <>
-        <Source
-          type="vector"
-          url="mapbox://chuck0520.2jhtgjk6"
-          maxzoom={22}
-          minzoom={0}
-        >
+        <Source {...visualizationSource}>
           <Layer
             {...visualizationLayer}
             paint={{
@@ -388,6 +391,12 @@ const Map = ({
           />
         </div>
       )}
+      {showTableContainer && (
+        <TableContainer
+          coordinates={coordinates}
+          setShowTableContainer={setShowTableContainer}
+        />
+      )}
       <MapGL
         {...viewport}
         style={{ position: "fixed" }}
@@ -437,33 +446,35 @@ const Map = ({
         )}
         {aoiFullList.length > 0 &&
           !hucBoundary &&
+          visualizationOpacity === 0 &&
           aoiFullList.map((aoi, index) => (
-            <Source
-              type="geojson"
-              data={{
-                type: "FeatureCollection",
-                features: aoi.geometry,
-              }}
-            >
-              {aoi.id && (
-                <Layer
-                  id={aoi.id}
-                  type="fill"
-                  paint={{
-                    "fill-color": aoiColors[index],
-                    "fill-opacity": 0.5,
-                  }}
-                />
-              )}
-            </Source>
-          ))}
-        {aoiFullList.length > 0 && (
-          <Legend
-            aoiList={aoiFullList}
-            aoiColors={aoiColors}
-            useCase={null}
-            visualizationOpacity={0}
-          ></Legend>
+            <>
+              <Source
+                type="geojson"
+                data={{
+                  type: "FeatureCollection",
+                  features: aoi.geometry,
+                }}
+              >
+                {aoi.id && (
+                  <Layer
+                    id={aoi.id}
+                    type="fill"
+                    paint={{
+                      "fill-color": aoiColors[index],
+                      "fill-opacity": 0.5,
+                    }}
+                  />
+                )}
+              </Source>
+              <Legend
+                aoiList={aoiFullList}
+                aoiColors={aoiColors}
+                useCase={null}
+                visualizationOpacity={0}
+              ></Legend>
+            </>
+          )
         )}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source
@@ -511,7 +522,13 @@ const Map = ({
         {aoiList.length > 0 && hexGrid && renderHexGrid()}
         {drawingMode && renderDrawTools()}
         {hucBoundary && hovered && renderPopup()}
-        {useCase === "visualization" && visualizationLayer && visualizationFillColor && renderVisualization()}
+        {useCase === "visualization" && 
+          visualizationSource && 
+          visualizationLayer && 
+          visualizationFillColor && 
+          visualizationOpacity > 0 &&
+          renderVisualization()
+        }
       </MapGL>
     </>
   );

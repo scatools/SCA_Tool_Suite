@@ -730,6 +730,12 @@ a img.logo {
   min-width: 800px;
 }
 
+/* Entire plan table */
+
+.plan-table-wrapper {
+	width: 100%;
+}
+
 .plan-table {
 	display: flex;
 	width: 100%;
@@ -737,15 +743,11 @@ a img.logo {
 	align-items: stretch;
 }
 
-.plan-table-wrapper {
-	width: 100%;
-}
-
 .filter-button {
   margin: 20px 20px 0px;
 }
 
-#filter-pane {
+#large-filter-pane {
 	display: flex;
 	color: #fff !important;
 	width: 100%;
@@ -754,7 +756,7 @@ a img.logo {
 	justify-content: space-between;
 }
 
-.filter-pane-header {
+.large-filter-pane-header {
 	display: flex;
 	margin: 5px;
 	padding: 10px;
@@ -762,20 +764,88 @@ a img.logo {
 	align-items: center;
 }
 
-.filter-pane-content {
+.large-filter-pane-content {
 	display: flex;
 	padding: 10px;
   justify-content: space-between;
 }
 
-.filter-pane-component {
+.large-filter-pane-component {
 	display: flex;
 	padding: 10px;
   justify-content: space-between;
 	align-items: center;
 }
 
+/* Table on map */
+
+.table-container-wrapper {
+	position: absolute;
+	z-index: 500;
+	top: 10%;
+	right: 5%;
+	width: 40%;
+  padding: 10px;
+	max-height: 60%;
+	overflow-y: scroll;
+	background-color: white;
+  border: 1px solid gray;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+#map-table-container {
+	background-color: white;
+}
+
+#map-table-container::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+#map-table-container::-webkit-scrollbar-thumb {
+	border-radius: 5px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.map-table-filter-button {
+	position: absolute;
+  margin: 5px;
+}
+
+#small-filter-pane {
+	display: flex;
+	color: #fff !important;
+	width: 100%;
+  height: 20%;
+	background-color: #37383f;
+	justify-content: space-between;
+}
+
+.small-filter-pane-header {
+	display: flex;
+	margin: 5px;
+	padding: 10px;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.small-filter-pane-content {
+	display: flex;
+	padding: 10px;
+  justify-content: space-between;
+}
+
+.small-filter-pane-component {
+	display: flex;
+  flex-direction: column;
+	padding: 5px;
+  justify-content: space-between;
+	align-items: left;
+}
+
 /* Homepage */
+
 .card-home{
   cursor: pointer;
   overflow: hidden;
