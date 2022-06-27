@@ -5,7 +5,7 @@ const Legend = ({ aoiList, aoiColors, useCase, visualizationOpacity }) => {
   const legendOpacity = parseInt(visualizationOpacity)/100;
   return (
     <div className="legend">
-      {aoiList.length > 0  && (
+      {aoiList.length > 0 && visualizationOpacity === 0 && (
       <>
           <div className="legend-title">Areas of Interest</div>
           <div className="legend-scale">
@@ -26,7 +26,7 @@ const Legend = ({ aoiList, aoiColors, useCase, visualizationOpacity }) => {
           </div>
         </>
       )}
-      {useCase === "visualization" && (
+      {useCase === "visualization" && visualizationOpacity > 0 && (
         <>
           <div className="legend-title">Overall Score</div>
           <div className="legend-scale">

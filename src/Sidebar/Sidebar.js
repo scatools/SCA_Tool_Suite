@@ -62,6 +62,7 @@ const Sidebar = ({
   autoDraw,
   stopDraw,
   editMode,
+  setVisualizationSource,
   setVisualizationLayer,
   setVisualizationFillColor,
   visualizationOpacity,
@@ -78,6 +79,7 @@ const Sidebar = ({
     window.location.reload(true);
   };
   const [confirmShow, setConfirmShow] = useState(false);
+  const [visualizationScale, setVisualizationScale] = useState(null);
 
   const history = useHistory();
 
@@ -93,6 +95,8 @@ const Sidebar = ({
         {view === "selectUseCase" && (
           <UseCaseView
             useCase={useCase}
+            setVisualizationScale={setVisualizationScale}
+            setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
             setView={setView}
           />
@@ -117,6 +121,7 @@ const Sidebar = ({
         )}
         {view === "list" && (
           <ListAOIView
+            useCase={useCase}
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             setActiveTable={setActiveTable}
@@ -146,7 +151,11 @@ const Sidebar = ({
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}
+            visualizationScale={visualizationScale}
+            setVisualizationSource={setVisualizationSource}
+            setVisualizationLayer={setVisualizationLayer}
             setVisualizationFillColor={setVisualizationFillColor}
+            setVisualizationOpacity={setVisualizationOpacity}
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}

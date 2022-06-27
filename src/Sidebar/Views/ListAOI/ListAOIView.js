@@ -11,6 +11,7 @@ const arrowLeft = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 const arrowRight = <FontAwesomeIcon icon={faArrowRight} size="lg" />;
 
 const ListAOIView = ({
+  useCase,
   aoiSelected,
   setAoiSelected,
   setActiveTable,
@@ -133,9 +134,15 @@ const ListAOIView = ({
         <Button variant="secondary" onClick={() => setView("add")}>
           {arrowLeft} Add More AOIs
         </Button>
-        <Button variant="primary" onClick={() => setView("assess")}>
-          Evaluate AOIs {arrowRight}
-        </Button>
+        {useCase === "visualization" ? (
+          <Button variant="primary" onClick={() => setView("assess")}>
+            Visualize AOI {arrowRight}
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={() => setView("assess")}>
+            Evaluate AOIs {arrowRight}
+          </Button>
+        )}
       </Container>
     </Container>
   );

@@ -2,7 +2,13 @@ import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { gcrVisualizationLayer, gcrVisualizationHighlight } from "../../../Map/layerStyle";
 
-const SelectVisualizeScale = ({ setView, setVisualizeStep, setVisualizationLayer }) => {
+const SelectVisualizeScale = ({
+  setView,
+  setVisualizeStep,
+  setVisualizationScale,
+  setVisualizationSource,
+  setVisualizationLayer
+}) => {
   return (
     <div>
       <h4>On which scale would you like this visualization to be based?</h4>
@@ -11,16 +17,35 @@ const SelectVisualizeScale = ({ setView, setVisualizeStep, setVisualizationLayer
         <Button
           variant="outline-light"
           onClick={() => {
-            setView("assess");
+            setVisualizationScale("region");
+            setVisualizationSource({
+              type: "vector",
+              url: "mapbox://chuck0520.2jhtgjk6",
+              maxzoom: 22,
+              minzoom: 0
+            });
             setVisualizationLayer(gcrVisualizationLayer);
+            setView("assess");
           }}
         >
           I would like to create the visualization within the entire Gulf Coast Region
         </Button>
-        <Button variant="outline-light" onClick={() => {setVisualizeStep("selectState")}}>
+        <Button
+          variant="outline-light"
+          onClick={() => {
+            setVisualizationScale("state");
+            setVisualizeStep("selectState");
+          }}
+        >
           I would like to create the visualization within a single Gulf Coast State
         </Button>
-        <Button variant="outline-light" onClick={() => {setView("add")}}>
+        <Button
+          variant="outline-light"
+          onClick={() => {
+            setVisualizationScale("aoi");
+            setView("add");
+          }}
+        >
           I would like to create the visualization within a certain Area of Interest
         </Button>
       </Container>

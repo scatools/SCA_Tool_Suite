@@ -17,7 +17,7 @@ const SelectDataMeasures = ({
   const [inputMeasureName, setInputMeasureName] = useState("");
   const [inputMeasureValueList, setInputMeasureValueList] = useState([]);
   const aoi = useSelector((state) => state.aoi);
-  const aoiAssembledList = aoiAssembled.map((aoi) => aoi.value);
+  const aoiAssembledList = (useCase === "visualization" ? [] : (aoiAssembled.map((aoi) => aoi.value)));
   const aoiList = Object.values(aoi).filter((aoi) =>
     aoiAssembledList.includes(aoi.id)
   );
