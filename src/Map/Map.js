@@ -95,7 +95,13 @@ const Map = ({
   };
 
   const onClick = (e) => {
-    if (useCase === "inventory" && !aoiSelected && !hucBoundary && !hexGrid) {
+    if (
+      useCase === "inventory" &&
+      !aoiSelected &&
+      !drawingMode &&
+      !hucBoundary &&
+      !hexGrid
+    ) {
       setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
