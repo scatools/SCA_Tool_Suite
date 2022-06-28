@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
-import Select from "react-select";
+import { MultiSelect } from "../../../Components/MultiSelect";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +16,7 @@ const SelectAOIForAssess = ({
   setVisualizationLayer,
   setView,
   setAlertText,
-  setAlertType
+  setAlertType,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const aoiList = Object.values(aoi).map((item) => ({
@@ -34,15 +34,15 @@ const SelectAOIForAssess = ({
         const hexFeatureList = aoiVisualized[0].hexagons.map((hex) => {
           // Parse all the properties for measure scores to numbers
           let hexProperties = hex;
-          Object.keys(hexProperties).map(function(key, index){
+          Object.keys(hexProperties).map(function (key, index) {
             if (key != "geometry") {
               hexProperties[key] = parseFloat(hexProperties[key]);
-            };
+            }
           });
           return {
             type: "Feature",
             geometry: JSON.parse(hex.geometry),
-            properties: hexProperties
+            properties: hexProperties,
           };
         });
         const hexData = {
@@ -51,11 +51,11 @@ const SelectAOIForAssess = ({
         };
         setVisualizationSource({
           type: "geojson",
-          data: hexData
+          data: hexData,
         });
         setVisualizationLayer({
           id: "aoi-visualization",
-          type: "fill"
+          type: "fill",
         });
         setAssessStep("selectRestoreWeights");
       } else {
@@ -83,11 +83,11 @@ const SelectAOIForAssess = ({
         <h3>Select two or more areas of interest</h3>
       )}
       <br />
-      <Select
+      <MultiSelect
         styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         menuPortalTarget={document.body}
         options={aoiList}
-        isMulti={useCase === "visualization" ? false : true}
+        isMulti
         isClearable={true}
         placeholder="Select areas of interests..."
         name="colors"
@@ -117,16 +117,14 @@ const SelectAOIForAssess = ({
               Next
             </Button>
           )
+        ) : aoiAssembled && aoiAssembled.length > 1 ? (
+          <Button variant="primary" onClick={() => handleNext()}>
+            Next
+          </Button>
         ) : (
-          aoiAssembled && aoiAssembled.length > 1 ? (
-            <Button variant="primary" onClick={() => handleNext()}>
-              Next
-            </Button>
-          ) : (
-            <Button variant="secondary" disabled onClick={() => handleNext()}>
-              Next
-            </Button>
-          )
+          <Button variant="secondary" disabled onClick={() => handleNext()}>
+            Next
+          </Button>
         )}
       </Container>
     </Container>
