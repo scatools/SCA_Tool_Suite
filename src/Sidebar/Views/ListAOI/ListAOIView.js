@@ -29,6 +29,7 @@ const ListAOIView = ({
   userLoggedIn,
   editMode,
   stopDraw,
+  setShowTableContainer,
   view,
   setView,
   setAlertText,
@@ -126,6 +127,7 @@ const ListAOIView = ({
           userLoggedIn={userLoggedIn}
           editMode={editMode}
           stopDraw={stopDraw}
+          setShowTableContainer={setShowTableContainer}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
         />

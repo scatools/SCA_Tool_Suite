@@ -67,6 +67,7 @@ const Sidebar = ({
   setVisualizationFillColor,
   visualizationOpacity,
   setVisualizationOpacity,
+  setShowTableContainer,
   zoom,
   instruction,
   view,
@@ -139,6 +140,7 @@ const Sidebar = ({
             userLoggedIn={userLoggedIn}
             editMode={editMode}
             stopDraw={stopDraw}
+            setShowTableContainer={setShowTableContainer}
             view={view}
             setView={setView}
             setAlertText={setAlertText}
