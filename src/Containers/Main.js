@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "../Sidebar/Sidebar";
 import { Button } from "react-bootstrap";
-import Map from "../Map/Map";
-import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
 import { DrawPolygonMode, EditingMode } from "react-map-gl-draw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faBug } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "../Sidebar/Sidebar";
+import Map from "../Map/Map";
+import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
 
 const arrowIcon = (
   <FontAwesomeIcon icon={faArrowRight} color="white" size="lg" />
@@ -44,6 +44,7 @@ const Main = ({
   const [visualizationLayer, setVisualizationLayer] = useState(null);
   const [visualizationFillColor, setVisualizationFillColor] = useState(null);
   const [visualizationOpacity, setVisualizationOpacity] = useState(0);
+	const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
   const [viewport, setViewport] = useState({
     latitude: 27.8,
@@ -110,6 +111,7 @@ const Main = ({
         setVisualizationFillColor={setVisualizationFillColor}
         visualizationOpacity={visualizationOpacity}
         setVisualizationOpacity={setVisualizationOpacity}
+        setShowTableContainer={setShowTableContainer}
         zoom={zoom}
         instruction={instruction}
         view={view}
@@ -138,6 +140,7 @@ const Main = ({
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
           aoiSelected={aoiSelected}
+          setAoiSelected={setAoiSelected}
           editAOI={editAOI}
           hucBoundary={hucBoundary}
           hucIDSelected={hucIDSelected}
@@ -155,6 +158,8 @@ const Main = ({
           visualizationLayer={visualizationLayer}
           visualizationFillColor={visualizationFillColor}
           visualizationOpacity={visualizationOpacity}
+          showTableContainer={showTableContainer}
+          setShowTableContainer={setShowTableContainer}
           zoom={zoom}
           setZoom={setZoom}
           viewport={viewport}

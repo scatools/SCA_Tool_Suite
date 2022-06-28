@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, CloseButton } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import BeatLoader from 'react-spinners/BeatLoader';
 import axios from 'axios';
 import FilterPane from './FilterPane';
 import CustomPagination from './CustomPagination';
 
-const TableContainer = ({ coordinates, setShowTableContainer }) => {
+const TableContainer = ({ coordinates, aoiSelected, setShowTableContainer }) => {
 	const history = useHistory();
 	const [tableDetails, setTableDetails] = useState();
 	const [totalCount, setTotalCount] = useState(0);
@@ -17,6 +18,10 @@ const TableContainer = ({ coordinates, setShowTableContainer }) => {
 		time: "All",
 		priority: "All"
 	});
+
+	const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
+		(aoi) => aoi.id === aoiSelected
+	);
 
 	const onFilterConfigChange = (newConfig) => {
 		setFilterConfig(newConfig);
@@ -31,31 +36,72 @@ const TableContainer = ({ coordinates, setShowTableContainer }) => {
 		setShowFilterPane(showFilterPane => !showFilterPane);
 	};
 
-	useEffect(() => {
-		const planQueryByPOI = async () => {
-			if (coordinates[0] && coordinates[1]) {
-				const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan/spatial`, {
-					params: {
-						start: 10 * (currentPage - 1),
-						end: 10 * currentPage,
-						state: filterConfig.state,
-						time: filterConfig.time,
-						priority: filterConfig.priority,
-						lng: coordinates[0],
-						lat: coordinates[1]
-					}
-				});
-				setTableDetails(response.data.data);
-				setTotalCount(response.data.totalRowCount);
-				if (response.data.totalRowCount !== 0) {
-					setShowTableContainer(true);
-				} else {
-					setShowTableContainer(false);
+	const planQueryByPOI = async () => {
+		const response = await axios.get(
+			// `http://localhost:5000/plan/spatial/point`,
+			`https://sca-cpt-backend.herokuapp.com/plan/spatial/point`,
+			{
+				params: {
+					start: 10 * (currentPage - 1),
+					end: 10 * currentPage,
+					state: filterConfig.state,
+					time: filterConfig.time,
+					priority: filterConfig.priority,
+					lng: coordinates[0],
+					lat: coordinates[1]
 				}
 			}
+		);
+		setTableDetails(response.data.data);
+		setTotalCount(response.data.totalRowCount);
+		if (response.data.totalRowCount !== 0) {
+			setShowTableContainer(true);
+		} else {
+			setShowTableContainer(false);
 		};
-		planQueryByPOI();
+	};
+
+	const planQueryByAOI = async () => {
+		const newPolygon = {
+			type: "MultiPolygon",
+			coordinates: aoiList[0].geometry.map(
+				(feature) => feature.geometry.coordinates
+			),
+		};
+		const response = await axios.get(
+			// `http://localhost:5000/plan/spatial/polygon`,
+			`https://sca-cpt-backend.herokuapp.com/plan/spatial/polygon`,
+			{
+				params: {
+					start: 10 * (currentPage - 1),
+					end: 10 * currentPage,
+					state: filterConfig.state,
+					time: filterConfig.time,
+					priority: filterConfig.priority,
+					coordinates: JSON.stringify(newPolygon.coordinates)
+				}
+			}
+		);
+		setTableDetails(response.data.data);
+		setTotalCount(response.data.totalRowCount);
+		if (response.data.totalRowCount !== 0) {
+			setShowTableContainer(true);
+		} else {
+			setShowTableContainer(false);
+		};
+	};
+
+	useEffect(() => {
+		if (coordinates[0] && coordinates[1]) {
+			planQueryByPOI();
+		};
 	}, [currentPage, filterConfig, coordinates]);
+
+	useEffect(() => {
+		if (aoiSelected) {
+			planQueryByAOI();
+		};
+	}, [currentPage, filterConfig, aoiSelected]);
 
 	return (
 		<div className="table-container-wrapper">

@@ -1,31 +1,17 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Card,
-  Container,
-  Button,
-  InputGroup,
-  FormControl,
-  Modal,
-  Accordion,
-} from "react-bootstrap";
+import { Accordion, Button, Card, Container, FormControl, InputGroup, Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { MdViewList, MdEdit, MdDelete, MdSave } from "react-icons/md";
 import { HiDocumentReport } from "react-icons/hi";
 import { FaFileExport } from "react-icons/fa";
+import { IoFileTrayFull } from "react-icons/io5";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle,  faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { download } from "shp-write";
 import axios from "axios";
 import { delete_aoi, edit_aoi, setLoader } from "../../../Redux/action";
-import {
-  calculateArea,
-  aggregate,
-  getStatus,
-} from "../../../Helper/aggregateHex";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExclamationCircle,
-  faChevronDown,
-} from "@fortawesome/free-solid-svg-icons";
+import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
 
 const alertIcon = (
   <FontAwesomeIcon
@@ -53,6 +39,7 @@ const SidebarViewDetail = ({
   userLoggedIn,
   editMode,
   stopDraw,
+  setShowTableContainer,
   setAlertText,
   setAlertType,
 }) => {
@@ -69,8 +56,7 @@ const SidebarViewDetail = ({
   const [showButtonLabel, setShowButtonLabel] = useState("Show Hexagon Grid");
   const [showButtonDisabled, setShowButtonDisabled] = useState(false);
   const [deselectButtonState, setDeselectButtonState] = useState("deselect");
-  const [deselectButtonLabel, setDeselectButtonLabel] =
-    useState("Deselect Hexagon");
+  const [deselectButtonLabel, setDeselectButtonLabel] = useState("Deselect Hexagon");
   const [deselectButtonDisabled, setDeselectButtonDisabled] = useState(true);
   const [confirmButtonDisabled, setConfirmButtonDisabled] = useState(true);
   const [confirmShow, setConfirmShow] = useState(false);
@@ -351,6 +337,10 @@ const SidebarViewDetail = ({
       console.error(e);
     }
   };
+  
+  const showPlan = () => {
+    setShowTableContainer(true);
+  };
 
   const accordionReset = () => {
     exitEdit();
@@ -427,8 +417,9 @@ const SidebarViewDetail = ({
               >
                 <FaFileExport /> &nbsp; Export Shapefile
               </Button>
-            </Container>
-            <Container className="d-flex justify-content-start detail-buttons">
+              <Button variant="dark" className="ml-1" onClick={showPlan}>
+                <IoFileTrayFull /> &nbsp; Related Conservation Plans
+              </Button>
               {userLoggedIn && (
                 <Button variant="dark" className="ml-1" onClick={saveFile}>
                   <MdSave /> &nbsp; Save to: {userLoggedIn}
