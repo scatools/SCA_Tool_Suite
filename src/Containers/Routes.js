@@ -7,6 +7,7 @@ import Help from "../Components/Help";
 import Report from "../Assessment/Report";
 import Assessment from "../Assessment/Assessment";
 import PlanTable from "../Plans/PlanTable";
+import PlanDetail from "../Plans/PlanDetail";
 import Login from "../User/Login";
 import Logout from "../User/Logout";
 import Register from "../User/Register";
@@ -93,6 +94,7 @@ const Routes = ({
         <Route exact path="/plans">
           <PlanTable />
         </Route>
+        <Route path="/plan/:planId" children={<PlanDetail />}/>
         <Route exact path="/report">
           <Report
             aoiSelected={aoiSelected}
