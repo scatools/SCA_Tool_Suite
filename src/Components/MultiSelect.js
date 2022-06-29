@@ -6,7 +6,7 @@ export const MultiSelect = (props) => {
   // isOptionSelected sees previous props.value after onChange
   const valueRef = useRef(props.value);
   valueRef.current = props.value;
-  if (valueRef.current[0] === null) valueRef.current = [];
+  if (!valueRef.current) valueRef.current = [];
 
   const selectAllOption = {
     value: "<SELECT_ALL>",
