@@ -187,8 +187,8 @@ nav a:hover {
 }
 
 .container.detail-buttons {
-  margin-left: -25px;
-  width: 125%;
+  margin-left: -20px;
+  width: 110%;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -726,8 +726,8 @@ a img.logo {
 .table-container-wrapper {
 	position: absolute;
 	z-index: 500;
-	top: 10%;
-	right: 5%;
+	top: 20%;
+	right: 2%;
 	width: 40%;
   padding: 10px;
 	max-height: 60%;
