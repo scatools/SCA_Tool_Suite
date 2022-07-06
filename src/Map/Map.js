@@ -20,6 +20,7 @@ const Map = ({
   drawingMode,
   setFeatureList,
   aoiSelected,
+  setAoiSelected,
   editAOI,
   hucBoundary,
   hucIDSelected,
@@ -37,6 +38,8 @@ const Map = ({
   visualizationLayer,
   visualizationFillColor,
   visualizationOpacity,
+  showTableContainer,
+  setShowTableContainer,
   zoom,
   setZoom,
   viewport,
@@ -46,7 +49,6 @@ const Map = ({
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
   const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
-	const [showTableContainer, setShowTableContainer] = useState(false);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
   const [hovered, setHovered] = useState(false);
@@ -93,11 +95,21 @@ const Map = ({
   };
 
   const onClick = (e) => {
-    if (useCase === "inventory") {
+    if (
+      useCase === "inventory" &&
+      !aoiSelected &&
+      !drawingMode &&
+      !hucBoundary &&
+      !hexGrid
+    ) {
       setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
-    } else if (e.features) {
+    } else if (useCase === "inventory" && aoiSelected != false) {
+			setCoordinates([undefined, undefined]);
+    };
+    
+    if (e.features) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
@@ -394,6 +406,7 @@ const Map = ({
       {showTableContainer && (
         <TableContainer
           coordinates={coordinates}
+          aoiSelected={aoiSelected}
           setShowTableContainer={setShowTableContainer}
         />
       )}
