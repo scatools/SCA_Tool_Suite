@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
+import { gcrLayerSource } from "../../../Map/layerSource";
 import { gcrVisualizationLayer, gcrVisualizationHighlight } from "../../../Map/layerStyle";
 
 const SelectVisualizeScale = ({
@@ -18,12 +19,7 @@ const SelectVisualizeScale = ({
           variant="outline-light"
           onClick={() => {
             setVisualizationScale("region");
-            setVisualizationSource({
-              type: "vector",
-              url: "mapbox://chuck0520.2jhtgjk6",
-              maxzoom: 22,
-              minzoom: 0
-            });
+            setVisualizationSource(gcrLayerSource);
             setVisualizationLayer(gcrVisualizationLayer);
             setView("assess");
           }}
