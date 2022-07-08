@@ -12,7 +12,7 @@ const SelectVisualizeScale = ({
 }) => {
   return (
     <div>
-      <h4>On which scale would you like this visualization to be based?</h4>
+      <h4>I would like to create the visualization within ...</h4>
       <hr /><hr /><hr />
       <Container className="d-flex flex-column justify-content-between" style={{height:"50vh"}}>
         <Button
@@ -24,7 +24,7 @@ const SelectVisualizeScale = ({
             setView("assess");
           }}
         >
-          I would like to create the visualization within the entire Gulf Coast Region
+          The entire Gulf Coast Region
         </Button>
         <Button
           variant="outline-light"
@@ -33,7 +33,7 @@ const SelectVisualizeScale = ({
             setVisualizeStep("selectState");
           }}
         >
-          I would like to create the visualization within a single Gulf Coast State
+          A single Gulf Coast State
         </Button>
         <Button
           variant="outline-light"
@@ -42,7 +42,7 @@ const SelectVisualizeScale = ({
             setView("add");
           }}
         >
-          I would like to create the visualization within a certain Area of Interest
+          A certain Area of Interest
         </Button>
       </Container>
     </div>
