@@ -47,8 +47,14 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
                 Assessment
               </NavLink>
             )}
-            <NavLink to="/help" className="ml-3 mt-2">
+            <NavLink to="/resources" className="ml-3 mt-2">
+              Resources
+            </NavLink>
+            <NavLink to="/support" className="ml-3 mt-2">
               Support
+            </NavLink>
+            <NavLink to="/contact" className="ml-3 mt-2">
+              Contact
             </NavLink>
             <NavDropdown title="More" className="ml-3">
               <NavDropdown.Item
