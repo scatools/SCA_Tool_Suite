@@ -19,7 +19,6 @@ const arrowIcon = (
     color="red"
     size="lg"
     flip="horizontal"
-    style={{ paddingLeft: "30px;" }}
   />
 );
 

@@ -76,10 +76,10 @@ const AddBoundary = ({
           })
         );
         dispatch(setLoader(false));
-        setView("viewCurrent");
         setHucNameSelected([]);
         setHucIDSelected([]);
         setFilterList([]);
+        setView("list");
       }
       else{
         setAlertType("danger");
@@ -143,10 +143,10 @@ const AddBoundary = ({
           return;
         }
         });
-        setView("viewCurrent");
         setHucNameSelected([]);
         setHucIDSelected([]);
         setFilterList([]);
+        setView("list");
       }
       else{
         setAlertType("danger");

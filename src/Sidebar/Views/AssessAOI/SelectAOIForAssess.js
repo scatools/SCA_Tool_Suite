@@ -1,7 +1,8 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
 import Select from "react-select";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { changeGoalWeights, changeMeasures, setCurrentWeight } from "../../../Redux/action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,6 +19,7 @@ const SelectAOIForAssess = ({
   setAlertText,
   setAlertType
 }) => {
+  const dispatch = useDispatch()
   const aoi = useSelector((state) => state.aoi);
   const aoiList = Object.values(aoi).map((item) => ({
     label: item.name,
@@ -31,7 +33,6 @@ const SelectAOIForAssess = ({
       window.setTimeout(() => setAlertText(false), 4000);
     }  
     else if (aoiAssembled && aoiAssembled.length > 1) {
-      setAssessStep("selectRestoreWeights");
       if (useCase === "visualization") {
         // aoiAssembled is an object for single select
         if (aoiAssembled && aoiAssembled.value) {
@@ -71,6 +72,41 @@ const SelectAOIForAssess = ({
           window.setTimeout(() => setAlertText(false), 4000);
         }
       } 
+      else{
+        const dataSave = "No Saved Measures"
+            const default_setting = {
+                "hab": {
+                    "selected": null,
+                    "weight": 0
+                },
+                "wq": {
+                    "selected": null,
+                    "weight": 0
+                },
+                "lcmr": {
+                    "selected": null,
+                    "weight": 0
+                },
+                "cl": {
+                    "selected": null,
+                    "weight": 0
+                },
+                "eco": {
+                    "selected": null,
+                    "weight": 0
+                }
+            }
+            let measures = default_setting
+                let keys = Object.keys(measures);
+                keys.map((value,index) => {
+                    const newValue = Number(measures[value].weight) > 100 ? 100 : Number(measures[value].weight);
+                    dispatch(changeGoalWeights(newValue, value));
+                    dispatch(changeMeasures(value, measures[value].selected));
+                })
+            dispatch(setCurrentWeight(dataSave))        
+            setAssessStep("selectRestoreWeights");
+
+      }
         // aoiAssembled is an array for multiple selects  
     }
     else {

@@ -1,18 +1,21 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Button, Container, Table } from "react-bootstrap";
-import { generate_assessment, setLoader } from "../../../Redux/action";
+import { generate_assessment, setLoader, setCurrentWeight, changeGoalWeights, changeMeasures, mutipleSavedWeights, mutipleSavedWeightsUpdate, mutipleSavedWeightsDelete} from "../../../Redux/action";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
 import {
   calculateMeasures,
   getScaledForAssessment,
   mergeIntoArray,
 } from "../../../Helper/aggregateHex";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import axios from "axios";
 import { GoInfo } from "react-icons/go";
 import ReactTooltip from "react-tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Modal from "react-bootstrap/Modal";
+
 
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
@@ -31,15 +34,29 @@ const ReviewAssessSettings = ({
   customizedMeasures,
   setVisualizationFillColor,
   setVisualizationOpacity,
-  setView
+  setView,
+  setAlertText,
+  setAlertType
 }) => {
+  
   const weights = useSelector((state) => state.weights);
+  const currentWeight = useSelector((state) => state.currentWeight)
   const aoi = useSelector((state) => state.aoi);
-
+  const [confirmShow, setConfirmShow] = useState(false);
+  const confirmClose = () => setConfirmShow(false);
+  const showConfirm = () => setConfirmShow(true);
+  const [buttonSlider, setSlider] = useState(false);
+  const [list, setList]= useState([{ value: 'No Saved Measures', label: 'No Saved Measures' }]);
+  const lst = useSelector((state) => state.multipleWeights)
+  useEffect(() => {
+    let data = []
+    lst.names.map((val,index) => {data.push({value: val.title, label: val.title})})
+    setList(data)
+  },[lst])
   const dispatch = useDispatch();
 
   const history = useHistory();
-
+  const location = useLocation();
   const createVisualization = async () => {
     const weightList = {
       high: 1,
@@ -355,9 +372,132 @@ const ReviewAssessSettings = ({
     });
   };
 
+  const saveMeasures = () => {
+    let input = document.getElementById('save-modal').querySelector('input')
+    let save_name = input.value
+    let lst_bool = list.some((val) => val.value == save_name)
+    if(lst_bool){
+      setAlertType("danger");
+      setAlertText(
+        "This save name already exists!"
+      );
+      window.setTimeout(() => setAlertText(false), 4000);
+
+    }
+    else{
+      dispatch(mutipleSavedWeights({title:save_name,weight:weights}))
+      dispatch(setCurrentWeight(save_name))
+      confirmClose();
+    }
+    
+  }
+
+  const updateMeasures = () =>{
+    let input = document.getElementById('save-modal').querySelector('input')
+    let save_name = input.value
+    let measures = lst.names
+
+    const list_ele = () =>{
+      for(let i=0; i < measures.length; i++){
+        if(measures[i].title == currentWeight.value){
+          return i
+        }
+      }
+    }
+    let measures_selected = list_ele()
+    dispatch(mutipleSavedWeightsUpdate({info:{title:save_name,weight:weights}, index:measures_selected}))
+    dispatch(setCurrentWeight(save_name))    
+  }
+  
+  const loadSave = (dataSave) =>{
+    const default_setting = {
+        "hab": {
+            "selected": null,
+            "weight": 0
+        },
+        "wq": {
+            "selected": null,
+            "weight": 0
+        },
+        "lcmr": {
+            "selected": null,
+            "weight": 0
+        },
+        "cl": {
+            "selected": null,
+            "weight": 0
+        },
+        "eco": {
+            "selected": null,
+            "weight": 0
+        }
+    }
+    let measures
+    let direct = "selectRestoreWeights"
+    if(dataSave == "No Saved Measures"){
+      measures = default_setting
+        let keys = Object.keys(measures);
+        keys.map((value,index) => {
+            const newValue = Number(measures[value].weight) > 100 ? 100 : Number(measures[value].weight);
+            dispatch(changeGoalWeights(newValue, value));
+            dispatch(changeMeasures(value, measures[value].selected));
+        })
+    }
+    else{
+      measures = lst.names
+      direct = "reviewAssessSettings"
+      const list_ele = () =>{
+        for(let i=0; i < measures.length; i++){
+          if(measures[i].title == dataSave){
+            return measures[i]
+          }
+        }
+      }
+      let measures_selected = list_ele()
+      let keys = Object.keys(measures_selected.weight);
+      keys.map((value,index) => {
+          const newValue = Number(measures_selected.weight[value].weight) > 100 ? 100 : Number(measures_selected.weight[value].weight);
+          dispatch(changeGoalWeights(newValue, value));
+          dispatch(changeMeasures(value, measures_selected.weight[value].selected));
+      })
+    }
+   
+    dispatch(setCurrentWeight(dataSave))
+    setAssessStep(direct);
+}
+
+const deleteSave = () => {
+  let measures = lst.names
+  const list_ele = () =>{
+    for(let i=0; i < measures.length; i++){
+      if(measures[i].title == currentWeight.value){
+        return i
+      }
+    }
+  }
+  let measures_selected = list_ele()
+  dispatch(mutipleSavedWeightsDelete(measures_selected))
+  loadSave(lst.names[0].title)
+
+}
+
+
+
   return (
     <>
-      <Container id="assessment-card" className="card-body">
+     <Select
+
+      styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+      menuPortalTarget={document.body}
+      value={currentWeight}
+      options = {list}
+      isClearable={false}
+      name="colors"
+      className="basic-multi-select"
+      classNamePrefix="select"
+      onChange={(value) => {loadSave(value.value)}}
+      />
+      <Container id="assessment-card" style={{paddingBottom:"1.25rem", marginTop:"1.25rem"}} className="card-body">
         Data Measure Weights Summary:
         <Table striped bordered hover size="sm">
           <thead>
@@ -748,12 +888,40 @@ const ReviewAssessSettings = ({
         <div className="d-flex justify-content-between">
           <Button
             style={{ float: "left" }}
+            className={"btn-dark"}
+            variant="secondary"
+            onClick={() => {(currentWeight.value !== "No Saved Measures" ? setSlider(true) : setSlider(false)); showConfirm()}}
+          >
+            Save Measures
+          </Button>
+          {(currentWeight.value !== "No Saved Measures")
+           ? 
+              <Button
+                style={{ float: "right", background:"#c82333", borderColor:  "#bd2130"}}
+                variant="secondary"
+                onClick={deleteSave}
+              >
+                Delete Save
+              </Button>
+           : 
+            ""
+           }
+         
+        </div>
+      </Container>
+      <div className="add-assess-cont container">
+          <Button
+            style={{ float: "left" }}
             variant="secondary"
             onClick={() => setAssessStep("selectDataMeasures")}
           >
             {arrowIcon} Edit Data Measures
           </Button>
-          {useCase === "visualization" ? (
+
+          {
+          (location.pathname !== "/user/measures") ? 
+          
+          useCase === "visualization" ? (
             <Button
               className="ml-2"
               variant="primary"
@@ -774,9 +942,41 @@ const ReviewAssessSettings = ({
             >
               Generate Assessment
             </Button>
-          )}
+          )
+          
+          :
+          ""
+          
+          }
         </div>
-      </Container>
+        <Modal show={confirmShow} onHide={confirmClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <h1>Save Measure</h1>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body id="save-modal">
+          <div className="slider-buttons"><Button style={{color:(buttonSlider ? "" : "black")}} onClick={(()=> {setSlider(false)})}>Create</Button>{(currentWeight.value == "No Saved Measures" ?  "" : <Button style={{color:(buttonSlider ? "black" : "")}} onClick={(()=> {setSlider(true)})}>Update</Button>)}<span style={{left:(buttonSlider ? 50 : 0) + "%"}}></span></div>
+          {(buttonSlider ? <p style={{marginTop:"10px"}}>Update the measures of your save below.</p> : <p style={{marginTop:"10px"}}>Create a save for your measures to allow ease of use. Enter a save name below.</p>)}
+          
+          {(buttonSlider ? <input key={"random_keyFor_btn_slider1"} autoComplete="none" style={{border:"lightgray solid 1px", borderRadius:"4px", padding:"5px 10px", outline:"none"}} type={"text"} defaultValue={(currentWeight.value == "No Saved Measures" ? "" : currentWeight.value)}></input> : <input key={"random_keyFor_btn_slider2"}  autoComplete="none" style={{border:"lightgray solid 1px", borderRadius:"4px", padding:"5px 10px", outline:"none"}} type={"text"} defaultValue=""></input>)}
+            
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={confirmClose}>
+            Cancel
+          </Button>
+          {(buttonSlider ? 
+          <Button onClick={() => { updateMeasures(); confirmClose(); }} >
+            Update
+          </Button> :  
+          <Button  onClick={() => {saveMeasures(); }}>
+            Create
+          </Button>) }
+         
+
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

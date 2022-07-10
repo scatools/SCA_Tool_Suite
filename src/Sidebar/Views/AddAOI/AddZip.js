@@ -76,7 +76,14 @@ const AddZip = ({
           const reader = new FileReader();
           reader.onload = async () => {
             const myTimeoutError = setTimeout(() => timeoutHandler(), 20000);
-            const result = await shp(reader.result);
+            const result = await shp(reader.result).catch(e => {
+              clearTimeout(myTimeoutError);
+              setAlertType("danger");
+              setAlertText("The zip file uploaded is misconfigured!!");
+              window.setTimeout(() => setAlertText(false), 4000);
+              dispatch(setLoader(false));
+              return
+            });
             if (result) {
               // console.log(result.features);
               // Features are stored as [0:{}, 1:{}, 2:{}, ...]
@@ -106,6 +113,7 @@ const AddZip = ({
                     featureNumber,
                     featureName
                   );
+                  
                 }
                 else{
                   clearTimeout(myTimeoutError);

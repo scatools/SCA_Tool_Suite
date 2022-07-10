@@ -11,6 +11,10 @@ import {
   LOAD_USER_SHAPE_LIST,
   LOAD_USER_REPORT_LIST,
   LOG_IN_USER,
+  SAVED_WEIGHTS,
+  MULTIPLE_SAVED_WEIGHTS,
+  MULTIPLE_SAVED_WEIGHTS_UPDATE,
+  MULTIPLE_SAVED_WEIGHTS_DELETE
 } from "./actionType";
 
 export function loadUser(data) {
@@ -99,3 +103,32 @@ export const setLoader = (loading) => {
     payload: loading,
   };
 };
+
+export const setCurrentWeight = (data) => {
+  return{
+    type:SAVED_WEIGHTS,
+    data
+  }
+}
+
+export const mutipleSavedWeights = (data) => {
+  return{
+    type:MULTIPLE_SAVED_WEIGHTS,
+    data
+  }
+}
+
+export const mutipleSavedWeightsUpdate = (data) => {
+  return{
+    type:MULTIPLE_SAVED_WEIGHTS_UPDATE,
+    data
+  }
+}
+
+
+export const mutipleSavedWeightsDelete = (data) => {
+  return{
+    type:MULTIPLE_SAVED_WEIGHTS_DELETE,
+    data
+  }
+}

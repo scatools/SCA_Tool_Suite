@@ -52,7 +52,7 @@ const AddDraw = ({
           type: "MultiPolygon",
           coordinates: newList.map((feature) => feature.geometry.coordinates),
         };
-  
+        
         // For development on local server
         // const res = await axios.post('http://localhost:5000/data', { data });
         // For production on Heroku
@@ -74,8 +74,9 @@ const AddDraw = ({
             })
           );
           setDrawingMode(false);
-          setView("viewCurrent"); 
-  
+          setView("list"); 
+          clearTimeout(myTimeoutError);
+
         } else {
           clearTimeout(myTimeoutError);
           setAlertType("danger");
