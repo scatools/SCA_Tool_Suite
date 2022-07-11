@@ -206,7 +206,7 @@ const Sidebar = ({
 
       <Button
         title="Report A Bug"
-        onClick={() => history.push("/help")}
+        onClick={() => history.push("/support")}
         className="bug-icon-btn"
       >
         <GoReport />

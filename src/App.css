@@ -653,6 +653,7 @@ a img.logo {
 
 .mapboxgl-ctrl-top-right {
   top: 65px !important;
+  right: 18px !important;
 }
 
 .mapboxgl-ctrl-attrib-inner {
@@ -660,7 +661,8 @@ a img.logo {
 }
 
 .mapboxgl-ctrl-group button {
-  width: 42px !important;
+  width: 40px !important;
+  height: 40px !important;
 }
 
 #reportSaveButton,
@@ -795,6 +797,16 @@ a img.logo {
   padding: 5px;
   justify-content: space-between;
   align-items: left;
+}
+
+/* Resources Page */
+
+.resources-block {
+	display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 50%;
+  height: 40%;
 }
 
 /* Homepage */
