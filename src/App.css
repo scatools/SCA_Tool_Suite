@@ -650,6 +650,7 @@ a img.logo {
 
 .mapboxgl-ctrl-top-right {
   top: 65px !important;
+  right: 18px !important;
 }
 
 .mapboxgl-ctrl-attrib-inner {
@@ -657,7 +658,8 @@ a img.logo {
 }
 
 .mapboxgl-ctrl-group button {
-  width: 42px !important;
+  width: 40px !important;
+  height: 40px !important;
 }
 
 #reportSaveButton,
