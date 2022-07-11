@@ -48,6 +48,7 @@ const Map = ({
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [selectedSwitch, setSelectedSwitch] = useState(0);
   const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
@@ -135,6 +136,7 @@ const Map = ({
   };
 
   const onToggle = (value) => {
+    setSelectedSwitch(value);
     if (value === 0) {
       setBasemapStyle("light-v10");
     } else if (value === 1) {
@@ -390,7 +392,7 @@ const Map = ({
         <div className="basemapSwitch">
           <MultiSwitch
             texts={["Light", "Dark", "Satellite", "Terrain", ""]}
-            selectedSwitch={0}
+            selectedSwitch={selectedSwitch}
             bgColor={"gray"}
             onToggleCallback={onToggle}
             height={"38px"}
