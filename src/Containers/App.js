@@ -23,7 +23,15 @@ function App(props) {
       spinner
       text="Loading..."
     >
-      <div className="App" style={{minHeight:"100vh", display:"flex", flexDirection:"column"}}>
+      <div
+        className="App"
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+        }}
+      >
         <NavBar
           reportLink={reportLink}
           loggedIn={loggedIn}
@@ -34,7 +42,6 @@ function App(props) {
           setLoggedIn={setLoggedIn}
           userLoggedIn={userLoggedIn}
           setUserLoggedIn={setUserLoggedIn}
-          
         />
       </div>
     </LoadingOverlay>
