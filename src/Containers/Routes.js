@@ -136,9 +136,7 @@ const Routes = ({
         />
         </div>
         </Route>
-        <Route exact path="/help">
-          <Help />
-        </Route>
+  
         <Route exact path="/plans">
           <PlanTable />
         </Route>
