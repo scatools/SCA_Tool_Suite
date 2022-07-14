@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
-import Select from "react-select";
+import { MultiSelect } from "../../../Components/MultiSelect";
 import { useDispatch, useSelector } from "react-redux";
 import { changeMeasures, changeMeasuresWeight } from "../../../Redux/action";
 import ReactTooltip from "react-tooltip";
@@ -595,7 +595,7 @@ const SingleMeasure = ({
   return (
     <div>
       <span>{options[dataMeasList[dataI]].name}</span>
-      <Select
+      <MultiSelect
         styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         menuPortalTarget={document.body}
         options={currentDataMeasure.dropdown}
