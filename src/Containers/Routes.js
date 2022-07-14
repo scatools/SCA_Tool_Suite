@@ -3,7 +3,9 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
 import Homepage from "../Components/Homepage";
-import Help from "../Components/Help";
+import Resources from "../Components/Resources";
+import Support from "../Components/Support";
+import Contact from "../Components/Contact";
 import Report from "../Assessment/Report";
 import Assessment from "../Assessment/Assessment";
 import PlanTable from "../Plans/PlanTable";
@@ -105,7 +107,15 @@ const Routes = ({
         <Route exact path="/user/report">
           <UserReport reportScript={reportScript} />
         </Route>
-        
+        <Route exact path="/resources">
+          <Resources />
+        </Route>
+        <Route exact path="/support">
+          <Support />
+        </Route>
+        <Route exact path="/contact">
+          <Contact />
+          </Route>
         <Route exact path="/user/measures">
           <div className="userMeasures">
            <AssessAOIView

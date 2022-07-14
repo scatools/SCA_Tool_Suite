@@ -908,6 +908,16 @@ a img.logo {
   align-items: left;
 }
 
+/* Resources Page */
+
+.resources-block {
+	display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 50%;
+  height: 40%;
+}
+
 /* Homepage */
 
 .card-home {
