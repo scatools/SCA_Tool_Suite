@@ -111,24 +111,29 @@ export const setCurrentWeight = (data) => {
   }
 }
 
-export const mutipleSavedWeights = (data) => {
-  return{
+
+export const mutipleSavedWeights = (data) => dispatch => {
+  dispatch({
     type:MULTIPLE_SAVED_WEIGHTS,
     data
-  }
-}
+  });
+  return Promise.resolve();
+};
 
-export const mutipleSavedWeightsUpdate = (data) => {
-  return{
+
+export const mutipleSavedWeightsUpdate = (data) => dispatch => {
+  dispatch({
     type:MULTIPLE_SAVED_WEIGHTS_UPDATE,
     data
-  }
-}
+  });
+  return Promise.resolve();
+};
 
 
-export const mutipleSavedWeightsDelete = (data) => {
-  return{
+export const mutipleSavedWeightsDelete = (data) => dispatch => {
+  dispatch({
     type:MULTIPLE_SAVED_WEIGHTS_DELETE,
     data
-  }
-}
+  });
+  return Promise.resolve();
+};

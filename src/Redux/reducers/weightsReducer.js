@@ -1,5 +1,4 @@
 import {CHANGE_MEASURES, CHANGE_MEASURES_WEIGHT, CHANGE_GOAL_WEIGHTS} from '../actionType'
-
 const Init_State = {
     hab: {
         selected: null,
@@ -24,7 +23,7 @@ const Init_State = {
 }
 
 
-const weightsReducer = (state=Init_State, action) =>{
+export const weightsReducer = (state=Init_State, action) =>{
     switch (action.type){
         case CHANGE_MEASURES:
             return {
@@ -60,4 +59,3 @@ const weightsReducer = (state=Init_State, action) =>{
     }
 }
 
-export default weightsReducer;

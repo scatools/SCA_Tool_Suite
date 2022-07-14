@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { generate_assessment, setLoader, setCurrentWeight, changeGoalWeights, changeMeasures, mutipleSavedWeights, mutipleSavedWeightsUpdate, mutipleSavedWeightsDelete} from "../../../Redux/action";
 import { useDispatch, useSelector } from "react-redux";
+import { updateMeasuresThunk} from '../../../Redux/thunk'
+
 import Select from "react-select";
 import {
   calculateMeasures,
@@ -48,6 +50,8 @@ const ReviewAssessSettings = ({
   const [buttonSlider, setSlider] = useState(false);
   const [list, setList]= useState([{ value: 'No Saved Measures', label: 'No Saved Measures' }]);
   const lst = useSelector((state) => state.multipleWeights)
+  const loggedIn = useSelector((state) => state.user.loggedIn);
+
   useEffect(() => {
     let data = []
     lst.names.map((val,index) => {data.push({value: val.title, label: val.title})})
@@ -385,7 +389,9 @@ const ReviewAssessSettings = ({
 
     }
     else{
-      dispatch(mutipleSavedWeights({title:save_name,weight:weights}))
+      dispatch(mutipleSavedWeights({title:save_name,weight:weights})).then(result => 
+        dispatch(updateMeasuresThunk)
+      )
       dispatch(setCurrentWeight(save_name))
       confirmClose();
     }
@@ -405,7 +411,9 @@ const ReviewAssessSettings = ({
       }
     }
     let measures_selected = list_ele()
-    dispatch(mutipleSavedWeightsUpdate({info:{title:save_name,weight:weights}, index:measures_selected}))
+    dispatch(mutipleSavedWeightsUpdate({info:{title:save_name,weight:weights}, index:measures_selected})).then(result => 
+      dispatch(updateMeasuresThunk)
+    )
     dispatch(setCurrentWeight(save_name))    
   }
   
@@ -476,7 +484,9 @@ const deleteSave = () => {
     }
   }
   let measures_selected = list_ele()
-  dispatch(mutipleSavedWeightsDelete(measures_selected))
+  dispatch(mutipleSavedWeightsDelete(measures_selected)).then(result => 
+    dispatch(updateMeasuresThunk)
+  )
   loadSave(lst.names[0].title)
 
 }
@@ -485,18 +495,23 @@ const deleteSave = () => {
 
   return (
     <>
-     <Select
+    {(loggedIn === true)?
+       <Select
 
-      styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-      menuPortalTarget={document.body}
-      value={currentWeight}
-      options = {list}
-      isClearable={false}
-      name="colors"
-      className="basic-multi-select"
-      classNamePrefix="select"
-      onChange={(value) => {loadSave(value.value)}}
-      />
+       styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+       menuPortalTarget={document.body}
+       value={currentWeight}
+       options = {list}
+       isClearable={false}
+       name="colors"
+       className="basic-multi-select"
+       classNamePrefix="select"
+       onChange={(value) => {loadSave(value.value)}}
+       />
+    :
+    ""
+    }
+    
       <Container id="assessment-card" style={{paddingBottom:"1.25rem", marginTop:"1.25rem"}} className="card-body">
         Data Measure Weights Summary:
         <Table striped bordered hover size="sm">
@@ -886,6 +901,8 @@ const deleteSave = () => {
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">
+        {(loggedIn === true)?
+
           <Button
             style={{ float: "left" }}
             className={"btn-dark"}
@@ -894,6 +911,9 @@ const deleteSave = () => {
           >
             Save Measures
           </Button>
+          :
+          ""
+        }
           {(currentWeight.value !== "No Saved Measures")
            ? 
               <Button

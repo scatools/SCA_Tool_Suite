@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import aoiReducer from "./aoiReducer";
-import weightsReducer from "./weightsReducer";
+import {weightsReducer} from "./weightsReducer";
 import assessmentReducer from "./assessmentReducer";
 import loadingActionReducer from "./loadingActionReducer";
 import userReducer from "./userReducer";

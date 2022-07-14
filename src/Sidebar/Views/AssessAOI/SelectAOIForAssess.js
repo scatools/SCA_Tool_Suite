@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeGoalWeights, changeMeasures, setCurrentWeight } from "../../../Redux/action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Select from "react-select";
 import { MultiSelect } from "../../../Components/MultiSelect";
+import {getWeightsThunk} from '../../../Redux/thunk'
 
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
@@ -76,6 +76,36 @@ const SelectAOIForAssess = ({
     } else {
       // aoiAssembled is an array for multiple selects
       if (aoiAssembled && aoiAssembled.length > 1) {
+        const default_setting = {
+          "hab": {
+              "selected": null,
+              "weight": 0
+          },
+          "wq": {
+              "selected": null,
+              "weight": 0
+          },
+          "lcmr": {
+              "selected": null,
+              "weight": 0
+          },
+          "cl": {
+              "selected": null,
+              "weight": 0
+          },
+          "eco": {
+              "selected": null,
+              "weight": 0
+          }
+      }
+        let measures = default_setting
+        let keys = Object.keys(measures);
+        keys.map((value,index) => {
+            const newValue = Number(measures[value].weight) > 100 ? 100 : Number(measures[value].weight);
+            dispatch(changeGoalWeights(newValue, value));
+            dispatch(changeMeasures(value, measures[value].selected));
+        })
+        dispatch(setCurrentWeight('No Saved Measures'))
         setAssessStep("selectRestoreWeights");
       } else {
         setAlertType("danger");

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Button, Container, Col, Form, Row } from "react-bootstrap";
-import { changeGoalWeights, changeMeasures, setCurrentWeight } from "../../../Redux/action";
+import { changeGoalWeights, changeMeasures, setCurrentWeight} from "../../../Redux/action";
 import Select from "react-select";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import RangeSlider from "react-bootstrap-range-slider";
@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { data } from "jquery";
 import { useLocation } from "react-router-dom";
-
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const SelectRestoreWeights = ({
@@ -21,7 +20,8 @@ const SelectRestoreWeights = ({
   const weights = useSelector((state) => state.weights);
   const [list, setList]= useState([{ value: 'No Saved Measures', label: 'No Saved Measures' }]);
   const loggedIn = useSelector((state) => state.user.loggedIn);
-
+  const currentWeight = useSelector((state) => state.currentWeight)
+  console.log(loggedIn)
   const dispatch = useDispatch();
 
   const lst = useSelector((state) => state.multipleWeights)
@@ -39,7 +39,6 @@ const SelectRestoreWeights = ({
     weights.lcmr.weight +
     weights.cl.weight +
     weights.eco.weight;
-
 
 
 
@@ -125,27 +124,24 @@ const SelectRestoreWeights = ({
         Rank them by importance to your organization
         <br />
         <br />
-      {console.log(loggedIn)}
-      {/* {(loggedIn === true) ? 
+    {(loggedIn === true)?
+    <Select
+    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+    menuPortalTarget={document.body}
+    options = {list}
+    value={ currentWeight }
+    isClearable={false}
+    name="colors"
+    className="basic-multi-select"
+    classNamePrefix="select"
+    onChange={(value) => {loadSave(value.value)}}
+   />
+    :
+    ""
+    }
       
-      <Select
-       styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-       menuPortalTarget={document.body}
-       options = {list}
-       value={ useSelector((state) => state.currentWeight) }
-       isClearable={false}
-       name="colors"
-       className="basic-multi-select"
-       classNamePrefix="select"
-       onChange={(value) => {loadSave(value.value)}}
-      />
-      :
-      ""
-    
-    } */}
-        
+     
         <span className="glow">Total must add up to 100</span>
-        
       </p>
       {/* 
       <a href="https://scatoolsuite.gitbook.io/sca-tool-suite/introduction/definitions-acronyms-and-abbreviations"
