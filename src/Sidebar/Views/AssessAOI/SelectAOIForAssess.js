@@ -1,9 +1,10 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
-import { MultiSelect } from "../../../Components/MultiSelect";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Select from "react-select";
+import { MultiSelect } from "../../../Components/MultiSelect";
 
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
@@ -83,25 +84,47 @@ const SelectAOIForAssess = ({
         <h3>Select two or more areas of interest</h3>
       )}
       <br />
-      <MultiSelect
-        styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-        menuPortalTarget={document.body}
-        options={aoiList}
-        isMulti
-        isClearable={true}
-        placeholder="Select areas of interests..."
-        name="colors"
-        value={aoiAssembled}
-        onChange={(selectedOption) => {
-          if (selectedOption) {
-            setAoiAssembled(selectedOption);
-          } else {
-            setAoiAssembled([]);
-          }
-        }}
-        className="basic-multi-select"
-        classNamePrefix="select"
-      />
+      {useCase === "visualization" ? (
+        <Select
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          menuPortalTarget={document.body}
+          options={aoiList}
+          isMulti={false}
+          isClearable={true}
+          placeholder="Select areas of interests..."
+          name="colors"
+          value={aoiAssembled}
+          onChange={(selectedOption) => {
+            if (selectedOption) {
+              setAoiAssembled(selectedOption);
+            } else {
+              setAoiAssembled([]);
+            }
+          }}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
+      ) : (
+        <MultiSelect
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          menuPortalTarget={document.body}
+          options={aoiList}
+          isMulti
+          isClearable={true}
+          placeholder="Select areas of interests..."
+          name="colors"
+          value={aoiAssembled}
+          onChange={(selectedOption) => {
+            if (selectedOption) {
+              setAoiAssembled(selectedOption);
+            } else {
+              setAoiAssembled([]);
+            }
+          }}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
+      )}
       <br />
       <Container className="add-assess-cont">
         <Button variant="secondary" onClick={() => setView("list")}>
