@@ -29,6 +29,12 @@ const SelectAOIForAssess = ({
   }));
 
   const handleNext = () => {
+    if(aoiAssembled && aoiAssembled.length  >= 11){
+      setAlertType("danger");
+      setAlertText("Max amount of AOIs is 10, remove AOIs for comparison");
+      window.setTimeout(() => setAlertText(false), 4000);
+    }  
+    else{
     if (useCase === "visualization") {
       // aoiAssembled is an object for single select
       if (aoiAssembled && aoiAssembled.value) {
@@ -78,7 +84,7 @@ const SelectAOIForAssess = ({
       }
         // aoiAssembled is an array for multiple selects  
     }
-    
+  }
   };
 
   return (
