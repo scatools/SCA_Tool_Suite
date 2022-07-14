@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+
+import { squareGrid, intersect, distance, square, bbox } from "@turf/turf";
+
 import axios from "axios";
 import {
   calculateArea,
@@ -74,13 +77,98 @@ const AddDraw = ({
         setDrawingMode(false);
         setView("list");
       } else {
-        clearTimeout(myTimeoutError);
-        setAlertType("danger");
-        setAlertText("Your AOI is too large. Reduce the size and try again.");
-        window.setTimeout(() => setAlertText(false), 4000);
+        // clearTimeout(myTimeoutError);
+        // setAlertType("danger");
+        // setAlertText("Your AOI is too large. Reduce the size and try again.");
+        // window.setTimeout(() => setAlertText(false), 4000);
+        const boundingBox = bbox({
+          type: "Feature",
+          geometry: data,
+        });
+        const bboxSquare = square(boundingBox);
+        const bboxSquareSide =
+          distance(
+            [bboxSquare[0], bboxSquare[1]],
+            [bboxSquare[2], bboxSquare[3]]
+          ) / Math.sqrt(2);
+        console.log(bboxSquareSide);
+        var cellSide = 40;
+        if (bboxSquareSide > 1500) {
+          cellSide = bboxSquareSide / 40;
+        } else if (bboxSquareSide > 1000) {
+          cellSide = bboxSquareSide / 30;
+        } else if (bboxSquareSide > 500) {
+          cellSide = bboxSquareSide / 20;
+        } else if (bboxSquareSide > 250) {
+          cellSide = bboxSquareSide / 10;
+        } else {
+          cellSide = bboxSquareSide / 5;
+        }
+        const options = { units: "kilometers" };
+        const grid = squareGrid(bboxSquare, cellSide, options);
+        console.log(grid);
+
+        // const requestList = grid.features.map(async square => {
+        //   const aoiInSquare = intersect(data, square).geometry;
+        //   return axios.post(
+        //     "https://sca-cpt-backend.herokuapp.com/data",
+        //     { data: aoiInSquare }
+        //   );
+        // });
+
+        // axios.all(
+        //   grid.features.map(square => {
+        //     const aoiInSquare = intersect(data, square).geometry;
+        //     return axios.post(
+        //       "https://sca-cpt-backend.herokuapp.com/data",
+        //       { data: aoiInSquare }
+        //     ).then((res) => {
+        //       console.log(res);
+        //     })
+        //   })
+        // )
+        // .then(axios.spread((...res) => {
+        //   console.log(res);
+        // }));
+
+        const postData = async (data) => {
+          const res = await axios.post(
+            "https://sca-cpt-backend.herokuapp.com/data",
+            { data }
+          );
+
+          return res;
+          // axios
+          //   .post("https://sca-cpt-backend.herokuapp.com/data", { data: data })
+          //   .then((res) => {
+          //     console.log(res);
+
+          //   });
+        };
+
+        // Turf intersect returns null if no overlapping detected
+        const overlapping = grid.features.filter((square) => {
+          const aoiInSquare = intersect(data, square);
+          if (aoiInSquare) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        const overlapArray = overlapping.map(
+          (square) => {
+            return intersect(data, square).geometry;
+          }
+          // return new Promise((resolve) => resolve(postData(aoiInSquare)));
+        );
+        console.log(overlapArray);
+        const stuffArray = overlapArray.map((data) => postData(data));
+        console.log(stuffArray);
+        // Promise.all(requests).then((result) => {
+        //   console.log(result);
+        // });
       }
     }
-
     dispatch(setLoader(false));
   };
   setHucBoundary(false);
