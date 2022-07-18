@@ -33,6 +33,7 @@ const AddBoundary = ({
     if (hucNameSelected.length === 0 && hucIDSelected.length === 0) {
       setAlertType("danger");
       setAlertText("At least one of the existing boundaries is required.");
+      window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (hucBoundary) {
         setHucBoundary(false);

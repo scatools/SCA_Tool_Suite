@@ -100,7 +100,7 @@ const Routes = ({
           <Contact />
         </Route>
         <Route exact path="/plans">
-          <PlanTable />
+          <PlanTable setAlertText={setAlertText} setAlertType={setAlertType} />
         </Route>
         <Route path="/plan/:planId" children={<PlanDetail />}/>
         <Route exact path="/report">
@@ -142,6 +142,12 @@ const Routes = ({
           {alertType === "danger" && (
             <>
               <Alert.Heading>An error occurred!</Alert.Heading>
+              <p>{alertText}</p>
+            </>
+          )}
+          {alertType === "warning" && (
+            <>
+              <Alert.Heading>Attention!</Alert.Heading>
               <p>{alertText}</p>
             </>
           )}

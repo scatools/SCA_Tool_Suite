@@ -98,6 +98,7 @@ const UserData = ({
     if (result) {
       setAlertType("success");
       setAlertText("You have updated your profile!");
+      window.setTimeout(() => setAlertText(false), 4000);
       closeUpdateInfo();
     }
   };
@@ -118,6 +119,7 @@ const UserData = ({
     if (!verification.data.validLogin) {
       setAlertType("danger");
       setAlertText("Incorrect password! Please enter again.");
+      window.setTimeout(() => setAlertText(false), 4000);
     } else {
       // For development on local server
       // const result = await axios.post(
@@ -139,6 +141,7 @@ const UserData = ({
       if (result) {
         setAlertType("success");
         setAlertText("You have updated your password!");
+        window.setTimeout(() => setAlertText(false), 4000);
         closeUpdatePassword();
       }
     }
@@ -202,6 +205,7 @@ const UserData = ({
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the AOI named " + file);
+      window.setTimeout(() => setAlertText(false), 4000);
     }
     getUserFile();
   };
@@ -221,6 +225,7 @@ const UserData = ({
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the report named " + report);
+      window.setTimeout(() => setAlertText(false), 4000);
     }
     getUserReport();
   };
