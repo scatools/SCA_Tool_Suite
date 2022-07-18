@@ -145,6 +145,12 @@ const Routes = ({
               <p>{alertText}</p>
             </>
           )}
+          {alertType === "warning" && (
+            <>
+              <Alert.Heading>Attention!</Alert.Heading>
+              <p>{alertText}</p>
+            </>
+          )}
           {alertType === "success" && (
             <>
               <Alert.Heading>Successfully processed!</Alert.Heading>
