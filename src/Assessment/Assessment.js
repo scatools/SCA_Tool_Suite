@@ -412,10 +412,12 @@ const Assessment = ({
       if (res) {
         setAlertType("success");
         setAlertText("You have saved " + reportName + " in your account.");
+        window.setTimeout(() => setAlertText(false), 4000);
       }
     } catch (e) {
       setAlertType("danger");
       setAlertText("Failed to save the report in your account!");
+      window.setTimeout(() => setAlertText(false), 4000);
       console.error(e);
     }
   };
