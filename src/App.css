@@ -219,6 +219,62 @@ nav a:hover {
   margin-top: 10px;
 }
 
+.reportDownloadContainer{
+  position: absolute;
+  right: 20px;
+  width: fit-content;
+}
+
+.reportDownloadContainer > div{
+  margin-bottom: 20px;
+}
+
+.back-to-map > * .dropdown-menu{
+  inset:  0px 0px auto auto !important;
+}
+
+#map{
+  width: 100%;
+  height: 25rem;
+}
+
+@media print{
+  *{
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .assessmentNav{
+    display: none;
+  }
+  .back-to-map{
+    display: none;
+  }
+  .back-to-map > *{
+    display: none;
+  }
+  .back-to-map > button{
+    display: none;
+  }
+
+  #assessmentOverview{
+    margin-top: -10rem;
+  }
+  #dataHeading{
+    break-before: always;
+  }
+  #map{
+    width: 100%;
+    height: 25rem;
+  }
+  .graphRow{
+    flex-wrap: nowrap !important;
+  }
+  .buttonGraph{
+    display: none !important;
+  }
+}
+
+/* 
 .assessmentDownload {
   position: absolute;
   right: 20px;
@@ -249,7 +305,7 @@ nav a:hover {
   position: absolute;
   right: 20px;
   top: 4%;
-}
+} */
 
 .downloadButton {
   height: 40px;
@@ -454,6 +510,52 @@ h4 {
   border-radius: 10px;
   padding: 10px;
 }
+
+.slider-buttons{
+  display: flex;
+  position: relative;
+  width: fit-content;
+}
+
+.slider-buttons > button{
+  width: 5rem;
+  text-align: center;
+  background: none;
+  color: rgb(82, 82, 82);
+  border: none;
+  min-width: 5rem;
+}
+
+.slider-buttons > button:hover{
+  background: none;
+  color: rgb(82, 82, 82);
+}
+
+.slider-buttons > button:focus{
+  background: none;
+  color: rgb(82, 82, 82);
+  box-shadow:none !important;
+}
+.slider-buttons > button:active{
+  background-color: rgba(255, 255, 255, 0) !important;
+  border-color: rgba(255, 255, 255, 0) !important;
+  color: rgb(82, 82, 82)!important;
+}
+.slider-buttons > span{
+  background: #50b9ff;
+  width: 5rem;
+  height: 3px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: ease .15s;
+}
+
+.slider-buttons > *:hover + span{
+  left: 50%;
+}
+
+
 
 .modal-footer button.btn.btn-secondary {
   width: initial;
@@ -926,4 +1028,15 @@ a img.logo {
   }
 }
 @media only screen and (max-width: 850px) {
+}
+
+.userMeasures{
+  display: flex;
+  flex: 1;
+}
+
+.userMeasures > .container{
+  padding: 40px;
+  background: #fafafa;
+  box-sizing: border-box;
 }

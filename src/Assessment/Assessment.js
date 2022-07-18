@@ -448,6 +448,41 @@ const Assessment = ({
 
   return (
     <>
+     <div className="assessmentNav">
+        <a href="#mapHeading">Spatial Footprint</a>
+        <a href="#scoreHeading">Overall Scores</a>
+        <a href="#dataHeading">Data Summary</a>
+        <a href="#mcdaHeading">MCDA Results</a>
+        <a href="#appendix">Appendix</a>
+      </div>
+
+      <div className="back-to-map">
+        <Button variant="secondary" onClick={() => history.push("/")}>
+          Back to Map View
+        </Button>
+        
+        {/* Moved containers here for responsiveness */}
+        
+        <div className="reportDownloadContainer">
+        {userLoggedIn && (
+        <div className="assessmentSave">
+          <Button
+            id="assessmentSaveButton"
+            className="downloadButton"
+            variant="dark"
+            onClick={() => {
+              setSaving(true);
+            }}
+          >
+            <MdSave /> Save to:{" "}
+            {userLoggedIn.length > 9 ? (
+              <span style={{ fontSize: "10px" }}>{userLoggedIn}</span>
+            ) : (
+              userLoggedIn
+            )}
+          </Button>
+        </div>
+      )}
       <div className="assessmentDownload">
         <Dropdown>
           <Dropdown.Toggle
@@ -457,7 +492,7 @@ const Assessment = ({
           >
             <MdDownload /> Assessment Report
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="end">
             <Dropdown.Item
               variant="dark"
               onClick={() => {
@@ -483,7 +518,7 @@ const Assessment = ({
           >
             <MdDownload /> Spatial Footprint
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="end">
             <Dropdown.Item variant="dark" onClick={downloadFootprintAsSingle}>
               <VscFolder /> &nbsp; Download as Single Shapefile
             </Dropdown.Item>
@@ -503,7 +538,7 @@ const Assessment = ({
           >
             <MdDownload /> Data Table
           </Dropdown.Toggle>
-          <Dropdown.Menu>
+          <Dropdown.Menu align="end">
             <Dropdown.Item variant="dark">
               <ReactHTMLTableToExcel
                 id="tableDownloadButton"
@@ -527,39 +562,7 @@ const Assessment = ({
           </Dropdown.Menu>
         </Dropdown>
       </div>
-
-      {user.loggedIn && (
-        <div className="assessmentSave">
-          <Button
-            id="assessmentSaveButton"
-            className="downloadButton"
-            variant="dark"
-            onClick={() => {
-              setSaving(true);
-            }}
-          >
-            <MdSave /> Save to:{" "}
-            {user.username.length > 9 ? (
-              <span style={{ fontSize: "10px" }}>{user.username}</span>
-            ) : (
-              user.username
-            )}
-          </Button>
-        </div>
-      )}
-
-      <div className="assessmentNav">
-        <a href="#mapHeading">Spatial Footprint</a>
-        <a href="#scoreHeading">Overall Scores</a>
-        <a href="#dataHeading">Data Summary</a>
-        <a href="#mcdaHeading">MCDA Results</a>
-        <a href="#appendix">Appendix</a>
-      </div>
-
-      <div className="back-to-map">
-        <Button variant="secondary" onClick={() => history.push("/")}>
-          Back to Map View
-        </Button>
+    </div>
       </div>
 
       <div id="assessmentOverview">
@@ -572,12 +575,12 @@ const Assessment = ({
             <h2>Spatial Footprint:</h2>
           </Row>
           <br />
-          <Row id="map">
+          <Row id="map" style={{width: "100%", height: "25rem"}}>
             <MapGL
               {...viewport}
               style={{ position: "relative" }}
-              width="100vw"
-              height="50vh"
+              width="100%"
+              height="100%"
               mapStyle="mapbox://styles/mapbox/light-v9"
               onViewportChange={(nextViewport) => setViewport(nextViewport)}
               mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -688,7 +691,9 @@ const Assessment = ({
               certain rank for a project. The following charts indicate the RA
               results for each area of interest (AOI).
             </p>
-            <div>{downloading || saving ? <MCDAReport /> : <MCDAResult />}</div>
+            <div>
+              {downloading || saving ? <MCDAReport /> : <MCDAResult />}
+            </div>
           </Row>
           <hr />
           <Row id="appendix">

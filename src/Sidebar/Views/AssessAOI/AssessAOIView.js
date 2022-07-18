@@ -3,6 +3,7 @@ import SelectAOIForAssess from "./SelectAOIForAssess";
 import SelectRestoreWeights from "./SelectRestoreWeights";
 import SelectDataMeasures from "./SelectDataMeasures";
 import ReviewAssessSettings from "./ReviewAssessSettings";
+import { useLocation } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 const AssessAOIView = ({
@@ -20,6 +21,7 @@ const AssessAOIView = ({
   setAlertType
 }) => {
   const [assessStep, setAssessStep] = useState("selectAOI");
+  const location = useLocation()
   useEffect(() => {
     if (
       useCase === "visualization" && (
@@ -29,10 +31,15 @@ const AssessAOIView = ({
       setAssessStep("selectRestoreWeights");
     }
   }, [useCase, visualizationScale]);
-
+  useEffect(() => {
+if(location.pathname === "/user/measures"){
+    setAssessStep("selectRestoreWeights")
+  }
+  }, [location])
+  
   return (
     <Container>
-      {assessStep === "selectAOI" && (
+      {assessStep === "selectAOI" && location.pathname !== "/user/measures" && (
         <SelectAOIForAssess
           useCase={useCase}
           setAssessStep={setAssessStep}
@@ -74,6 +81,8 @@ const AssessAOIView = ({
           setVisualizationFillColor={setVisualizationFillColor}
           setVisualizationOpacity={setVisualizationOpacity}
           setView={setView}
+          setAlertText={setAlertText}
+          setAlertType={setAlertType}
         />
       )}
     </Container>
