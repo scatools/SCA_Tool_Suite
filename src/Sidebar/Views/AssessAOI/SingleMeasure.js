@@ -33,6 +33,7 @@ const SingleMeasure = ({
   // For predefined data measures
 
   const handleChange = (value, name, label, type) => {
+    console.log(value, name, label, type)
     dispatch(changeMeasuresWeight(value, name, label, type));
   };
 
@@ -617,6 +618,7 @@ const SingleMeasure = ({
           } else {
             state = null;
           }
+          console.log([dataMeasList[dataI]], state)
           dispatch(changeMeasures([dataMeasList[dataI]], state));
         }}
       />

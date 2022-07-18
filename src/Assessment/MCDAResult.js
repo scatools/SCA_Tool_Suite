@@ -52,45 +52,71 @@ const MCDAResult = () => {
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
   ];
   const assessment = useSelector((state) => state.assessment);
-  const [aoi, setAoi] = useState(0);
-  const [fillColor, setFillColor] = useState("#8884d8");
-  const [pieColors, setPieColors] = useState(aoiColors);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [pieData, setPieData] = useState([]);
-  const [radarData, setRadarData] = useState([
-    { subject: "Habitat", score: 0, fullMark: 1 },
-    { subject: "WQ", score: 0, fullMark: 1 },
-    { subject: "LCMR", score: 0, fullMark: 1 },
-    { subject: "Community Resilience", score: 0, fullMark: 1 },
-    { subject: "Gulf Economy", score: 0, fullMark: 1 },
-  ]);
+  const [ aoi, setAoi ] = useState(0);
+  const [ activeCharts, setActiveCharts ] = useState([0])
+  const [ fillColor, setFillColor ] = useState(["#8884d8"]);
+  const [ pieColors, setPieColors ] = useState(aoiColors);
+  const [ activeIndex, setActiveIndex ] = useState(0);
+  const [ pieData, setPieData ] = useState([ [assessment.rankAccept.map((item,index)=>{return {name:`Rank ${index+1}`, value: item[0]}})] ]);
+  const radarInit =  [
+      { subject: 'Habitat', score: 0,  fullMark: 1 },
+      { subject: 'WQ',score: 0,  fullMark: 1 },
+      { subject: 'LCMR', score: 0,  fullMark: 1 },
+      { subject: 'Community Resilience', score: 0,  fullMark: 1 },
+      { subject: 'Gulf Economy', score: 0, fullMark: 1 }
+  ]
+  const [ radarData, setRadarData ] = useState([ radarInit ]);
 
-  useEffect(() => {
-    setRadarData((data) =>
-      [...data].map((goal, index) => {
+  useEffect(()=>{
+
+    if(aoi == -1){
+      let activeCharts = []
+      assessment.aoi.id.map((item, index) => {
+        activeCharts.push(index)
+  
+      })
+      setActiveCharts(activeCharts)
+    }
+    else{
+      setActiveCharts([aoi])
+    }
+  },[aoi,assessment]);
+
+  useEffect(()=>{
+   if(activeCharts.length != 0){
+    graphEffect();  
+   }
+  },[activeCharts]);
+
+  function graphEffect(){
+    let radar = [radarInit]
+    let pieData = []
+    let fillColor = []
+    let pieColors = []
+    activeCharts.map((alt_aoi, index) => {
+      if(index >= 1){
+        radar.push(radarInit)
+      }
+      radar[index] = radar[index].map((goal,index)=>{
         return {
-          ...goal,
-          score: assessment.centralWeight[aoi][index],
+            ...goal,
+            score:assessment.centralWeight[alt_aoi][index]
         };
-      })
-    );
-    setPieData(
-      assessment.rankAccept.map((item, index) => {
-        return { name: `Rank ${index + 1}`, value: item[aoi] };
-      })
-    );
-    // Use the same AOI-based color scheme for pie chart and radar chart
-    setFillColor(aoiColors[aoi]);
-    let aoiLength = assessment.aoi.id.length;
-    setPieColors(
-      assessment.aoi.id.map((id, index) => {
-        return (
-          aoiColors[aoi] + colorOpacity[opacitySettings[aoiLength - 1][index]]
-        );
-      })
-    );
-  }, [aoi, assessment]);
+      });
+      pieData.push(assessment.rankAccept.map((item,index)=>{return {name:`Rank ${index+1}`, value: item[alt_aoi]}}));
+      // Use the same AOI-based color scheme for pie chart and radar chart
+      fillColor.push(aoiColors[alt_aoi]);
+      let aoiLength = assessment.aoi.id.length;
+      pieColors.push(assessment.aoi.id.map((id,index)=>{return aoiColors[alt_aoi]+colorOpacity[opacitySettings[aoiLength-1][index]]}));
+      
+    })
+    setRadarData(radar)
+    setPieData(pieData)
+    setFillColor(fillColor)
+    setPieColors(pieColors)
+  }
 
+  
   function onPieEnter(data, index) {
     setActiveIndex(index);
   }
@@ -166,72 +192,75 @@ const MCDAResult = () => {
 
   return (
     <>
-      <Row>
-        <ButtonGroup toggle className="ml-4">
-          {assessment.aoi.id.map((item, index) => (
-            <ToggleButton
-              key={uuid()}
-              type="radio"
-              variant="outline-secondary"
-              name={index}
-              value={index}
-              checked={aoi === index}
-              onChange={(e) => setAoi(e.currentTarget.value)}
-            >
-              {assessment.aoi.name[index]}
-            </ToggleButton>
-          ))}
-        </ButtonGroup>
-        <hr />
-        <p>Currently Viewing: {assessment.aoi.name[aoi]}</p>
-      </Row>
-      <Row>
-        <Col style={{ padding: "10px" }}>
+    <Row className='buttonGraph'>
+<ButtonGroup toggle className="ml-4">
+<ToggleButton
+      key={uuid()}
+      type="radio"
+      variant="outline-secondary"
+      name="all"
+      value={-1}
+      checked={aoi === -1}
+      onChange={(e) => setAoi(e.currentTarget.value)}
+    >
+      All Results
+    </ToggleButton>
+  {assessment.aoi.id.map((item, index) => (
+    <ToggleButton
+      key={uuid()}
+      type="radio"
+      variant="outline-secondary"
+      name={index}
+      value={index}
+      checked={aoi === index}
+      onChange={(e) => setAoi(e.currentTarget.value)}
+    >
+      {assessment.aoi.name[index]}
+    </ToggleButton>
+  ))}
+ 
+</ButtonGroup>
+    <hr/>
+    </Row>
+
+      
+   
+    {activeCharts.length == 0 ? <></> : activeCharts.map((alt_aoi, index_alt) => (    
+    <>
+    <p style={{marginTop:"1rem", borderBottom: "2px dotted rgba(0,0,0,.1)", paddingBottom:"0.5rem"}}>Results for: <b> {assessment.aoi.name[alt_aoi]}</b></p>
+    <Row className='graphRow'>
+        <Col style={{padding:'10px'}}>
           <PieChart width={550} height={400}>
-            <Pie
+            <Pie 
               activeIndex={activeIndex}
-              activeShape={renderActiveShape}
-              data={pieData}
-              cx={300}
-              cy={200}
+              activeShape={renderActiveShape} 
+              data={pieData[index_alt]} 
+              cx={250} 
+              cy={200} 
               innerRadius={60}
-              outerRadius={80}
-              fill={fillColor}
+              outerRadius={80} 
+              fill={fillColor[index_alt]}
               onMouseEnter={onPieEnter}
             >
-              {pieData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={pieColors[index % 20]}
-                  opacity={0.5}
-                />
+              {pieData[index_alt]?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={fillColor[index_alt]} opacity={0.5} />
               ))}
             </Pie>
           </PieChart>
         </Col>
         <Col>
-          <RadarChart
-            cx={300}
-            cy={250}
-            outerRadius={150}
-            width={500}
-            height={500}
-            data={radarData}
-          >
+          <RadarChart cx={250} cy={250} outerRadius={150} width={500} height={500} data={radarData[index_alt]}>
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" />
-            <PolarRadiusAxis />
-            <Radar
-              dataKey="score"
-              stroke={fillColor}
-              fill={fillColor}
-              fillOpacity={0.5}
-            />
+            <PolarRadiusAxis/>
+            <Radar dataKey="score" stroke={fillColor[index_alt]} fill={fillColor[index_alt]} fillOpacity={0.5}/>
           </RadarChart>
         </Col>
-      </Row>
+    </Row>
     </>
-  );
+    ))}
+    </>
+);
 };
 
 export default MCDAResult;

@@ -88,6 +88,7 @@ const AddAOIView = ({
             onChange={(e) => {
               setAoiSelected(false);
               setInputMode(e.currentTarget.value);
+              setTimeoutError(false)
             }}
           >
             by Drawing
@@ -101,6 +102,7 @@ const AddAOIView = ({
             onChange={(e) => {
               setDrawingMode(false);
               setInputMode(e.currentTarget.value);
+              setTimeoutError(false)
               stopDraw();
             }}
           >
@@ -116,6 +118,7 @@ const AddAOIView = ({
               setDrawingMode(false);
               setInputMode(e.currentTarget.value);
               onLoad();
+              setTimeoutError(false)
               stopDraw();
             }}
           >
