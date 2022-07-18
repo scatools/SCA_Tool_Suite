@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { DrawPolygonMode, EditingMode } from "react-map-gl-draw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +26,7 @@ const Main = ({
   setAlertText,
   setAlertType,
 }) => {
+  const mapRef = useRef();
   const [mode, setMode] = useState(null);
   const [interactiveLayerIds, setInteractiveLayerIds] = useState([]);
   const [activeSidebar, setActiveSidebar] = useState(true);
@@ -76,6 +77,7 @@ const Main = ({
         setActiveTable={setActiveTable}
       />
       <Sidebar
+        mapRef={mapRef}
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
         useCase={useCase}
@@ -136,6 +138,7 @@ const Main = ({
           {arrowIcon}
         </Button>
         <Map
+          mapRef={mapRef}
           useCase={useCase}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
