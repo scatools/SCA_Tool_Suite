@@ -100,7 +100,7 @@ const Routes = ({
           <Contact />
         </Route>
         <Route exact path="/plans">
-          <PlanTable />
+          <PlanTable setAlertText={setAlertText} setAlertType={setAlertType} />
         </Route>
         <Route path="/plan/:planId" children={<PlanDetail />}/>
         <Route exact path="/report">

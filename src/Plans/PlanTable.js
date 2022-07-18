@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Button, Modal, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { IoFilter } from "react-icons/io5";
+import { FcQuestions } from "react-icons/fc";
 import axios from 'axios';
+import emailjs from "@emailjs/browser";
 import FilterPane from './FilterPane';
 import CustomPagination from './CustomPagination';
 
-const PlanTable = () => {
+const PlanTable = ({ setAlertText, setAlertType }) => {
 	const history = useHistory();
-
-	// state to store query data
 	const [tableDetails, setTableDetails] = useState();
 	const [totalCount, setTotalCount] = useState(0);
-
-	// state to store current page for pagination
 	const [currentPage, setCurrentPage] = useState(1);
-
-	// state to control visibility of filter pane
 	const [showFilterPane, setShowFilterPane] = useState(false);
-
-	// state to control filtering input 
 	const [filterConfig, setFilterConfig] = useState({
 		state: "All",
 		time: "All",
 		priority: "All"
 	});
+	const [showNewPlanForm, setShowNewPlanForm] = useState(false);
+	const [newPlanName, setNewPlanName] = useState(null);
+	const [newPlanAgency, setNewPlanAgency] = useState(null);
+	const [newPlanLink, setNewPlanLink] = useState(null);
+  const user = useSelector((state) => state.user);
 
 	const onFilterConfigChange = (newConfig) => {
 		setFilterConfig(newConfig);
@@ -36,6 +37,46 @@ const PlanTable = () => {
 
 	const toggleFilterPane = () => {
 		setShowFilterPane(showFilterPane => !showFilterPane);
+	};
+
+	const fileMissingPlan = () => {
+		if (user.loggedIn) {
+			setShowNewPlanForm(true);
+		} else {
+			setAlertType("danger");
+			setAlertText("Please login in to file a missing plan!");
+      window.setTimeout(() => setAlertText(false), 4000);
+		};
+	};
+
+	const submitNewPlanForm = () => {
+		const formData = {
+			name: newPlanName,
+			agency: newPlanAgency,
+			link: newPlanLink,
+			user: user.firstName+" "+user.lastName,
+			email: user.email
+		};
+
+		emailjs.send(
+			"service_scagulf",
+			"template_sca_plan",
+			formData,
+			process.env.EMAILJS_USERID
+		)
+		.then(
+			(result) => {
+				console.log(result.text);
+			},
+			(error) => {
+				console.log(error.text);
+			}
+		);
+		
+		setShowNewPlanForm(false);
+		setAlertType("success");
+		setAlertText("You have successfully submitted a new plan!");
+		window.setTimeout(() => setAlertText(false), 4000);
 	};
 
 	// useEffect for launching query and fetch data from backend
@@ -68,7 +109,62 @@ const PlanTable = () => {
 					size="large"
 				/>
 			)}
-			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>Filter</Button>
+			{user.loggedIn && showNewPlanForm && (
+				<Modal
+					centered
+					show={showNewPlanForm}
+					onHide={() => {setShowNewPlanForm(false)}}
+					size="lg"
+				>
+					<Modal.Header closeButton>
+            <Modal.Title>
+              Please fill in the details of the missing conservation plan
+            </Modal.Title>
+          </Modal.Header>
+					<Modal.Body>
+            <div className="form-group">
+              Plan Name:
+              <input
+                type="text"
+                value={newPlanName}
+                onChange={(e) => setNewPlanName(e.target.value)}
+                required
+              ></input>
+              Agency Lead:
+              <input
+                type="text"
+                value={newPlanAgency}
+                onChange={(e) => setNewPlanAgency(e.target.value)}
+                required
+              ></input>
+              Document Link (URL):
+              <input
+                type="text"
+                value={newPlanLink}
+                onChange={(e) => setNewPlanLink(e.target.value)}
+                required
+              ></input>
+              <br />
+              <div className="d-flex justify-content-between">
+                <Button className="btn btn-warning" onClick={() => {setShowNewPlanForm(false)}}>
+                  Cancel
+                </Button>
+                <Button className="btn btn-primary" onClick={submitNewPlanForm}>
+                  Confirm
+                </Button>
+              </div>
+            </div>
+					</Modal.Body>
+				</Modal>
+			)}
+			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>
+				<IoFilter /> &nbsp;
+				Filter
+			</Button>
+			<a className="plan-submission-entry" onClick={fileMissingPlan}>
+				<FcQuestions size={"1.5em"} />
+				File A Missing Plan
+			</a>
 			<div className="plan-table">
 				<Table hover borderless striped>
 					<thead>
