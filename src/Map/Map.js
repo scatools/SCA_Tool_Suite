@@ -16,6 +16,7 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  mapRef,
   useCase,
   drawingMode,
   setFeatureList,
@@ -414,9 +415,10 @@ const Map = ({
       )}
       <MapGL
         {...viewport}
-        style={{ position: "fixed" }}
+        ref={mapRef}
         width="100vw"
         height="94.3vh"
+        style={{ position: "fixed" }}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
         getCursor={getCursor}
@@ -426,6 +428,7 @@ const Map = ({
         onViewStateChange={onViewStateChange}
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
+        preserveDrawingBuffer={true}
       >
         <Editor
           ref={editorRef}

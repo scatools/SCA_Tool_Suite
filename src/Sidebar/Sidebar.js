@@ -31,6 +31,7 @@ const alertIcon = (
 );
 
 const Sidebar = ({
+  mapRef,
   activeSidebar,
   setActiveSidebar,
   useCase,
@@ -164,6 +165,7 @@ const Sidebar = ({
         )}
         {view === "visualize" && (
           <VisualizeAOIView
+            mapRef={mapRef}
             visualizationOpacity={visualizationOpacity}
             setVisualizationOpacity={setVisualizationOpacity}
             zoom={zoom}
