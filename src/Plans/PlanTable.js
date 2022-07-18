@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { IoFilter } from "react-icons/io5";
 import { FcQuestions } from "react-icons/fc";
+import UseAnimations from 'react-useanimations';
+import heart from 'react-useanimations/lib/heart';
 import axios from 'axios';
 import emailjs from "@emailjs/browser";
 import FilterPane from './FilterPane';
@@ -24,6 +26,7 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
 	const [newPlanName, setNewPlanName] = useState(null);
 	const [newPlanAgency, setNewPlanAgency] = useState(null);
 	const [newPlanLink, setNewPlanLink] = useState(null);
+	const [userLikedPlans, setUserLikedPlans] = useState([]);
   const user = useSelector((state) => state.user);
 
 	const onFilterConfigChange = (newConfig) => {
@@ -78,27 +81,43 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
 		setAlertText("You have successfully submitted a new plan!");
 		window.setTimeout(() => setAlertText(false), 4000);
 	};
+	
+	const getPlans = async () => {
+		const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan`, {
+			params: {
+				start: 10 * (currentPage - 1),
+				end: 10 * currentPage,
+				state: filterConfig.state,
+				time: filterConfig.time,
+				priority: filterConfig.priority
+			}
+		});
+		setTableDetails(response.data.data);
+		setTotalCount(response.data.totalRowCount);
+	};
+	
+	const getUserLikedPlans = async () => {
+		const result = await axios.post(`https://sca-cpt-backend.herokuapp.com/user/plan`, {
+			username: user.username
+		});
+		const likedPlanList = result.data.rows.map((row) => {
+			return row.plan_id
+		});
+		setUserLikedPlans(likedPlanList);
+	};
 
-	// useEffect for launching query and fetch data from backend
 	useEffect(
 		() => {
-			const asyncFunc = async () => {
-				const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan`, {
-					params: {
-						start: 10 * (currentPage - 1),
-						end: 10 * currentPage,
-						state: filterConfig.state,
-						time: filterConfig.time,
-						priority: filterConfig.priority
-					}
-				});
-				setTableDetails(response.data.data);
-				setTotalCount(response.data.totalRowCount);
-			};
-			asyncFunc();
+			getPlans();
 		},
 		[currentPage, filterConfig]
 	);
+
+	useEffect(() => {
+		if (user.loggedIn) {
+			getUserLikedPlans();
+		};
+	}, [user])
 
 	return (
 		<div className="plan-table-wrapper">
@@ -169,6 +188,7 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
 				<Table hover borderless striped>
 					<thead>
 						<tr style={{ borderBottom: '1px solid black' }}>
+							{user.loggedIn && (<th>Liked</th>)}
 							<th>Plan Name</th>
 							<th>Primary Planning Method</th>
 							<th>Plan Time Frame</th>
@@ -181,6 +201,46 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
 						{!!tableDetails ? (
 							tableDetails.map((row) => (
 								<tr key={row.id}>
+									{user.loggedIn && (
+										<td>
+											<UseAnimations 
+												animation={heart}
+												fillColor="red"
+												reverse={userLikedPlans.includes(row.id) ? true : false}
+												onClick={async () => {
+													if (userLikedPlans.includes(row.id)) {
+														const result = await axios.post(
+															`https://sca-cpt-backend.herokuapp.com/delete/plan`, 
+															{
+																username: user.username,
+																plan_id: row.id
+															}
+														);
+														if (result) {
+															setAlertType("warning");
+															setAlertText("You have removed a plan from your favorite list!");
+															window.setTimeout(() => setAlertText(false), 4000);
+														};
+														getUserLikedPlans();
+													} else {
+														const result = await axios.post(
+															`https://sca-cpt-backend.herokuapp.com/save/plan`, 
+															{
+																username: user.username,
+																plan_id: row.id
+															}
+														);
+														if (result) {
+															setAlertType("success");
+															setAlertText("You have added a plan to your favorite list!");
+															window.setTimeout(() => setAlertText(false), 4000);
+														};
+														getUserLikedPlans();
+													};
+												}}
+											/>
+										</td>
+									)}
 									<td>{row.plan_name}</td>
 									<td>{row.planning_method}</td>
 									<td>{row.plan_timeframe}</td>
