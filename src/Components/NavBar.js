@@ -47,8 +47,14 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
                 Assessment
               </NavLink>
             )}
-            <NavLink to="/help" className="ml-3 mt-2">
+            <NavLink to="/resources" className="ml-3 mt-2">
+              Resources
+            </NavLink>
+            <NavLink to="/support" className="ml-3 mt-2">
               Support
+            </NavLink>
+            <NavLink to="/contact" className="ml-3 mt-2">
+              Contact
             </NavLink>
             <NavDropdown title="More" className="ml-3">
               <NavDropdown.Item
@@ -88,37 +94,37 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
         <Modal centered show={show} onHide={handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>
-              Welcome to the Conservation Prioritization Tool
+              Welcome to the Strategic Conservation Assessment Tool
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Using this tool, you can create a custom report on your areas of
-            interest (up to 10), with our catalog of 26 metrics and address
-            particular conservation and restoration concerns.
-            <br /> <br />
-            <b>Key Features</b>
+            <b>Introduction</b>
             <br />
-            <ul>
-              <li>Create custom prioritization maps</li>
-              <li>Export shapefiles, reports and data tables</li>
-              <li>Evaluate 26 conservation related metrics</li>
-            </ul>
+            <p>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Strategic Conservation Assessment 
+              project provides this tool to assist land conservation planners in
+              <ul>
+                <li>understanding existing priorities of conservation plans</li>
+                <li>evaluating ecological and socioeconomic co‐benefits of proposed land conservation projects</li>
+                <li>prioritizing areas for land conservation within the U.S. Gulf of Mexico coastal region</li>
+              </ul>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Strategic Conservation Assessment
+              Tool is a flexible, data‐driven framework that allows users to 
+              explore benefits of land conservation under their own priorities.
+            </p>
             <b>Intended Use</b>
             <br />
             <p>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Conservation Prioritization Tool
-              (CPT) is not intended to be prescriptive. Instead this tool was
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The Strategic Conservation Assessment
+              Tool is not intended to be prescriptive. Instead this tool is
               designed to provide data to support conservation planning efforts
-              across the Gulf Coast Region. All users acknowledge that the CPT
-              model is intended to explore ecological and socioeconomic
-              co-benefits of proposed areas of land conservation, and should not
-              be used in a decision making context.
-            </p>
-            <p>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The flexibility of this tool enables
-              a user to evaluate conservation alternatives using either a
-              multi-criteria decision analysis (MCDA) framework, or user-defined
-              values.
+              across the Gulf Coast Region. All users should acknowledge that the 
+              models and algorithms adopted in this tool are intended to explore 
+              ecological and socioeconomic co-benefits of proposed areas of land 
+              conservation, and should not be used in a decision-making context. 
+              The flexibility of this tool enables a user to evaluate conservation 
+              alternatives using either a multi-criteria decision analysis (MCDA) 
+              framework, or user-defined values.
             </p>
             <b>Sponsorship</b>
             <p>
@@ -174,8 +180,16 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
                   alt="fwrc msu logo"
                 />
               </a>
-              <a href="https://www.fws.gov/" rel="noreferrer" target="_blank">
-                <img className="logo" src="/Logo_USFWS.png" alt="fws logo" />
+              <a
+                href="https://www.fws.gov/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <img
+                  className="logo"
+                  src="/Logo_USFWS.png"
+                  alt="fws logo"
+                />
               </a>
             </div>
             <br />

@@ -3,15 +3,19 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
 import Homepage from "../Components/Homepage";
-import Help from "../Components/Help";
+import Resources from "../Components/Resources";
+import Support from "../Components/Support";
+import Contact from "../Components/Contact";
 import Report from "../Assessment/Report";
 import Assessment from "../Assessment/Assessment";
 import PlanTable from "../Plans/PlanTable";
+import PlanDetail from "../Plans/PlanDetail";
 import Login from "../User/Login";
 import Logout from "../User/Logout";
 import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
+import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView"
 
 const Routes = ({
   setReportLink,
@@ -33,6 +37,12 @@ const Routes = ({
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
   const [useCase, setUseCase] = useState(null);
+
+  const [visualizationSource, setVisualizationSource] = useState(null);
+  const [visualizationLayer, setVisualizationLayer] = useState(null);
+  const [visualizationFillColor, setVisualizationFillColor] = useState(null);
+  const [visualizationOpacity, setVisualizationOpacity] = useState(0);
+  const [visualizationScale, setVisualizationScale] = useState(null);
 
   return (
     <>
@@ -77,22 +87,60 @@ const Routes = ({
           <Logout setLoggedIn={setLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Route>
         <Route exact path="/user">
-          <UserData
-            userLoggedIn={userLoggedIn}
-            setReportScript={setReportScript}
-            setAlertText={setAlertText}
-            setAlertType={setAlertType}
-          />
+          {(userLoggedIn !== null)
+          ?
+            <UserData
+              userLoggedIn={userLoggedIn}
+              setReportScript={setReportScript}
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+              useCase={useCase}
+              aoiAssembled={aoiAssembled}
+              setAoiAssembled={setAoiAssembled}
+              customizedMeasures={customizedMeasures}
+              setView={setView}
+            />
+          :
+            <Redirect to="/login" />
+          }
         </Route>
         <Route exact path="/user/report">
           <UserReport reportScript={reportScript} />
         </Route>
-        <Route exact path="/help">
-          <Help />
+        <Route exact path="/resources">
+          <Resources />
         </Route>
+        <Route exact path="/support">
+          <Support />
+        </Route>
+        <Route exact path="/contact">
+          <Contact />
+          </Route>
+        <Route exact path="/user/measures">
+          <div className="userMeasures">
+           <AssessAOIView
+              useCase={useCase}
+              userLoggedIn={userLoggedIn}
+              aoiAssembled={aoiAssembled}
+              setAoiAssembled={setAoiAssembled}
+              customizedMeasures={customizedMeasures}
+              visualizationScale={visualizationScale}
+              setVisualizationSource={setVisualizationSource}
+              setVisualizationLayer={setVisualizationLayer}
+              setVisualizationFillColor={setVisualizationFillColor}
+              setVisualizationOpacity={setVisualizationOpacity}
+              setView={setView}
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+              
+        />
+        </div>
+        </Route>
+  
         <Route exact path="/plans">
-          <PlanTable />
+          <PlanTable setAlertText={setAlertText} setAlertType={setAlertType} />
         </Route>
+        <Route path="/plan/:planId" children={<PlanDetail />}/>
         <Route exact path="/report">
           <Report
             aoiSelected={aoiSelected}
@@ -135,6 +183,12 @@ const Routes = ({
               <p>{alertText}</p>
             </>
           )}
+          {alertType === "warning" && (
+            <>
+              <Alert.Heading>Attention!</Alert.Heading>
+              <p>{alertText}</p>
+            </>
+          )}
           {alertType === "success" && (
             <>
               <Alert.Heading>Successfully processed!</Alert.Heading>
@@ -143,6 +197,7 @@ const Routes = ({
           )}
         </Alert>
       )}
+      
     </>
   );
 };

@@ -169,7 +169,6 @@ const SidebarViewDetail = ({
       dispatch(setLoader(true));
       setEditAOI(false);
       setAlertText(false);
-      window.setTimeout(() => setAlertText(false), 4000);
       // Use the unselected hexagons as new geometry to recalculate AOI
       const newList = aoiList[0].hexagons.filter(
         (hexagon) => !hexIDDeselected.includes(hexagon.objectid)
@@ -330,10 +329,12 @@ const SidebarViewDetail = ({
       if (res) {
         setAlertType("success");
         setAlertText("You have saved " + aoiList[0].name + " in your account.");
+        window.setTimeout(() => setAlertText(false), 4000);
       }
     } catch (e) {
       setAlertType("danger");
       setAlertText("Failed to save the file in your account!");
+      window.setTimeout(() => setAlertText(false), 4000);
       console.error(e);
     }
   };

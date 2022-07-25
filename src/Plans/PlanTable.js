@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Button, Modal, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { IoFilter } from "react-icons/io5";
+import { FcQuestions } from "react-icons/fc";
+import UseAnimations from 'react-useanimations';
+import heart from 'react-useanimations/lib/heart';
 import axios from 'axios';
+import emailjs from "@emailjs/browser";
 import FilterPane from './FilterPane';
 import CustomPagination from './CustomPagination';
 
-const PlanTable = () => {
+const PlanTable = ({ setAlertText, setAlertType }) => {
 	const history = useHistory();
-
-	// state to store query data
 	const [tableDetails, setTableDetails] = useState();
 	const [totalCount, setTotalCount] = useState(0);
-
-	// state to store current page for pagination
 	const [currentPage, setCurrentPage] = useState(1);
-
-	// state to control visibility of filter pane
 	const [showFilterPane, setShowFilterPane] = useState(false);
-
-	// state to control filtering input 
 	const [filterConfig, setFilterConfig] = useState({
 		state: "All",
 		time: "All",
 		priority: "All"
 	});
+	const [showNewPlanForm, setShowNewPlanForm] = useState(false);
+	const [newPlanName, setNewPlanName] = useState(null);
+	const [newPlanAgency, setNewPlanAgency] = useState(null);
+	const [newPlanLink, setNewPlanLink] = useState(null);
+	const [userLikedPlans, setUserLikedPlans] = useState([]);
+  const user = useSelector((state) => state.user);
 
 	const onFilterConfigChange = (newConfig) => {
 		setFilterConfig(newConfig);
@@ -38,26 +42,82 @@ const PlanTable = () => {
 		setShowFilterPane(showFilterPane => !showFilterPane);
 	};
 
-	// useEffect for launching query and fetch data from backend
+	const fileMissingPlan = () => {
+		if (user.loggedIn) {
+			setShowNewPlanForm(true);
+		} else {
+			setAlertType("danger");
+			setAlertText("Please login in to file a missing plan!");
+      window.setTimeout(() => setAlertText(false), 4000);
+		};
+	};
+
+	const submitNewPlanForm = () => {
+		const formData = {
+			name: newPlanName,
+			agency: newPlanAgency,
+			link: newPlanLink,
+			user: user.firstName+" "+user.lastName,
+			email: user.email
+		};
+
+		emailjs.send(
+			"service_scagulf",
+			"template_sca_plan",
+			formData,
+			process.env.EMAILJS_USERID
+		)
+		.then(
+			(result) => {
+				console.log(result.text);
+			},
+			(error) => {
+				console.log(error.text);
+			}
+		);
+		
+		setShowNewPlanForm(false);
+		setAlertType("success");
+		setAlertText("You have successfully submitted a new plan!");
+		window.setTimeout(() => setAlertText(false), 4000);
+	};
+	
+	const getPlans = async () => {
+		const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan`, {
+			params: {
+				start: 10 * (currentPage - 1),
+				end: 10 * currentPage,
+				state: filterConfig.state,
+				time: filterConfig.time,
+				priority: filterConfig.priority
+			}
+		});
+		setTableDetails(response.data.data);
+		setTotalCount(response.data.totalRowCount);
+	};
+	
+	const getUserLikedPlans = async () => {
+		const result = await axios.post(`https://sca-cpt-backend.herokuapp.com/user/plan`, {
+			username: user.username
+		});
+		const likedPlanList = result.data.rows.map((row) => {
+			return row.plan_id
+		});
+		setUserLikedPlans(likedPlanList);
+	};
+
 	useEffect(
 		() => {
-			const asyncFunc = async () => {
-				const response = await axios.get(`https://sca-cpt-backend.herokuapp.com/plan`, {
-					params: {
-						start: 10 * (currentPage - 1),
-						end: 10 * currentPage,
-						state: filterConfig.state,
-						time: filterConfig.time,
-						priority: filterConfig.priority
-					}
-				});
-				setTableDetails(response.data.data);
-				setTotalCount(response.data.totalRowCount);
-			};
-			asyncFunc();
+			getPlans();
 		},
 		[currentPage, filterConfig]
 	);
+
+	useEffect(() => {
+		if (user.loggedIn) {
+			getUserLikedPlans();
+		};
+	}, [user])
 
 	return (
 		<div className="plan-table-wrapper">
@@ -68,11 +128,67 @@ const PlanTable = () => {
 					size="large"
 				/>
 			)}
-			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>Filter</Button>
+			{user.loggedIn && showNewPlanForm && (
+				<Modal
+					centered
+					show={showNewPlanForm}
+					onHide={() => {setShowNewPlanForm(false)}}
+					size="lg"
+				>
+					<Modal.Header closeButton>
+            <Modal.Title>
+              Please fill in the details of the missing conservation plan
+            </Modal.Title>
+          </Modal.Header>
+					<Modal.Body>
+            <div className="form-group">
+              Plan Name:
+              <input
+                type="text"
+                value={newPlanName}
+                onChange={(e) => setNewPlanName(e.target.value)}
+                required
+              ></input>
+              Agency Lead:
+              <input
+                type="text"
+                value={newPlanAgency}
+                onChange={(e) => setNewPlanAgency(e.target.value)}
+                required
+              ></input>
+              Document Link (URL):
+              <input
+                type="text"
+                value={newPlanLink}
+                onChange={(e) => setNewPlanLink(e.target.value)}
+                required
+              ></input>
+              <br />
+              <div className="d-flex justify-content-between">
+                <Button className="btn btn-warning" onClick={() => {setShowNewPlanForm(false)}}>
+                  Cancel
+                </Button>
+                <Button className="btn btn-primary" onClick={submitNewPlanForm}>
+                  Confirm
+                </Button>
+              </div>
+            </div>
+					</Modal.Body>
+				</Modal>
+			)}
+			<Button variant="secondary" className="filter-button" onClick={toggleFilterPane}>
+				<IoFilter /> &nbsp;
+				Filter
+			</Button>
+			<a className="plan-submission-entry" onClick={fileMissingPlan}>
+				<FcQuestions size={"1.5em"} />
+				File A Missing Plan
+			</a>
 			<div className="plan-table">
 				<Table hover borderless striped>
 					<thead>
 						<tr style={{ borderBottom: '1px solid black' }}>
+							{user.loggedIn && (<th>Liked</th>)}
 							<th>Plan Name</th>
 							<th>Primary Planning Method</th>
 							<th>Plan Time Frame</th>
@@ -85,6 +201,46 @@ const PlanTable = () => {
 						{!!tableDetails ? (
 							tableDetails.map((row) => (
 								<tr key={row.id}>
+									{user.loggedIn && (
+										<td>
+											<UseAnimations 
+												animation={heart}
+												fillColor="red"
+												reverse={userLikedPlans.includes(row.id) ? true : false}
+												onClick={async () => {
+													if (userLikedPlans.includes(row.id)) {
+														const result = await axios.post(
+															`https://sca-cpt-backend.herokuapp.com/delete/plan`, 
+															{
+																username: user.username,
+																plan_id: row.id
+															}
+														);
+														if (result) {
+															setAlertType("warning");
+															setAlertText("You have removed a plan from your favorite list!");
+															window.setTimeout(() => setAlertText(false), 4000);
+														};
+														getUserLikedPlans();
+													} else {
+														const result = await axios.post(
+															`https://sca-cpt-backend.herokuapp.com/save/plan`, 
+															{
+																username: user.username,
+																plan_id: row.id
+															}
+														);
+														if (result) {
+															setAlertType("success");
+															setAlertText("You have added a plan to your favorite list!");
+															window.setTimeout(() => setAlertText(false), 4000);
+														};
+														getUserLikedPlans();
+													};
+												}}
+											/>
+										</td>
+									)}
 									<td>{row.plan_name}</td>
 									<td>{row.planning_method}</td>
 									<td>{row.plan_timeframe}</td>

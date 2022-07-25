@@ -19,7 +19,6 @@ const arrowIcon = (
     color="red"
     size="lg"
     flip="horizontal"
-    style={{ paddingLeft: "30px;" }}
   />
 );
 
@@ -32,6 +31,7 @@ const alertIcon = (
 );
 
 const Sidebar = ({
+  mapRef,
   activeSidebar,
   setActiveSidebar,
   useCase,
@@ -165,6 +165,7 @@ const Sidebar = ({
         )}
         {view === "visualize" && (
           <VisualizeAOIView
+            mapRef={mapRef}
             visualizationOpacity={visualizationOpacity}
             setVisualizationOpacity={setVisualizationOpacity}
             zoom={zoom}
@@ -206,7 +207,7 @@ const Sidebar = ({
 
       <Button
         title="Report A Bug"
-        onClick={() => history.push("/help")}
+        onClick={() => history.push("/support")}
         className="bug-icon-btn"
       >
         <GoReport />

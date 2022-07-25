@@ -16,6 +16,7 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  mapRef,
   useCase,
   drawingMode,
   setFeatureList,
@@ -48,6 +49,7 @@ const Map = ({
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [selectedSwitch, setSelectedSwitch] = useState(0);
   const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
@@ -95,7 +97,13 @@ const Map = ({
   };
 
   const onClick = (e) => {
-    if (useCase === "inventory" && !aoiSelected && !hucBoundary && !hexGrid) {
+    if (
+      useCase === "inventory" &&
+      !aoiSelected &&
+      !drawingMode &&
+      !hucBoundary &&
+      !hexGrid
+    ) {
       setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
@@ -129,6 +137,7 @@ const Map = ({
   };
 
   const onToggle = (value) => {
+    setSelectedSwitch(value);
     if (value === 0) {
       setBasemapStyle("light-v10");
     } else if (value === 1) {
@@ -384,7 +393,7 @@ const Map = ({
         <div className="basemapSwitch">
           <MultiSwitch
             texts={["Light", "Dark", "Satellite", "Terrain", ""]}
-            selectedSwitch={0}
+            selectedSwitch={selectedSwitch}
             bgColor={"gray"}
             onToggleCallback={onToggle}
             height={"38px"}
@@ -406,9 +415,10 @@ const Map = ({
       )}
       <MapGL
         {...viewport}
-        style={{ position: "fixed" }}
+        ref={mapRef}
         width="100vw"
         height="94.3vh"
+        style={{ position: "fixed" }}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
         getCursor={getCursor}
@@ -418,6 +428,7 @@ const Map = ({
         onViewStateChange={onViewStateChange}
         onViewportChange={(nextViewport) => setViewport(nextViewport)}
         interactiveLayerIds={interactiveLayerIds}
+        preserveDrawingBuffer={true}
       >
         <Editor
           ref={editorRef}

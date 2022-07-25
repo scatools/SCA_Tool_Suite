@@ -14,11 +14,10 @@ import {
   aggregate,
   getStatus,
 } from "../Helper/aggregateHex";
-import { input_aoi, setLoader } from "../Redux/action";
+import { input_aoi, setLoader, mutipleSavedWeightsDelete, setCurrentWeight } from "../Redux/action";
 import "../App.css";
 
 const UserData = ({
-  userLoggedIn,
   setReportScript,
   setAlertText,
   setAlertType,
@@ -36,6 +35,8 @@ const UserData = ({
   const [updateInfo, setUpdateInfo] = useState(false);
   const [updatePassword, setUpdatePassword] = useState(false);
   const user = useSelector((state) => state.user);
+
+
   const showUpdateInfo = () => setUpdateInfo(true);
 
   const closeUpdateInfo = () => {
@@ -51,7 +52,7 @@ const UserData = ({
     setNewPassword(null);
   };
 
-  console.log(user);
+  const lst = useSelector((state) => state.multipleWeights)
 
   const getUserData = async () => {
     // For development on local server
@@ -98,6 +99,7 @@ const UserData = ({
     if (result) {
       setAlertType("success");
       setAlertText("You have updated your profile!");
+      window.setTimeout(() => setAlertText(false), 4000);
       closeUpdateInfo();
     }
   };
@@ -118,6 +120,7 @@ const UserData = ({
     if (!verification.data.validLogin) {
       setAlertType("danger");
       setAlertText("Incorrect password! Please enter again.");
+      window.setTimeout(() => setAlertText(false), 4000);
     } else {
       // For development on local server
       // const result = await axios.post(
@@ -139,6 +142,7 @@ const UserData = ({
       if (result) {
         setAlertType("success");
         setAlertText("You have updated your password!");
+        window.setTimeout(() => setAlertText(false), 4000);
         closeUpdatePassword();
       }
     }
@@ -202,6 +206,7 @@ const UserData = ({
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the AOI named " + file);
+      window.setTimeout(() => setAlertText(false), 4000);
     }
     getUserFile();
   };
@@ -221,6 +226,7 @@ const UserData = ({
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the report named " + report);
+      window.setTimeout(() => setAlertText(false), 4000);
     }
     getUserReport();
   };
@@ -368,6 +374,7 @@ const UserData = ({
 
           <hr className="my-4" />
           <p className="h3">Saved Reports</p>
+         
           <br />
           {user.reportList.length > 0 ? (
             user.reportList.map((report) => (
@@ -392,6 +399,36 @@ const UserData = ({
             ))
           ) : (
             <p className="lead">No report saved yet!</p>
+          )}
+
+          <hr className="my-4" />
+          <p className="h3">Saved Measures</p>
+          <br />
+          {lst.names.length > 1 ? (
+            lst.names.map((value, indx) => (
+              (indx > 0) ?
+              <div className="d-flex mb-2" key={uuid()}>
+                <span className="mr-auto">{value.title}</span>
+                <Button
+                  className="btn btn-primary ml-2"
+                  onClick={(e) =>  {dispatch(setCurrentWeight(value.title)); history.push("/user/measures") } }
+                >
+                  View Measure
+                </Button>
+                <Button
+                  className="btn btn-danger ml-2"
+                  onClick={() => {
+                   dispatch(mutipleSavedWeightsDelete(indx))
+                  }}
+                >
+                  Delete Measure
+                </Button>
+              </div>
+              : 
+              ""
+            ))
+          ) : (
+            <p className="lead">No measures saved yet!</p>
           )}
         </Jumbotron>
         <Modal centered show={updateInfo} onHide={closeUpdateInfo} size="lg">
