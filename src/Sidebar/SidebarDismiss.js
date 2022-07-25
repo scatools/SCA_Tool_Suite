@@ -19,6 +19,7 @@ const collapseIcon = (
 const SidebarDismiss = ({ setActiveSidebar }) => {
   return (
     <div
+      title="Hide sidebar"
       id="dismiss"
       onClick={() => {
         setActiveSidebar(false);
