@@ -14,7 +14,6 @@ export const MultiSelect = (props) => {
   };
 
   const isSelectAllSelected = () => {
-    console.log(valueRef.current);
     return valueRef.current.length === props.options.length;
   };
 
@@ -29,8 +28,6 @@ export const MultiSelect = (props) => {
 
   const onChange = (newValue, actionMeta) => {
     const { action, option, removedValue } = actionMeta;
-
-    console.log(action);
 
     if (action === "select-option" && option.value === selectAllOption.value) {
       props.onChange(props.options, actionMeta);
