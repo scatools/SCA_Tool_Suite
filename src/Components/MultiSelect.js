@@ -1,12 +1,37 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ReactSelect from "react-select";
 import { useDispatch, useSelector } from "react-redux";
+import { changeMeasures } from "../Redux/action";
 
 export const MultiSelect = (props) => {
+  const dispatch = useDispatch();
+
   // isOptionSelected sees previous props.value after onChange
   const valueRef = useRef(props.value);
   valueRef.current = props.value;
   if (!valueRef.current) valueRef.current = [];
+
+  const inStateSelected = useSelector(
+    (state) => state.weights[props.name].selected
+  );
+
+  if (
+    !!valueRef.current.length &&
+    valueRef.current.length !== inStateSelected.length
+  ) {
+    console.log("DIFFERENT!!!");
+    let state;
+
+    state = valueRef.current.map((selected) => ({
+      ...selected,
+      utility: selected["utility"] || "1",
+      weight: selected["weight"] || "medium",
+    }));
+
+    dispatch(changeMeasures([props.name], state));
+  }
+
+  console.log(inStateSelected);
 
   const selectAllOption = {
     value: "<SELECT_ALL>",

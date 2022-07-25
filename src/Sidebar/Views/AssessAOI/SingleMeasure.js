@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
 import { MultiSelect } from "../../../Components/MultiSelect";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +33,6 @@ const SingleMeasure = ({
   // For predefined data measures
 
   const handleChange = (value, name, label, type) => {
-    console.log(value, name, label, type);
     dispatch(changeMeasuresWeight(value, name, label, type));
   };
 
@@ -609,7 +608,7 @@ const SingleMeasure = ({
         isMulti
         isClearable={false}
         placeholder={`Select ${currentDataMeasure.name} measures...`}
-        name="colors"
+        name={dataMeasList[dataI]}
         className="basic-multi-select"
         classNamePrefix="select"
         value={
@@ -632,7 +631,6 @@ const SingleMeasure = ({
           } else {
             state = null;
           }
-          console.log([dataMeasList[dataI]], state);
           dispatch(changeMeasures([dataMeasList[dataI]], state));
         }}
       />
