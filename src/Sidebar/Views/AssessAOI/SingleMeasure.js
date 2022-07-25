@@ -614,9 +614,11 @@ const SingleMeasure = ({
         classNamePrefix="select"
         value={
           useCase === "visualization"
-            ? weights[dataMeasList[dataI]].selected.filter(
-                (e) => e.value !== "hab0"
-              )
+            ? !weights[dataMeasList[dataI]].selected
+              ? ""
+              : weights[dataMeasList[dataI]].selected.filter(
+                  (e) => e.value !== "hab0"
+                )
             : weights[dataMeasList[dataI]].selected
         }
         onChange={(selectedOption) => {

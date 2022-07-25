@@ -33,7 +33,7 @@ const ListAOIView = ({
   view,
   setView,
   setAlertText,
-  setAlertType
+  setAlertType,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
 

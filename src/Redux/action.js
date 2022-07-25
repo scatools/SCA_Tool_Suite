@@ -14,7 +14,7 @@ import {
   SAVED_WEIGHTS,
   MULTIPLE_SAVED_WEIGHTS,
   MULTIPLE_SAVED_WEIGHTS_UPDATE,
-  MULTIPLE_SAVED_WEIGHTS_DELETE
+  MULTIPLE_SAVED_WEIGHTS_DELETE,
 } from "./actionType";
 
 export function loadUser(data) {
@@ -105,35 +105,32 @@ export const setLoader = (loading) => {
 };
 
 export const setCurrentWeight = (data) => {
-  return{
-    type:SAVED_WEIGHTS,
-    data
-  }
-}
+  return {
+    type: SAVED_WEIGHTS,
+    data,
+  };
+};
 
-
-export const mutipleSavedWeights = (data) => dispatch => {
+export const mutipleSavedWeights = (data) => (dispatch) => {
   dispatch({
-    type:MULTIPLE_SAVED_WEIGHTS,
-    data
+    type: MULTIPLE_SAVED_WEIGHTS,
+    data,
   });
   return Promise.resolve();
 };
 
-
-export const mutipleSavedWeightsUpdate = (data) => dispatch => {
+export const mutipleSavedWeightsUpdate = (data) => (dispatch) => {
   dispatch({
-    type:MULTIPLE_SAVED_WEIGHTS_UPDATE,
-    data
+    type: MULTIPLE_SAVED_WEIGHTS_UPDATE,
+    data,
   });
   return Promise.resolve();
 };
 
-
-export const mutipleSavedWeightsDelete = (data) => dispatch => {
+export const mutipleSavedWeightsDelete = (data) => (dispatch) => {
   dispatch({
-    type:MULTIPLE_SAVED_WEIGHTS_DELETE,
-    data
+    type: MULTIPLE_SAVED_WEIGHTS_DELETE,
+    data,
   });
   return Promise.resolve();
 };

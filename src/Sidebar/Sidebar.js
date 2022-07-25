@@ -142,6 +142,7 @@ const Sidebar = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+            setAssessStep={setAssessStep}
           />
         )}
         {view === "assess" && (
