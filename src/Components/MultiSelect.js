@@ -11,15 +11,14 @@ export const MultiSelect = (props) => {
   valueRef.current = props.value;
   if (!valueRef.current) valueRef.current = [];
 
-  const inStateSelected = useSelector(
-    (state) => state.weights[props.name].selected
-  );
+  const inStateWeight = useSelector((state) => state.weights[props.name]);
+
+  const inStateSelected = !!inStateWeight ? inStateWeight.selected : [];
 
   if (
     !!valueRef.current.length &&
     valueRef.current.length !== inStateSelected.length
   ) {
-    console.log("DIFFERENT!!!");
     let state;
 
     state = valueRef.current.map((selected) => ({
@@ -30,8 +29,6 @@ export const MultiSelect = (props) => {
 
     dispatch(changeMeasures([props.name], state));
   }
-
-  console.log(inStateSelected);
 
   const selectAllOption = {
     value: "<SELECT_ALL>",
