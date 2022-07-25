@@ -60,10 +60,14 @@
 }
 
 #dismiss:hover,
-#dismiss-detail {
-  background: #fff;
-  color: #6f7072;
+#dismiss-detail,
+#dismiss:hover svg {
+  filter: brightness(80%);
 }
+
+/* #dismiss:hover svg {
+  color: #6f7072;
+} */
 
 #dismiss-detail.active {
   position: fixed;
