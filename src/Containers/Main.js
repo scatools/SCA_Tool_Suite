@@ -35,6 +35,8 @@ const Main = ({
   setView,
   setAlertText,
   setAlertType,
+  assessStep,
+  setAssessStep,
 }) => {
   const mapRef = useRef();
   const [mode, setMode] = useState(null);
@@ -130,6 +132,8 @@ const Main = ({
         setView={setView}
         setAlertText={setAlertText}
         setAlertType={setAlertType}
+        assessStep={assessStep}
+        setAssessStep={setAssessStep}
       />
       <div className="content">
         <Button

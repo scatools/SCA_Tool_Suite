@@ -15,7 +15,7 @@ import Logout from "../User/Logout";
 import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
-import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView"
+import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView";
 
 const Routes = ({
   setReportLink,
@@ -37,6 +37,7 @@ const Routes = ({
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
   const [useCase, setUseCase] = useState(null);
+  const [assessStep, setAssessStep] = useState("selectAOI");
 
   const [visualizationSource, setVisualizationSource] = useState(null);
   const [visualizationLayer, setVisualizationLayer] = useState(null);
@@ -48,7 +49,7 @@ const Routes = ({
     <>
       <Switch>
         <Route exact path="/">
-          <Homepage setUseCase={setUseCase} setView={setView}/>
+          <Homepage setUseCase={setUseCase} setView={setView} />
         </Route>
         <Route exact path="/tool">
           <Main
@@ -65,6 +66,8 @@ const Routes = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+            assessStep={assessStep}
+            setAssessStep={setAssessStep}
           />
         </Route>
         <Route exact path="/register">
@@ -87,8 +90,7 @@ const Routes = ({
           <Logout setLoggedIn={setLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Route>
         <Route exact path="/user">
-          {(userLoggedIn !== null)
-          ?
+          {userLoggedIn !== null ? (
             <UserData
               userLoggedIn={userLoggedIn}
               setReportScript={setReportScript}
@@ -100,9 +102,9 @@ const Routes = ({
               customizedMeasures={customizedMeasures}
               setView={setView}
             />
-          :
+          ) : (
             <Redirect to="/login" />
-          }
+          )}
         </Route>
         <Route exact path="/user/report">
           <UserReport reportScript={reportScript} />
@@ -115,10 +117,10 @@ const Routes = ({
         </Route>
         <Route exact path="/contact">
           <Contact />
-          </Route>
+        </Route>
         <Route exact path="/user/measures">
           <div className="userMeasures">
-           <AssessAOIView
+            <AssessAOIView
               useCase={useCase}
               userLoggedIn={userLoggedIn}
               aoiAssembled={aoiAssembled}
@@ -132,15 +134,16 @@ const Routes = ({
               setView={setView}
               setAlertText={setAlertText}
               setAlertType={setAlertType}
-              
-        />
-        </div>
+              assessStep={assessStep}
+              setAssessStep={setAssessStep}
+            />
+          </div>
         </Route>
-  
+
         <Route exact path="/plans">
           <PlanTable setAlertText={setAlertText} setAlertType={setAlertType} />
         </Route>
-        <Route path="/plan/:planId" children={<PlanDetail />}/>
+        <Route path="/plan/:planId" children={<PlanDetail />} />
         <Route exact path="/report">
           <Report
             aoiSelected={aoiSelected}
@@ -197,7 +200,6 @@ const Routes = ({
           )}
         </Alert>
       )}
-      
     </>
   );
 };

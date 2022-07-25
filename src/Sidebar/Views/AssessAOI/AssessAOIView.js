@@ -18,25 +18,25 @@ const AssessAOIView = ({
   setVisualizationOpacity,
   setView,
   setAlertText,
-  setAlertType
+  setAlertType,
+  assessStep,
+  setAssessStep,
 }) => {
-  const [assessStep, setAssessStep] = useState("selectAOI");
-  const location = useLocation()
+  const location = useLocation();
   useEffect(() => {
     if (
-      useCase === "visualization" && (
-        visualizationScale === "region" || visualizationScale === "state"
-      )
+      useCase === "visualization" &&
+      (visualizationScale === "region" || visualizationScale === "state")
     ) {
       setAssessStep("selectRestoreWeights");
     }
   }, [useCase, visualizationScale]);
   useEffect(() => {
-if(location.pathname === "/user/measures"){
-    setAssessStep("selectRestoreWeights")
-  }
-  }, [location])
-  
+    if (location.pathname === "/user/measures") {
+      setAssessStep("selectRestoreWeights");
+    }
+  }, [location]);
+
   return (
     <Container>
       {assessStep === "selectAOI" && location.pathname !== "/user/measures" && (
