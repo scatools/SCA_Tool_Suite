@@ -1,3 +1,34 @@
+## To install node modules:
+
+#### `npm i`
+
+- If errors occur try(in order)
+
+1. `npm i --legacy-peer-deps`
+2. `npm i --force`
+
+Try `npm start` again. If app runs awesome! If not, make sure the version you pulled contains
+the file config-overrides.js. If not, pull the latest version and repeat the steps above. If
+it does, then your package.json might not have the correct dependencies or scripts.
+
+### Package.json should have:
+
+- "react-app-rewired": "^2.1.11" (in package.json devDependencies)
+- "node-polyfill-webpack-plugin": "^2.0.0" (in package.json dependencies)
+- npm scripts should use react-app-rewired instead of react-scripts:
+
+```
+"scripts": {
+    "build": "react-app-rewired build",
+    "start": "react-app-rewired start"
+}
+```
+
+If the app still does not build... you're on your own.
+
+When adding new packages, I still get errors when trying `npm i`. I just haven't taken the time
+to fix all of the peer dependencies. For now, use above method for installing new packages.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -66,3 +97,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+```
+
+```

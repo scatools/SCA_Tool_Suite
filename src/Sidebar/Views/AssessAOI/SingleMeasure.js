@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
 import { MultiSelect } from "../../../Components/MultiSelect";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +33,6 @@ const SingleMeasure = ({
   // For predefined data measures
 
   const handleChange = (value, name, label, type) => {
-    console.log(value, name, label, type)
     dispatch(changeMeasuresWeight(value, name, label, type));
   };
 
@@ -591,7 +590,13 @@ const SingleMeasure = ({
     },
   };
 
-  let currentDataMeasure = options[dataMeasList[dataI]];
+  let visualizationOptions = JSON.parse(JSON.stringify(options));
+  visualizationOptions.hab.dropdown.shift();
+
+  let currentDataMeasure =
+    useCase === "visualization"
+      ? visualizationOptions[dataMeasList[dataI]]
+      : options[dataMeasList[dataI]];
 
   return (
     <div>
@@ -603,10 +608,18 @@ const SingleMeasure = ({
         isMulti
         isClearable={false}
         placeholder={`Select ${currentDataMeasure.name} measures...`}
-        name="colors"
+        name={dataMeasList[dataI]}
         className="basic-multi-select"
         classNamePrefix="select"
-        value={weights[dataMeasList[dataI]].selected}
+        value={
+          useCase === "visualization"
+            ? !weights[dataMeasList[dataI]].selected
+              ? ""
+              : weights[dataMeasList[dataI]].selected.filter(
+                  (e) => e.value !== "hab0"
+                )
+            : weights[dataMeasList[dataI]].selected
+        }
         onChange={(selectedOption) => {
           let state;
           if (selectedOption) {
@@ -618,7 +631,6 @@ const SingleMeasure = ({
           } else {
             state = null;
           }
-          console.log([dataMeasList[dataI]], state)
           dispatch(changeMeasures([dataMeasList[dataI]], state));
         }}
       />

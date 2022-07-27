@@ -228,7 +228,7 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
 
       <div className="footprintDownload">
         <Button
-          id="footprintDownloadButton"
+          id="ReportFootprintDownloadButton"
           className="downloadButton"
           variant="dark"
           onClick={downloadFootprint}

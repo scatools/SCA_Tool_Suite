@@ -2,14 +2,24 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Button, Container, Modal } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
-import { RiFileDownloadLine, RiSaveLine, RiScreenshot2Fill } from "react-icons/ri";
+import {
+  RiFileDownloadLine,
+  RiSaveLine,
+  RiScreenshot2Fill,
+} from "react-icons/ri";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const VisualizeAOIView = ({
   mapRef,
   visualizationOpacity,
   setVisualizationOpacity,
   zoom,
-  instruction
+  instruction,
+  setAssessStep,
+  setView,
 }) => {
   const [show, setShow] = useState(false);
   const [imageURL, setImageURL] = useState(null);
@@ -21,11 +31,11 @@ const VisualizeAOIView = ({
   const handleShow = () => setShow(true);
 
   const resizeImageURL = (url, newWidth, newHeight) => {
-    return new Promise(async function(resolve, reject){
-      var img = document.createElement('img');
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext('2d');
+    return new Promise(async function (resolve, reject) {
+      var img = document.createElement("img");
+      img.onload = function () {
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
         canvas.width = newWidth;
         canvas.height = newHeight;
         ctx.drawImage(this, 0, 0, newWidth, newHeight);
@@ -35,7 +45,7 @@ const VisualizeAOIView = ({
       img.src = url;
     });
   };
-  
+
   const getImage = async () => {
     var originalImage = mapRef.current.getMap().getCanvas().toDataURL();
     var resizedImage = await resizeImageURL(originalImage, 750, 500);
@@ -47,19 +57,19 @@ const VisualizeAOIView = ({
   // The length of image URL exceeds the limit of broswer
   // Need to use a blob object to recreate the URL instead
   function imageURLToBlob(url) {
-    var binStr = atob(url.split(',')[1]),
+    var binStr = atob(url.split(",")[1]),
       len = binStr.length,
       arr = new Uint8Array(len);
     for (var i = 0; i < len; i++) {
       arr[i] = binStr.charCodeAt(i);
-    };
+    }
     return new Blob([arr]);
-  };
+  }
 
   const DownloadMap = () => {
     var a = document.createElement("a");
     var blob = imageURLToBlob(imageURL);
-    a.href = URL.createObjectURL(blob);;
+    a.href = URL.createObjectURL(blob);
     a.download = "Map.png";
     a.click();
   };
@@ -78,39 +88,44 @@ const VisualizeAOIView = ({
         variant="secondary"
       />
       <br />
-      <Button
-        id="snapshotButton"
-        variant="secondary"
-        onClick={getImage}
-      >
-        <RiScreenshot2Fill /> &nbsp;
-        Export Current View
+      <Button id="snapshotButton" variant="secondary" onClick={getImage}>
+        <RiScreenshot2Fill /> &nbsp; Export Current View
       </Button>
+
+      <div className="add-assess-cont container">
+        <Button
+          style={{ float: "left" }}
+          variant="secondary"
+          onClick={() => {
+            setAssessStep("selectDataMeasures");
+            setView("assess");
+          }}
+        >
+          {arrowIcon} Edit Data Measures
+        </Button>
+      </div>
+
       <Modal centered show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>
-            Current Map View
-          </Modal.Title>
+          <Modal.Title>Current Map View</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="d-flex flex-column justify-content-center">
             <img src={resizedImageURL} alt={"Current Map View"} />
-            <br/>
-            <div 
+            <br />
+            <div
               className={
-                user.username?
-                "d-flex justify-content-between":
-                "d-flex justify-content-center"
+                user.username
+                  ? "d-flex justify-content-between"
+                  : "d-flex justify-content-center"
               }
             >
               <Button variant="secondary" onClick={DownloadMap}>
-                <RiFileDownloadLine /> &nbsp;
-                Download Map
+                <RiFileDownloadLine /> &nbsp; Download Map
               </Button>
               {user.username && (
                 <Button variant="secondary">
-                  <RiSaveLine /> &nbsp;
-                  Save to: {user.username}
+                  <RiSaveLine /> &nbsp; Save to: {user.username}
                 </Button>
               )}
             </div>

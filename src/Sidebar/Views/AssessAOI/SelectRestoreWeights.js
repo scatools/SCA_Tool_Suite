@@ -1,6 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Col, Form, Row } from "react-bootstrap";
-import { changeGoalWeights, changeMeasures, setCurrentWeight} from "../../../Redux/action";
+import {
+  changeGoalWeights,
+  changeMeasures,
+  setCurrentWeight,
+} from "../../../Redux/action";
 import Select from "react-select";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import RangeSlider from "react-bootstrap-range-slider";
@@ -18,20 +22,23 @@ const SelectRestoreWeights = ({
   setAlertType,
 }) => {
   const weights = useSelector((state) => state.weights);
-  const [list, setList]= useState([{ value: 'No Saved Measures', label: 'No Saved Measures' }]);
+  const [list, setList] = useState([
+    { value: "No Saved Measures", label: "No Saved Measures" },
+  ]);
   const loggedIn = useSelector((state) => state.user.loggedIn);
-  const currentWeight = useSelector((state) => state.currentWeight)
-  console.log(loggedIn)
+  const currentWeight = useSelector((state) => state.currentWeight);
   const dispatch = useDispatch();
 
-  const lst = useSelector((state) => state.multipleWeights)
+  const lst = useSelector((state) => state.multipleWeights);
   useEffect(() => {
-    let data = []
-    lst.names.map((val,index) => {data.push({value: val.title, label: val.title})})
-    setList(data)
-  },[lst])
+    let data = [];
+    lst.names.map((val, index) => {
+      data.push({ value: val.title, label: val.title });
+    });
+    setList(data);
+  }, [lst]);
 
-  const location = useLocation()
+  const location = useLocation();
 
   let sumWeights =
     weights.hab.weight +
@@ -39,9 +46,6 @@ const SelectRestoreWeights = ({
     weights.lcmr.weight +
     weights.cl.weight +
     weights.eco.weight;
-
-
-
 
   const handleNext = () => {
     if (sumWeights !== 100) {
@@ -56,64 +60,69 @@ const SelectRestoreWeights = ({
     dispatch(changeGoalWeights(newValue, goal));
   };
 
-
-
-  const loadSave = (dataSave) =>{
+  const loadSave = (dataSave) => {
     const default_setting = {
-        "hab": {
-            "selected": null,
-            "weight": 0
-        },
-        "wq": {
-            "selected": null,
-            "weight": 0
-        },
-        "lcmr": {
-            "selected": null,
-            "weight": 0
-        },
-        "cl": {
-            "selected": null,
-            "weight": 0
-        },
-        "eco": {
-            "selected": null,
-            "weight": 0
-        }
-    }
-    let measures
-    let direct = "selectRestoreWeights"
-    if(dataSave == "No Saved Measures"){
-      measures = default_setting
-        let keys = Object.keys(measures);
-        keys.map((value,index) => {
-            const newValue = Number(measures[value].weight) > 100 ? 100 : Number(measures[value].weight);
-            dispatch(changeGoalWeights(newValue, value));
-            dispatch(changeMeasures(value, measures[value].selected));
-        })
-    }
-    else{
-      measures = lst.names
-      direct = "reviewAssessSettings"
-      const list_ele = () =>{
-        for(let i=0; i < measures.length; i++){
-          if(measures[i].title == dataSave){
-            return measures[i]
+      hab: {
+        selected: null,
+        weight: 0,
+      },
+      wq: {
+        selected: null,
+        weight: 0,
+      },
+      lcmr: {
+        selected: null,
+        weight: 0,
+      },
+      cl: {
+        selected: null,
+        weight: 0,
+      },
+      eco: {
+        selected: null,
+        weight: 0,
+      },
+    };
+    let measures;
+    let direct = "selectRestoreWeights";
+    if (dataSave == "No Saved Measures") {
+      measures = default_setting;
+      let keys = Object.keys(measures);
+      keys.map((value, index) => {
+        const newValue =
+          Number(measures[value].weight) > 100
+            ? 100
+            : Number(measures[value].weight);
+        dispatch(changeGoalWeights(newValue, value));
+        dispatch(changeMeasures(value, measures[value].selected));
+      });
+    } else {
+      measures = lst.names;
+      direct = "reviewAssessSettings";
+      const list_ele = () => {
+        for (let i = 0; i < measures.length; i++) {
+          if (measures[i].title == dataSave) {
+            return measures[i];
           }
         }
-      }
-      let measures_selected = list_ele()
+      };
+      let measures_selected = list_ele();
       let keys = Object.keys(measures_selected.weight);
-      keys.map((value,index) => {
-          const newValue = Number(measures_selected.weight[value].weight) > 100 ? 100 : Number(measures_selected.weight[value].weight);
-          dispatch(changeGoalWeights(newValue, value));
-          dispatch(changeMeasures(value, measures_selected.weight[value].selected));
-      })
+      keys.map((value, index) => {
+        const newValue =
+          Number(measures_selected.weight[value].weight) > 100
+            ? 100
+            : Number(measures_selected.weight[value].weight);
+        dispatch(changeGoalWeights(newValue, value));
+        dispatch(
+          changeMeasures(value, measures_selected.weight[value].selected)
+        );
+      });
     }
-   
-    dispatch(setCurrentWeight(dataSave))
+
+    dispatch(setCurrentWeight(dataSave));
     setAssessStep(direct);
-}
+  };
 
   return (
     <Container>
@@ -124,23 +133,23 @@ const SelectRestoreWeights = ({
         Rank them by importance to your organization
         <br />
         <br />
-    {(loggedIn === true)?
-    <Select
-    styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-    menuPortalTarget={document.body}
-    options = {list}
-    value={ currentWeight }
-    isClearable={false}
-    name="colors"
-    className="basic-multi-select"
-    classNamePrefix="select"
-    onChange={(value) => {loadSave(value.value)}}
-   />
-    :
-    ""
-    }
-      
-     
+        {loggedIn === true ? (
+          <Select
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            menuPortalTarget={document.body}
+            options={list}
+            value={currentWeight}
+            isClearable={false}
+            name="colors"
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={(value) => {
+              loadSave(value.value);
+            }}
+          />
+        ) : (
+          ""
+        )}
         <span className="glow">Total must add up to 100</span>
       </p>
       {/* 
@@ -257,16 +266,18 @@ const SelectRestoreWeights = ({
         )}
       </span>
       <Container className="add-assess-cont">
-        {
-        (location.pathname !== "/user/measures") ?
-        visualizationScale != "region" && visualizationScale != "state" && (
-          <Button variant="secondary" onClick={() => setAssessStep("selectAOI")}>
-            {arrowIcon} {visualizationScale === "aoi" ? "Select AOI" : "Select AOIs"}
-          </Button>
-        )
-        :
-        ""
-        }
+        {location.pathname !== "/user/measures"
+          ? visualizationScale != "region" &&
+            visualizationScale != "state" && (
+              <Button
+                variant="secondary"
+                onClick={() => setAssessStep("selectAOI")}
+              >
+                {arrowIcon}{" "}
+                {visualizationScale === "aoi" ? "Select AOI" : "Select AOIs"}
+              </Button>
+            )
+          : ""}
         {sumWeights === 100 ? (
           <Button variant="primary" onClick={() => handleNext()}>
             Next

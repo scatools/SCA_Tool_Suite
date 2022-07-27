@@ -2,13 +2,23 @@ import React, { useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { DrawPolygonMode, EditingMode } from "react-map-gl-draw";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faBug } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faBug,
+  faPlus,
+  faChevronRight,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "../Sidebar/Sidebar";
 import Map from "../Map/Map";
 import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
 
 const arrowIcon = (
   <FontAwesomeIcon icon={faArrowRight} color="white" size="lg" />
+);
+
+const expandIcon = (
+  <FontAwesomeIcon icon={faChevronRight} color="white" size="lg" />
 );
 
 const Main = ({
@@ -25,6 +35,8 @@ const Main = ({
   setView,
   setAlertText,
   setAlertType,
+  assessStep,
+  setAssessStep,
 }) => {
   const mapRef = useRef();
   const [mode, setMode] = useState(null);
@@ -45,7 +57,7 @@ const Main = ({
   const [visualizationLayer, setVisualizationLayer] = useState(null);
   const [visualizationFillColor, setVisualizationFillColor] = useState(null);
   const [visualizationOpacity, setVisualizationOpacity] = useState(0);
-	const [showTableContainer, setShowTableContainer] = useState(false);
+  const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
   const [viewport, setViewport] = useState({
     latitude: 27.8,
@@ -120,13 +132,15 @@ const Main = ({
         setView={setView}
         setAlertText={setAlertText}
         setAlertType={setAlertType}
+        assessStep={assessStep}
+        setAssessStep={setAssessStep}
       />
       <div className="content">
         <Button
           style={{
             position: "absolute",
-            top: "10px",
-            left: "-10px",
+            top: "65px",
+            left: "-05px",
             zIndex: 1,
           }}
           className="sidebarControlBtn"
@@ -135,7 +149,7 @@ const Main = ({
             setActiveSidebar(true);
           }}
         >
-          {arrowIcon}
+          {expandIcon}
         </Button>
         <Map
           mapRef={mapRef}
