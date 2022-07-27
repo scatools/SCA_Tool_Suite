@@ -549,10 +549,10 @@ const Assessment = ({
                   <ReactHTMLTableToExcel
                     id="tableDownloadButton"
                     className="downloadButton"
-                    table="assessmentTable"
-                    filename="Assessment Table"
+                    table="assessmentScoreTable"
+                    filename="Goal Scores Table"
                     sheet="Assessment"
-                    buttonText="Raw Data Table"
+                    buttonText="Goal Scores Table"
                   />
                 </Dropdown.Item>
                 <Dropdown.Item variant="dark">
@@ -560,9 +560,9 @@ const Assessment = ({
                     id="tableDownloadButton"
                     className="downloadButton"
                     table="assessmentTable"
-                    filename="Assessment Table"
+                    filename="Measure Scores Table"
                     sheet="Assessment"
-                    buttonText="Scaled Data Table"
+                    buttonText="Measure Scores Table"
                   />
                 </Dropdown.Item>
               </Dropdown.Menu>
