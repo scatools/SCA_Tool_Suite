@@ -14,12 +14,7 @@ import VisualizeAOIView from "./Views/VisualizeAOI/VisualizeAOIView";
 import SidebarMode from "./SidebarMode";
 
 const arrowIcon = (
-  <FontAwesomeIcon
-    icon={faRedo}
-    color="red"
-    size="lg"
-    flip="horizontal"
-  />
+  <FontAwesomeIcon icon={faRedo} color="red" size="lg" flip="horizontal" />
 );
 
 const alertIcon = (
@@ -74,6 +69,8 @@ const Sidebar = ({
   setView,
   setAlertText,
   setAlertType,
+  assessStep,
+  setAssessStep,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -145,6 +142,7 @@ const Sidebar = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+            setAssessStep={setAssessStep}
           />
         )}
         {view === "assess" && (
@@ -161,6 +159,8 @@ const Sidebar = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+            assessStep={assessStep}
+            setAssessStep={setAssessStep}
           />
         )}
         {view === "visualize" && (
@@ -170,6 +170,8 @@ const Sidebar = ({
             setVisualizationOpacity={setVisualizationOpacity}
             zoom={zoom}
             instruction={instruction}
+            setAssessStep={setAssessStep}
+            setView={setView}
           />
         )}
       </div>

@@ -60,10 +60,14 @@
 }
 
 #dismiss:hover,
-#dismiss-detail {
-  background: #fff;
-  color: #6f7072;
+#dismiss-detail,
+#dismiss:hover svg {
+  filter: brightness(80%);
 }
+
+/* #dismiss:hover svg {
+  color: #6f7072;
+} */
 
 #dismiss-detail.active {
   position: fixed;
@@ -219,59 +223,77 @@ nav a:hover {
   margin-top: 10px;
 }
 
-.reportDownloadContainer{
+.reportDownloadContainer {
   position: absolute;
   right: 20px;
   width: fit-content;
 }
 
-.reportDownloadContainer > div{
+.reportDownloadContainer > div {
   margin-bottom: 20px;
 }
 
-.back-to-map > * .dropdown-menu{
-  inset:  0px 0px auto auto !important;
+.back-to-map > * .dropdown-menu {
+  inset: 0px 0px auto auto !important;
 }
 
-#map{
+#map {
   width: 100%;
   height: 25rem;
 }
 
-@media print{
-  *{
+@media print {
+  * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  .assessmentNav{
+  .assessmentNav {
     display: none;
   }
-  .back-to-map{
+  .back-to-map {
     display: none;
   }
-  .back-to-map > *{
+  .back-to-map > * {
     display: none;
   }
-  .back-to-map > button{
+  .back-to-map > button {
     display: none;
   }
 
-  #assessmentOverview{
+  #assessmentOverview {
     margin-top: -10rem;
   }
-  #dataHeading{
+  #dataHeading {
     break-before: always;
   }
-  #map{
+  #map {
     width: 100%;
     height: 25rem;
   }
-  .graphRow{
+  .graphRow {
     flex-wrap: nowrap !important;
   }
-  .buttonGraph{
+  .buttonGraph {
     display: none !important;
   }
+}
+
+.footprintDownload {
+  position: absolute;
+  right: 20px;
+  top: 2%;
+  margin-top: 10px;
+}
+
+#aFootprintDownloadButton {
+  right: 0px;
+  top: 85%;
+}
+
+.tableDownload {
+  position: absolute;
+  right: 0px;
+  top: 205%;
 }
 
 /* 
@@ -282,18 +304,9 @@ nav a:hover {
   margin-top: 20px;
 }
 
-.footprintDownload {
-  position: absolute;
-  right: 20px;
-  top: 2%;
-  margin-top: 10px;
-}
 
-.tableDownload {
-  position: absolute;
-  right: 20px;
-  top: 3%;
-}
+
+
 
 .reportSave {
   position: absolute;
@@ -511,13 +524,13 @@ h4 {
   padding: 10px;
 }
 
-.slider-buttons{
+.slider-buttons {
   display: flex;
   position: relative;
   width: fit-content;
 }
 
-.slider-buttons > button{
+.slider-buttons > button {
   width: 5rem;
   text-align: center;
   background: none;
@@ -526,36 +539,34 @@ h4 {
   min-width: 5rem;
 }
 
-.slider-buttons > button:hover{
+.slider-buttons > button:hover {
   background: none;
   color: rgb(82, 82, 82);
 }
 
-.slider-buttons > button:focus{
+.slider-buttons > button:focus {
   background: none;
   color: rgb(82, 82, 82);
-  box-shadow:none !important;
+  box-shadow: none !important;
 }
-.slider-buttons > button:active{
+.slider-buttons > button:active {
   background-color: rgba(255, 255, 255, 0) !important;
   border-color: rgba(255, 255, 255, 0) !important;
-  color: rgb(82, 82, 82)!important;
+  color: rgb(82, 82, 82) !important;
 }
-.slider-buttons > span{
+.slider-buttons > span {
   background: #50b9ff;
   width: 5rem;
   height: 3px;
   position: absolute;
   left: 0;
   bottom: 0;
-  transition: ease .15s;
+  transition: ease 0.15s;
 }
 
-.slider-buttons > *:hover + span{
+.slider-buttons > *:hover + span {
   left: 50%;
 }
-
-
 
 .modal-footer button.btn.btn-secondary {
   width: initial;
@@ -918,7 +929,7 @@ a img.logo {
 /* Resources Page */
 
 .resources-block {
-	display: flex;
+  display: flex;
   flex-direction: column;
   padding: 10px;
   width: 50%;
@@ -1030,12 +1041,12 @@ a img.logo {
 @media only screen and (max-width: 850px) {
 }
 
-.userMeasures{
+.userMeasures {
   display: flex;
   flex: 1;
 }
 
-.userMeasures > .container{
+.userMeasures > .container {
   padding: 40px;
   background: #fafafa;
   box-sizing: border-box;

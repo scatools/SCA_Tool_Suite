@@ -6,7 +6,7 @@ import {v4 as uuid} from 'uuid';
 const AssessmentScoreTable = ({ aoiScoreCustomized }) => {
     const assessment = useSelector((state) => state.assessment);
 	return (
-		<Table striped bordered size="sm" variant="light">
+		<Table id="assessmentScoreTable" striped bordered size="sm" variant="light">
 			<thead>
 				<tr>
 					<th>Goals</th>
