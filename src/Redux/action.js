@@ -11,10 +11,13 @@ import {
   LOAD_USER_SHAPE_LIST,
   LOAD_USER_REPORT_LIST,
   LOG_IN_USER,
+  RESET_USER_INFO,
   SAVED_WEIGHTS,
+  SAVED_WEIGHTS_RESET,
   MULTIPLE_SAVED_WEIGHTS,
   MULTIPLE_SAVED_WEIGHTS_UPDATE,
-  MULTIPLE_SAVED_WEIGHTS_DELETE
+  MULTIPLE_SAVED_WEIGHTS_DELETE,
+  MULTIPLE_SAVED_WEIGHTS_RESET
 } from "./actionType";
 
 export function loadUser(data) {
@@ -22,6 +25,13 @@ export function loadUser(data) {
     type: LOAD_USER,
     data,
   };
+}
+
+export function resetUser(data){
+  return{
+    type:RESET_USER_INFO,
+    data
+  }
 }
 
 export function loadUserShapeList(data) {
@@ -111,6 +121,15 @@ export const setCurrentWeight = (data) => {
   }
 }
 
+export const currentWeightReset = (data) => {
+  return{
+    type:SAVED_WEIGHTS_RESET,
+    data
+  }
+}
+
+
+
 
 export const mutipleSavedWeights = (data) => dispatch => {
   dispatch({
@@ -137,3 +156,12 @@ export const mutipleSavedWeightsDelete = (data) => dispatch => {
   });
   return Promise.resolve();
 };
+
+
+
+export const mutipleSavedWeightsReset = (data) => {
+  return{
+    type:MULTIPLE_SAVED_WEIGHTS_RESET,
+    data
+  }
+}

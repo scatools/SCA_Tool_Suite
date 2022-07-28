@@ -1,4 +1,4 @@
-import {MULTIPLE_SAVED_WEIGHTS, MULTIPLE_SAVED_WEIGHTS_UPDATE, MULTIPLE_SAVED_WEIGHTS_DELETE} from '../actionType'
+import {MULTIPLE_SAVED_WEIGHTS, MULTIPLE_SAVED_WEIGHTS_UPDATE, MULTIPLE_SAVED_WEIGHTS_DELETE, MULTIPLE_SAVED_WEIGHTS_RESET} from '../actionType'
 
 const Init_State = {names:[{ title: 'No Saved Measures', weight: {
     "hab": {
@@ -46,6 +46,10 @@ const multipleWeightReducer = (state=Init_State, action) =>{
                 ...state,
                 names: state.names.filter((val, ind) => ind !== del_index)
             } 
+        case MULTIPLE_SAVED_WEIGHTS_RESET:
+            return{
+                ...Init_State
+            }
         default:
             return state;
     }

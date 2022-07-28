@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Container, Jumbotron } from "react-bootstrap";
 import axios from "axios";
 import "../App.css";
+import {auth, signInWithCustomToken} from "../Auth/firebase"
 
 const Register = ({
   setLoggedIn,
@@ -18,48 +19,83 @@ const Register = ({
   const [email, setEmail] = useState("");
 
   const onSubmit = async () => {
+    console.log('ss')
     try {
       // For development on local server
-      // const result = await axios.post(
-      //   'http://localhost:5000/register',
-      //   {
-      //     username: username,
-      //     password: password,
-      //     email: email,
-      //     first_name: firstName,
-      //     last_name: lastName,
-      //     is_admin: false
-      //   }
-      // );
-
-      // For production on Heroku
       const result = await axios.post(
-        "https://sca-cpt-backend.herokuapp.com/register",
+        'http://localhost:5000/register',
         {
           username: username,
           password: password,
           email: email,
           first_name: firstName,
           last_name: lastName,
-          is_admin: false,
         }
       );
-
-      if (result) {
-        setLoggedIn(true);
-        setUserLoggedIn(username);
-        history.push("/user");
-        setAlertType("success");
-        setAlertText("You have successfully registered and logged in.");
-        window.setTimeout(() => setAlertText(false), 4000);
+      if(result.data.status === 'success'){
+        signInWithCustomToken(auth, result.data.info)
+        .then((userCredential) => {
+          history.push("/user");
+          setAlertType("success");
+          setAlertText("You have successfully registered and logged in.");
+          window.setTimeout(() => setAlertText(false), 4000);
+        })
+        .catch((error) => {
+          setAlertType("danger");
+          setAlertText(
+            error.message
+          );
+          window.setTimeout(() => setAlertText(false), 4000);
+        });
       }
+      else{
+          setAlertType("danger");
+          setAlertText(
+            result.data.info
+          );
+          window.setTimeout(() => setAlertText(false), 4000);
+      }
+      // For production on Heroku
+      // const result = await axios.post(
+      //   "https://sca-cpt-backend.herokuapp.com/register",
+      //   {
+      //     username: username,
+      //     password: password,
+      //     email: email,
+      //     first_name: firstName,
+      //     last_name: lastName,
+      //     is_admin: false,
+      //   }
+      // );
+
+      // createUserWithEmailAndPassword(auth, email, password)
+      // .then((userCredential) => {
+      //   // Signed in 
+      //   const user = userCredential.user;
+      //   // ...
+      // })
+      // .catch((error) => {
+      //   const errorCode = error.code;
+      //   const errorMessage = error.message;
+      //   // ..
+      // });
+
+
+    //   if (result) {
+    //     setLoggedIn(true);
+    //     setUserLoggedIn(username);
+    //     history.push("/user");
+    //     setAlertType("success");
+    //     setAlertText("You have successfully registered and logged in.");
+    //     window.setTimeout(() => setAlertText(false), 4000);
+    //   }
     } catch (e) {
-      setAlertType("danger");
-      setAlertText(
-        "There was an error! Please try again, or contact us for more help."
-      );
-      window.setTimeout(() => setAlertText(false), 4000);
-      console.error(e);
+    //   setAlertType("danger");
+    //   setAlertText(
+    //     "There was an error! Please try again, or contact us for more help."
+    //   );
+    //   window.setTimeout(() => setAlertText(false), 4000);
+    //   console.error(e);
     }
   };
 

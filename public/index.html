@@ -71,6 +71,11 @@
       #pre-loader h2 {
         color: white;
         text-align: center;
+        font-family: sans-serif;
+      }
+      #pre-loader > img{
+        height: 11rem;
+        object-fit: contain;
       }
     </style>
   </head>
@@ -79,8 +84,8 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
       <div id="pre-loader">
+        <img src="loading.svg" />
         <h2>Compiling A Lot Of Information...</h2>
-        <img src="https://media.giphy.com/media/3o7bu3XilJ5BOiSGic/giphy.gif" />
       </div>
     </div>
     <!--

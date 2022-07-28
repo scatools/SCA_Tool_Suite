@@ -16,12 +16,12 @@ import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
 import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView"
+import { useSelector } from "react-redux";
 
 const Routes = ({
   setReportLink,
   setLoggedIn,
-  userLoggedIn,
-  setUserLoggedIn,
+  setUserLoggedIn
 }) => {
   const [aoiSelected, setAoiSelected] = useState(null);
   const [aoiAssembled, setAoiAssembled] = useState([]);
@@ -43,7 +43,7 @@ const Routes = ({
   const [visualizationFillColor, setVisualizationFillColor] = useState(null);
   const [visualizationOpacity, setVisualizationOpacity] = useState(0);
   const [visualizationScale, setVisualizationScale] = useState(null);
-
+  const userLoggedIn = useSelector((state) => state.user.loggedIn)
   return (
     <>
       <Switch>
@@ -87,7 +87,8 @@ const Routes = ({
           <Logout setLoggedIn={setLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Route>
         <Route exact path="/user">
-          {(userLoggedIn !== null)
+          {console.log(userLoggedIn)}
+          {(userLoggedIn !== false && userLoggedIn !== null)
           ?
             <UserData
               userLoggedIn={userLoggedIn}

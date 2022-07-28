@@ -4,7 +4,9 @@ import NavBar from "../Components/NavBar";
 import Routes from "./Routes";
 import LoadingOverlay from "react-loading-overlay";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { getWeightsThunk } from "../Redux/thunk"
+import { getWeightsThunk, loginUserThunk } from "../Redux/thunk"
+import {auth, onAuthStateChanged} from "../Auth/firebase"
+import axios from "axios";
 
 
 function App(props) {
@@ -12,13 +14,35 @@ function App(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(null);
   const logIn = useSelector((state) => (state.user.loggedIn))
+    const [finishLoad, setFinishLoad] = useState(true)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if(logIn === true){
-      dispatch(getWeightsThunk)
+    const trackUser = async () => {
+      if(logIn === true){
+        await dispatch(loginUserThunk)
+        dispatch(getWeightsThunk)
+      }
     }
+    trackUser()
+   
   },[logIn])
+  
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          await dispatch(loginUserThunk)
+        } catch (error) {
+          
+        }
+      } 
+      setFinishLoad(false)
+    })
+  }, [])
+
+  
+
   return (
     <LoadingOverlay
       className="myLoading"
@@ -41,17 +65,22 @@ function App(props) {
           position: "relative",
         }}
       >
+        {(finishLoad !== true) ?
+        <>
         <NavBar
-          reportLink={reportLink}
-          loggedIn={loggedIn}
-          userLoggedIn={userLoggedIn}
-        />
-        <Routes
-          setReportLink={setReportLink}
-          setLoggedIn={setLoggedIn}
-          userLoggedIn={userLoggedIn}
-          setUserLoggedIn={setUserLoggedIn}
-        />
+        reportLink={reportLink}
+        loggedIn={loggedIn}
+        userLoggedIn={userLoggedIn}
+      />
+      <Routes
+        setReportLink={setReportLink}
+        setLoggedIn={setLoggedIn}
+        userLoggedIn={userLoggedIn}
+        setUserLoggedIn={setUserLoggedIn}
+      />
+        </>
+        : ""}
+        
       </div>
     </LoadingOverlay>
   );

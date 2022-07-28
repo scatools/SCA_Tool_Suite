@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Container, Jumbotron } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "../App.css";
 import { logInUser } from "../Redux/action";
+import { auth, signInWithEmailAndPassword } from "../Auth/firebase";
 
 
 const Login = ({
@@ -19,38 +20,72 @@ const Login = ({
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
-  console.log("this is before dispatch");
-  console.log(user);
+  useEffect(() => {
+    if(user.loggedIn == true){
+      history.push("/user");
+    }
+  }, [user])
 
   const onSubmit = async () => {
     // For development on local server
+    const result = await axios.post(
+      'http://localhost:5000/login',
+      { username: username, password: password }
+    );
+    if(result.data.status !== "success"){
+      setAlertType("danger");
+      setAlertText("Invalid username or password! Please enter again.");
+      window.setTimeout(() => setAlertText(false), 4000);
+    }
+    else{
+      try {
+        await signInWithEmailAndPassword(auth, result.data.info, password)
+          setAlertType("success");
+          setAlertText("You have successfully logged in.");
+          window.setTimeout(() => setAlertText(false), 4000);
+      } catch (error) {
+        if(error.code == 'auth/invalid-email'){
+            setAlertType("danger");
+            setAlertText("Invalid username or password! Please enter again.");
+            window.setTimeout(() => setAlertText(false), 4000);
+        }
+        else if(error.code == 'auth/wrong-password'){
+            setAlertType("danger");
+            setAlertText("Invalid username or password! Please enter again.");
+            window.setTimeout(() => setAlertText(false), 4000);
+        }
+        else{
+            setAlertType("danger");
+            setAlertText("Account error - may be disabled.");
+            window.setTimeout(() => setAlertText(false), 4000);
+        }
+      }
+    }
+    
+      
+     
+    // For production on Heroku
     // const result = await axios.post(
-    //   'http://localhost:5000/login',
+    //   "https://sca-cpt-backend.herokuapp.com/login",
     //   { username: username, password: password }
     // );
 
-    // For production on Heroku
-    const result = await axios.post(
-      "https://sca-cpt-backend.herokuapp.com/login",
-      { username: username, password: password }
-    );
-
-    dispatch(logInUser(true, username));
-    if (result.data.credentials.length === 0) {
-      setAlertType("danger");
-      setAlertText("Username doesn't exist! Please register.");
-      window.setTimeout(() => setAlertText(false), 4000);
-    } else if (!result.data.validLogin) {
-      setAlertType("danger");
-      setAlertText("Incorrect password! Please enter again.");
-      window.setTimeout(() => setAlertText(false), 4000);
-    } else {
-      setUserLoggedIn(username);
-      history.push("/user");
-      setAlertType("success");
-      setAlertText("You have successfully logged in.");
-      window.setTimeout(() => setAlertText(false), 4000);
-    }
+    // dispatch(logInUser(true, username));
+    // if (result.data.credentials.length === 0) {
+    //   setAlertType("danger");
+    //   setAlertText("Username doesn't exist! Please register.");
+    //   window.setTimeout(() => setAlertText(false), 4000);
+    // } else if (!result.data.validLogin) {
+    //   setAlertType("danger");
+    //   setAlertText("Incorrect password! Please enter again.");
+    //   window.setTimeout(() => setAlertText(false), 4000);
+    // } else {
+    //   setUserLoggedIn(username);
+    //   history.push("/user");
+    //   setAlertType("success");
+    //   setAlertText("You have successfully logged in.");
+    //   window.setTimeout(() => setAlertText(false), 4000);
+    // }
   };
 
   return (
