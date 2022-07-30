@@ -16,6 +16,7 @@ import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
 import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView"
+import ForgotPassword from "../User/ForgotPassword"
 import { useSelector } from "react-redux";
 
 const Routes = ({
@@ -49,6 +50,12 @@ const Routes = ({
       <Switch>
         <Route exact path="/">
           <Homepage setUseCase={setUseCase} setView={setView}/>
+        </Route>
+        <Route exact path="/forgotPassword">
+          <ForgotPassword
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+            />
         </Route>
         <Route exact path="/tool">
           <Main

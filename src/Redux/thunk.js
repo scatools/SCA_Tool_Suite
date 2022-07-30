@@ -53,8 +53,7 @@ export const loginUserThunk = async (dispatch, getState) => {
         }
     } catch (error) {
         dispatch(resetUser())
-    }
-        
+    }      
 }
 
 export const logoutUserThunk = async (dispatch) => {

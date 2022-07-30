@@ -4,7 +4,11 @@ getAuth,
 onAuthStateChanged, 
 signInWithEmailAndPassword, 
 signOut,
-signInWithCustomToken
+signInWithCustomToken,
+sendPasswordResetEmail,
+checkActionCode,
+applyActionCode,
+confirmPasswordReset
 } from 'firebase/auth';
 
 
@@ -28,5 +32,9 @@ auth,
 signInWithCustomToken,
 onAuthStateChanged,
 signInWithEmailAndPassword,
-signOut
+signOut,
+sendPasswordResetEmail,
+checkActionCode,
+applyActionCode,
+confirmPasswordReset
 }
