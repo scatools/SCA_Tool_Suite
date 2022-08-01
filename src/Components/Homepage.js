@@ -117,25 +117,11 @@ const Homepage = ({ setUseCase, setView }) => {
       <h6 style={{ textAlign: "center" }}>BROUGHT TO YOU BY</h6>
       <div className="logo-container-homepage">
         <a
-          href="https://www.restorethegulf.gov/"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <img
-            className="logo"
-            src="/Logo_RESTORE.png"
-            alt="restore council logo"
-          />
-        </a>
-        <a
           href="https://www.fwrc.msstate.edu/"
           rel="noreferrer"
           target="_blank"
         >
           <img className="logo" src="/Logo_FWRC.png" alt="fwrc msu logo" />
-        </a>
-        <a href="https://www.fws.gov/" rel="noreferrer" target="_blank">
-          <img className="logo" src="/Logo_USFWS.png" alt="fws logo" />
         </a>
       </div>
     </div>
