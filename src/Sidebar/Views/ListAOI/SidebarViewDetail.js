@@ -1,17 +1,35 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Accordion, Button, Card, Container, FormControl, InputGroup, Modal } from "react-bootstrap";
+import {
+  Accordion,
+  Button,
+  Card,
+  Container,
+  FormControl,
+  InputGroup,
+  Modal,
+} from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { MdViewList, MdEdit, MdDelete, MdSave } from "react-icons/md";
 import { HiDocumentReport } from "react-icons/hi";
 import { FaFileExport } from "react-icons/fa";
 import { IoFileTrayFull } from "react-icons/io5";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle,  faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faExclamationCircle,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
 import { download } from "shp-write";
 import axios from "axios";
 import { delete_aoi, edit_aoi, setLoader } from "../../../Redux/action";
-import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
+import {
+  calculateArea,
+  aggregate,
+  getStatus,
+} from "../../../Helper/aggregateHex";
+import { WebMercatorViewport } from "react-map-gl";
+
+import bbox from "@turf/bbox";
 
 const alertIcon = (
   <FontAwesomeIcon
@@ -42,6 +60,9 @@ const SidebarViewDetail = ({
   setShowTableContainer,
   setAlertText,
   setAlertType,
+  aoiFullList,
+  setAoiSelected,
+  setViewport,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
     (aoi) => aoi.id === aoiSelected
@@ -56,13 +77,13 @@ const SidebarViewDetail = ({
   const [showButtonLabel, setShowButtonLabel] = useState("Show Hexagon Grid");
   const [showButtonDisabled, setShowButtonDisabled] = useState(false);
   const [deselectButtonState, setDeselectButtonState] = useState("deselect");
-  const [deselectButtonLabel, setDeselectButtonLabel] = useState("Deselect Hexagon");
+  const [deselectButtonLabel, setDeselectButtonLabel] =
+    useState("Deselect Hexagon");
   const [deselectButtonDisabled, setDeselectButtonDisabled] = useState(true);
   const [confirmButtonDisabled, setConfirmButtonDisabled] = useState(true);
   const [confirmShow, setConfirmShow] = useState(false);
 
   const modifyShape = () => {
-    console.log(aoiList[0]);
     if (modifyButtonState === "modify") {
       setModifyButtonState("finalize");
       setModifyButtonLabel("Finalize Shape");
@@ -181,8 +202,8 @@ const SidebarViewDetail = ({
           // Shrink the size of input shapes so that the hexagons only sharing mutual sides won't be involved
           const coordinates = geometry.coordinates[0][0].map(
             (coords, index) => {
-              var longitude = coords[0];
-              var latitude = coords[1];
+              let longitude = coords[0];
+              let latitude = coords[1];
               if (index === 0 || index === 6) {
                 longitude = coords[0] - 0.0001;
               } else if (index === 1 || index === 2) {
@@ -338,7 +359,7 @@ const SidebarViewDetail = ({
       console.error(e);
     }
   };
-  
+
   const showPlan = () => {
     setShowTableContainer(true);
   };
@@ -403,11 +424,11 @@ const SidebarViewDetail = ({
                 variant="dark"
                 className="ml-1"
                 onClick={() => {
-                  var aoiGeoJson = {
+                  let aoiGeoJson = {
                     type: "FeatureCollection",
                     features: aoiList[0].geometry,
                   };
-                  var options = {
+                  let options = {
                     folder: "Spatial Footprint",
                     types: {
                       polygon: aoiList[0].name,
@@ -576,8 +597,9 @@ const SidebarViewDetail = ({
             <Button
               variant="danger"
               onClick={() => {
+                let toDelete = aoiList[0].id;
                 setActiveTable(false);
-                dispatch(delete_aoi(aoiList[0].id));
+                dispatch(delete_aoi(toDelete));
                 setConfirmShow(false);
               }}
             >
