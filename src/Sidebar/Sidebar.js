@@ -59,6 +59,7 @@ const Sidebar = ({
   editMode,
   setVisualizationSource,
   setVisualizationLayer,
+  setVisualizaitonHighlight,
   setVisualizationFillColor,
   visualizationOpacity,
   setVisualizationOpacity,
@@ -96,6 +97,7 @@ const Sidebar = ({
             setVisualizationScale={setVisualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
+            setVisualizaitonHighlight={setVisualizaitonHighlight}
             setView={setView}
           />
         )}
@@ -154,6 +156,7 @@ const Sidebar = ({
             visualizationScale={visualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
+            setVisualizaitonHighlight={setVisualizaitonHighlight}
             setVisualizationFillColor={setVisualizationFillColor}
             setVisualizationOpacity={setVisualizationOpacity}
             setView={setView}

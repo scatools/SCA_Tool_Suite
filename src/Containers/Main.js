@@ -12,6 +12,7 @@ import {
 import Sidebar from "../Sidebar/Sidebar";
 import Map from "../Map/Map";
 import AoiDetailTable from "../Sidebar/Views/ListAOI/AoiDetailTable";
+import HexagonScoreTable from "../Sidebar/Views/VisualizeAOI/HexagonScoreTable";
 
 const arrowIcon = (
   <FontAwesomeIcon icon={faArrowRight} color="white" size="lg" />
@@ -55,8 +56,10 @@ const Main = ({
   const [hexFilterList, setHexFilterList] = useState([]);
   const [visualizationSource, setVisualizationSource] = useState(null);
   const [visualizationLayer, setVisualizationLayer] = useState(null);
+  const [visualizationHighlight, setVisualizaitonHighlight] = useState(null);
   const [visualizationFillColor, setVisualizationFillColor] = useState(null);
   const [visualizationOpacity, setVisualizationOpacity] = useState(0);
+  const [visualizedHexagon, setVisualizedHexagon] = useState(null);
   const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
   const [viewport, setViewport] = useState({
@@ -87,6 +90,9 @@ const Main = ({
       <AoiDetailTable
         activeTable={activeTable}
         setActiveTable={setActiveTable}
+      />
+      <HexagonScoreTable
+        visualizedHexagon={visualizedHexagon}
       />
       <Sidebar
         mapRef={mapRef}
@@ -122,6 +128,7 @@ const Main = ({
         editMode={editMode}
         setVisualizationSource={setVisualizationSource}
         setVisualizationLayer={setVisualizationLayer}
+        setVisualizaitonHighlight={setVisualizaitonHighlight}
         setVisualizationFillColor={setVisualizationFillColor}
         visualizationOpacity={visualizationOpacity}
         setVisualizationOpacity={setVisualizationOpacity}
@@ -173,8 +180,10 @@ const Main = ({
           hexFilterList={hexFilterList}
           visualizationSource={visualizationSource}
           visualizationLayer={visualizationLayer}
+          visualizationHighlight={visualizationHighlight}
           visualizationFillColor={visualizationFillColor}
           visualizationOpacity={visualizationOpacity}
+          setVisualizedHexagon={setVisualizedHexagon}
           showTableContainer={showTableContainer}
           setShowTableContainer={setShowTableContainer}
           zoom={zoom}

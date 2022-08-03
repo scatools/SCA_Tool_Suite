@@ -20,7 +20,13 @@ import {
   txVisualizationHighlight,
 } from "../../../Map/layerStyle";
 
-const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSource, setVisualizationLayer }) => {
+const VisualizationByState = ({
+  setView,
+  setVisualizeStep,
+  setVisualizationSource,
+  setVisualizationLayer,
+  setVisualizaitonHighlight
+}) => {
   const [selectedState, setSelectedState] = useState(null);
   const onClick = (e) => {
     setSelectedState(e.target.value);
@@ -39,6 +45,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSourc
             onClick(e);
             setVisualizationSource(alLayerSource);
             setVisualizationLayer(alVisualizationLayer);
+            setVisualizaitonHighlight(alVisualizationHighlight);
           }}
         >
           Alabama
@@ -50,6 +57,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSourc
             onClick(e);
             setVisualizationSource(flLayerSource);
             setVisualizationLayer(flVisualizationLayer);
+            setVisualizaitonHighlight(flVisualizationHighlight);
           }}
         >
           Florida
@@ -61,6 +69,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSourc
             onClick(e);
             setVisualizationSource(laLayerSource);
             setVisualizationLayer(laVisualizationLayer);
+            setVisualizaitonHighlight(laVisualizationHighlight);
           }}
         >
           Louisiana
@@ -72,6 +81,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSourc
             onClick(e);
             setVisualizationSource(msLayerSource);
             setVisualizationLayer(msVisualizationLayer);
+            setVisualizaitonHighlight(msVisualizationHighlight);
           }}
         >
           Mississippi
@@ -83,6 +93,7 @@ const VisualizationByState = ({ setView, setVisualizeStep, setVisualizationSourc
             onClick(e);
             setVisualizationSource(txLayerSource);
             setVisualizationLayer(txVisualizationLayer);
+            setVisualizaitonHighlight(txVisualizationHighlight);
           }}
         >
           Texas

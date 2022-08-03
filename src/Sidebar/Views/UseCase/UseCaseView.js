@@ -8,6 +8,7 @@ const UseCaseView = ({
   setVisualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
+  setVisualizaitonHighlight,
   setView
 }) => {
   useEffect(() =>{
@@ -27,6 +28,7 @@ const UseCaseView = ({
           setVisualizationScale={setVisualizationScale}
           setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
+          setVisualizaitonHighlight={setVisualizaitonHighlight}
         />
       )}
     </Container>

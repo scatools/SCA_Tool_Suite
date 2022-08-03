@@ -8,7 +8,8 @@ const SelectVisualizeScale = ({
   setVisualizeStep,
   setVisualizationScale,
   setVisualizationSource,
-  setVisualizationLayer
+  setVisualizationLayer,
+  setVisualizaitonHighlight
 }) => {
   return (
     <div>
@@ -21,6 +22,7 @@ const SelectVisualizeScale = ({
             setVisualizationScale("region");
             setVisualizationSource(gcrLayerSource);
             setVisualizationLayer(gcrVisualizationLayer);
+            setVisualizaitonHighlight(gcrVisualizationHighlight);
             setView("assess");
           }}
         >

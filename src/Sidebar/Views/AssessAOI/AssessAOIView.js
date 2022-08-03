@@ -14,6 +14,7 @@ const AssessAOIView = ({
   visualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
+  setVisualizaitonHighlight,
   setVisualizationFillColor,
   setVisualizationOpacity,
   setView,
@@ -47,6 +48,7 @@ const AssessAOIView = ({
           setAoiAssembled={setAoiAssembled}
           setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
+          setVisualizaitonHighlight={setVisualizaitonHighlight}
           setView={setView}
           setAlertText={setAlertText}
           setAlertType={setAlertType}

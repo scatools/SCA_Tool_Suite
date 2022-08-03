@@ -6,7 +6,8 @@ const VisualizationCases = ({
   setView,
   setVisualizationScale,
   setVisualizationSource,
-  setVisualizationLayer
+  setVisualizationLayer,
+  setVisualizaitonHighlight
 }) => {
   const [visualizeStep, setVisualizeStep] = useState("selectScale");
   return (
@@ -18,6 +19,7 @@ const VisualizationCases = ({
           setVisualizationScale={setVisualizationScale}
           setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
+          setVisualizaitonHighlight={setVisualizaitonHighlight}
         />
       )}
       {visualizeStep === "selectState" && (
@@ -26,6 +28,7 @@ const VisualizationCases = ({
           setVisualizeStep={setVisualizeStep}
           setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
+          setVisualizaitonHighlight={setVisualizaitonHighlight}
         />
       )}
     </div>

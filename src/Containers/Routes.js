@@ -39,12 +39,6 @@ const Routes = ({
   const [useCase, setUseCase] = useState(null);
   const [assessStep, setAssessStep] = useState("selectAOI");
 
-  const [visualizationSource, setVisualizationSource] = useState(null);
-  const [visualizationLayer, setVisualizationLayer] = useState(null);
-  const [visualizationFillColor, setVisualizationFillColor] = useState(null);
-  const [visualizationOpacity, setVisualizationOpacity] = useState(0);
-  const [visualizationScale, setVisualizationScale] = useState(null);
-
   return (
     <>
       <Switch>
@@ -109,6 +103,28 @@ const Routes = ({
         <Route exact path="/user/report">
           <UserReport reportScript={reportScript} />
         </Route>
+        <Route exact path="/user/measures">
+          <div className="userMeasures">
+            <AssessAOIView
+              useCase={useCase}
+              userLoggedIn={userLoggedIn}
+              aoiAssembled={aoiAssembled}
+              setAoiAssembled={setAoiAssembled}
+              customizedMeasures={customizedMeasures}
+              visualizationScale={null}
+              setVisualizationSource={null}
+              setVisualizationLayer={null}
+              setVisualizaitonHighlight={null}
+              setVisualizationFillColor={null}
+              setVisualizationOpacity={0}
+              setView={setView}
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+              assessStep={assessStep}
+              setAssessStep={setAssessStep}
+            />
+          </div>
+        </Route>
         <Route exact path="/resources">
           <Resources />
         </Route>
@@ -118,28 +134,6 @@ const Routes = ({
         <Route exact path="/contact">
           <Contact />
         </Route>
-        <Route exact path="/user/measures">
-          <div className="userMeasures">
-            <AssessAOIView
-              useCase={useCase}
-              userLoggedIn={userLoggedIn}
-              aoiAssembled={aoiAssembled}
-              setAoiAssembled={setAoiAssembled}
-              customizedMeasures={customizedMeasures}
-              visualizationScale={visualizationScale}
-              setVisualizationSource={setVisualizationSource}
-              setVisualizationLayer={setVisualizationLayer}
-              setVisualizationFillColor={setVisualizationFillColor}
-              setVisualizationOpacity={setVisualizationOpacity}
-              setView={setView}
-              setAlertText={setAlertText}
-              setAlertType={setAlertType}
-              assessStep={assessStep}
-              setAssessStep={setAssessStep}
-            />
-          </div>
-        </Route>
-
         <Route exact path="/plans">
           <PlanTable setAlertText={setAlertText} setAlertType={setAlertType} />
         </Route>

@@ -17,6 +17,7 @@ const SelectAOIForAssess = ({
   setAoiAssembled,
   setVisualizationSource,
   setVisualizationLayer,
+  setVisualizaitonHighlight,
   setView,
   setAlertText,
   setAlertType,
@@ -66,6 +67,15 @@ const SelectAOIForAssess = ({
         setVisualizationLayer({
           id: "aoi-visualization",
           type: "fill",
+        });
+        setVisualizaitonHighlight({
+          id: "aoi-highlight",
+          type: "fill",
+          paint: {
+            'fill-outline-color': '#484896',
+            'fill-color': '#6e599f',
+            'fill-opacity': 0.75
+          }
         });
         setAssessStep("selectRestoreWeights");
       } else {

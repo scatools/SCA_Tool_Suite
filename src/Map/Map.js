@@ -37,8 +37,10 @@ const Map = ({
   hexFilterList,
   visualizationSource,
   visualizationLayer,
+  visualizationHighlight,
   visualizationFillColor,
   visualizationOpacity,
+  setVisualizedHexagon,
   showTableContainer,
   setShowTableContainer,
   zoom,
@@ -59,6 +61,7 @@ const Map = ({
   const [clickedProperty, setClickedProperty] = useState(null);
   const [filter, setFilter] = useState(["in", "HUC12", "default"]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
+  const [visualizationFilter, setVisualizationFilter] = useState(["in", "OBJECTID", "default"]);
   const editorRef = useRef(null);
 
   // Up to 10 colors for 10 different AOIs
@@ -109,6 +112,20 @@ const Map = ({
       setShowTableContainer(true);
     } else if (useCase === "inventory" && aoiSelected != false) {
 			setCoordinates([undefined, undefined]);
+    };
+
+    if (
+      useCase === "visualization" &&
+      !drawingMode &&
+      !hucBoundary &&
+      !hexGrid &&
+      visualizationSource && 
+      visualizationLayer && 
+      visualizationFillColor && 
+      visualizationOpacity > 0 &&
+      viewport.zoom >= 10
+    ) {
+      setInteractiveLayerIds(["visualization-layer"]);
     };
     
     if (e.features) {
@@ -266,6 +283,7 @@ const Map = ({
         <Source {...visualizationSource}>
           <Layer
             {...visualizationLayer}
+            id="visualization-layer"
             paint={{
               "fill-color": visualizationFillColor,
               "fill-opacity": [
@@ -276,7 +294,11 @@ const Map = ({
               ],
             }}
           />
-          {/* <Layer {...gcrVisualizationHighlight} filter={filter} /> */}
+          <Layer
+            {...visualizationHighlight}
+            id="visualization-highlight"
+            filter={visualizationFilter}
+          />
         </Source>
         <Legend
           aoiList={[]}
@@ -346,8 +368,7 @@ const Map = ({
           label: clickedProperty.HUC12,
         });
         setFilter(["in", "HUC12", clickedProperty.HUC12]);
-      }
-      // console.log(hucIDSelected);
+      };
 
       // For hex grid layer, same hexagon won't be counted twice
       if (
@@ -356,20 +377,26 @@ const Map = ({
       ) {
         // Array hexIDDeselected is stored in a simple array format
         hexIDDeselected.push(clickedProperty.objectid);
-        // console.log(hexIDDeselected);
         setHexFilter(["in", "objectid", clickedProperty.objectid]);
-      }
-    }
+      };
+
+      // For visualization layer
+      if (
+        useCase === "visualization" &&
+        clickedProperty.OBJECTID
+      ) {
+        setVisualizedHexagon(clickedProperty);
+        setVisualizationFilter(["in", "OBJECTID", clickedProperty.OBJECTID]);
+      };
+    };
   }, [clickedProperty, hexIDDeselected, hucIDSelected]);
 
   useEffect(() => {
     filterList.push(filter);
-    // console.log(filterList);
   }, [filter, filterList]);
 
   useEffect(() => {
     hexFilterList.push(hexFilter);
-    // console.log(hexFilterList);
   }, [hexFilter, hexFilterList]);
   
   useEffect(() => {

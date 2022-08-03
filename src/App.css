@@ -304,10 +304,6 @@ nav a:hover {
   margin-top: 20px;
 }
 
-
-
-
-
 .reportSave {
   position: absolute;
   right: 20px;
@@ -318,7 +314,8 @@ nav a:hover {
   position: absolute;
   right: 20px;
   top: 4%;
-} */
+} 
+*/
 
 .downloadButton {
   height: 40px;
@@ -452,7 +449,6 @@ button.sidebarControlBtn.btn.btn-secondary {
 
 #sidebar .instruction p {
   margin: 0;
-
   font-size: 16px;
 }
 
@@ -784,6 +780,25 @@ a img.logo {
   width: 40px !important;
   height: 40px !important;
 }
+
+/* Hexagon score table */
+
+.score-table {
+  position: absolute;
+  top: 56px;
+  width: 500px;
+  height: 94.3vh;
+  right: -500px;
+  z-index: 10;
+  overflow-y: scroll;
+  transition: all 0.3s;
+}
+
+.score-table.active {
+  right: 0;
+}
+
+/* Report and assessment */
 
 #reportSaveButton,
 #assessmentSaveButton {

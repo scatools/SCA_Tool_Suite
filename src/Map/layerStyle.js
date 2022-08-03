@@ -1,5 +1,4 @@
 export const scaBoundaryLayer = {
-	id: 'sca-boundary',
 	'source-layer': 'SCA_Boundry-13ifc0',
 	type: 'fill',
 	paint: {
@@ -12,7 +11,6 @@ export const scaBoundaryLayer = {
 };
 
 export const gcrVisualizationLayer = {
-	id: 'gulf-coast-region',
 	'source-layer': 'sca_landonly_withdata7_rename',
 	type: 'fill',
 	minzoom: 0,
@@ -20,10 +18,8 @@ export const gcrVisualizationLayer = {
 };
 
 export const gcrVisualizationHighlight = {
-	id: 'gulf-coast-region-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata7_rename',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
@@ -32,7 +28,6 @@ export const gcrVisualizationHighlight = {
 };
 
 export const alVisualizationLayer = {
-	id: 'alabama',
 	'source-layer': 'sca_landonly_withdata8_al',
 	type: 'fill',
 	minzoom: 0,
@@ -40,10 +35,8 @@ export const alVisualizationLayer = {
 };
 
 export const alVisualizationHighlight = {
-	id: 'alabama-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata8_al',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
@@ -52,7 +45,6 @@ export const alVisualizationHighlight = {
 };
 
 export const flVisualizationLayer = {
-	id: 'florida',
 	'source-layer': 'sca_landonly_withdata8_fl',
 	type: 'fill',
 	minzoom: 0,
@@ -60,10 +52,8 @@ export const flVisualizationLayer = {
 };
 
 export const flVisualizationHighlight = {
-	id: 'florida-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata8_fl',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
@@ -72,7 +62,6 @@ export const flVisualizationHighlight = {
 };
 
 export const laVisualizationLayer = {
-	id: 'louisiana',
 	'source-layer': 'sca_landonly_withdata8_la',
 	type: 'fill',
 	minzoom: 0,
@@ -80,10 +69,8 @@ export const laVisualizationLayer = {
 };
 
 export const laVisualizationHighlight = {
-	id: 'louisiana-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata8_la',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
@@ -92,7 +79,6 @@ export const laVisualizationHighlight = {
 };
 
 export const msVisualizationLayer = {
-	id: 'mississippi',
 	'source-layer': 'sca_landonly_withdata8_ms',
 	type: 'fill',
 	minzoom: 0,
@@ -100,10 +86,8 @@ export const msVisualizationLayer = {
 };
 
 export const msVisualizationHighlight = {
-	id: 'mississippi-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata8_ms',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
@@ -112,7 +96,6 @@ export const msVisualizationHighlight = {
 };
 
 export const txVisualizationLayer = {
-	id: 'texas',
 	'source-layer': 'sca_landonly_withdata8_tx',
 	type: 'fill',
 	minzoom: 0,
@@ -120,10 +103,8 @@ export const txVisualizationLayer = {
 };
 
 export const txVisualizationHighlight = {
-	id: 'texas-highlight',
-	type: 'fill',
-	// source: 'cvt',
 	'source-layer': 'sca_landonly_withdata8_tx',
+	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
 		'fill-color': '#6e599f',
