@@ -113,20 +113,6 @@ const Map = ({
     } else if (useCase === "inventory" && aoiSelected != false) {
 			setCoordinates([undefined, undefined]);
     };
-
-    if (
-      useCase === "visualization" &&
-      !drawingMode &&
-      !hucBoundary &&
-      !hexGrid &&
-      visualizationSource && 
-      visualizationLayer && 
-      visualizationFillColor && 
-      visualizationOpacity > 0 &&
-      viewport.zoom >= 10
-    ) {
-      setInteractiveLayerIds(["visualization-layer"]);
-    };
     
     if (e.features) {
       const featureClicked = e.features[0];
@@ -340,19 +326,35 @@ const Map = ({
   }, [editAOI, aoiList, drawingMode, aoiSelected]);
 
   useEffect(() => {
-    if (hucBoundary) {
-      setInteractiveLayerIds(["huc"]);
-    } else if (hexGrid && hexDeselection) {
+    if (hexGrid && hexDeselection) {
       setInteractiveLayerIds(["hex"]);
+    } else if (hucBoundary) {
+      setInteractiveLayerIds(["huc"]);
+    } else if (
+      useCase === "visualization" &&
+      !drawingMode &&
+      visualizationSource && 
+      visualizationLayer && 
+      visualizationFillColor && 
+      visualizationOpacity > 0 &&
+      viewport.zoom >= 10
+    ) {
+      setInteractiveLayerIds(["visualization-layer"]);
     } else if (!drawingMode) {
       setInteractiveLayerIds([]);
-    }
+    };
   }, [
     drawingMode,
-    hexDeselection,
     hexGrid,
+    hexDeselection,
     hucBoundary,
-    setInteractiveLayerIds,
+    useCase,
+    viewport,
+    visualizationSource,
+    visualizationLayer,
+    visualizationFillColor,
+    visualizationOpacity,
+    setInteractiveLayerIds
   ]);
 
   useEffect(() => {
