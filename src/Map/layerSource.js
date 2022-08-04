@@ -1,6 +1,6 @@
 export const gcrLayerSource = {
 	type: "vector",
-	url: "mapbox://chuck0520.2jhtgjk6",
+	url: "mapbox://chuck0520.6trigg55",
 	maxzoom: 22,
 	minzoom: 0
 };

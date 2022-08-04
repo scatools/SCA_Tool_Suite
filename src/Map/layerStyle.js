@@ -11,14 +11,14 @@ export const scaBoundaryLayer = {
 };
 
 export const gcrVisualizationLayer = {
-	'source-layer': 'sca_landonly_withdata7_rename',
+	'source-layer': 'sca_landonly_withdata8_rename',
 	type: 'fill',
 	minzoom: 0,
 	maxzoom: 22
 };
 
 export const gcrVisualizationHighlight = {
-	'source-layer': 'sca_landonly_withdata7_rename',
+	'source-layer': 'sca_landonly_withdata8_rename',
 	type: 'fill',
 	paint: {
 		'fill-outline-color': '#484896',
