@@ -251,7 +251,7 @@ const Assessment = ({
       '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">' +
       '<link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">' +
       '<script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>' +
-      '<link rel="stylesheet" href="https://sca-cpt-frontend.herokuapp.com/App.css"/>' +
+      '<link rel="stylesheet" href="https://raw.githubusercontent.com/scatools/SCA_Tool_Suite/main/src/App.css"/>' +
       '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" ' +
       'integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" ' +
       'crossorigin="anonymous"/>' +
@@ -347,7 +347,7 @@ const Assessment = ({
         '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">' +
         '<link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">' +
         '<script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>' +
-        '<link rel="stylesheet" href="https://sca-cpt-frontend.herokuapp.com/App.css"/>' +
+        '<link rel="stylesheet" href="https://raw.githubusercontent.com/scatools/SCA_Tool_Suite/main/src/App.css"/>' +
         '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" ' +
         'integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" ' +
         'crossorigin="anonymous"/>' +
