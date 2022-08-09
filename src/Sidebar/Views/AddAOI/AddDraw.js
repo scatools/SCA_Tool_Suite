@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  FormControl,
+  InputGroup,
+  ProgressBar,
+} from "react-bootstrap";
 
 import {
   squareGrid,
@@ -33,10 +39,12 @@ const AddDraw = ({
   setView,
   setAlertText,
   setAlertType,
+  setLargeAoiProgress,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [drawData, setDrawData] = useState("");
+  let maxProgress = 0;
 
   const handleNameChange = (e) => {
     setDrawData(e.target.value);
@@ -85,6 +93,7 @@ const AddDraw = ({
           setDrawingMode(false);
           setView("list");
         } else {
+          setLargeAoiProgress(6);
           // clearTimeout(myTimeoutError);
           // setAlertType("danger");
           // setAlertText("Your AOI is too large. Reduce the size and try again.");
@@ -133,7 +142,12 @@ const AddDraw = ({
               "https://sca-cpt-backend.herokuapp.com/data",
               { data }
             );
+            setLargeAoiProgress((oldProgress) => {
+              const newProgress = oldProgress + 100 / maxProgress;
+              return newProgress;
+            });
             console.log(res);
+            clearTimeout(myTimeoutError);
             return res;
           };
 
@@ -150,6 +164,7 @@ const AddDraw = ({
             return intersect(data, square).geometry;
           });
           console.log("Number of requests: " + overlapArray.length);
+          maxProgress = overlapArray.length;
 
           const getAllAoiInfo = async (arrayOfAOIs) => {
             const requests = arrayOfAOIs.map((aoi) => {
@@ -234,7 +249,6 @@ const AddDraw = ({
         );
         window.setTimeout(() => setAlertText(false), 4000);
       }
-      dispatch(setLoader(false));
     }
   };
   setHucBoundary(false);

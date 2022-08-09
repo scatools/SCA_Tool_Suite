@@ -37,6 +37,7 @@ const Main = ({
   setAlertType,
   assessStep,
   setAssessStep,
+  setLargeAoiProgress,
 }) => {
   const mapRef = useRef();
   const [mode, setMode] = useState(null);
@@ -134,6 +135,7 @@ const Main = ({
         setAlertType={setAlertType}
         assessStep={assessStep}
         setAssessStep={setAssessStep}
+        setLargeAoiProgress={setLargeAoiProgress}
       />
       <div className="content">
         <Button

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Accordion,
@@ -82,6 +82,10 @@ const SidebarViewDetail = ({
   const [deselectButtonDisabled, setDeselectButtonDisabled] = useState(true);
   const [confirmButtonDisabled, setConfirmButtonDisabled] = useState(true);
   const [confirmShow, setConfirmShow] = useState(false);
+
+  useEffect(() => {
+    dispatch(setLoader(false));
+  }, []);
 
   const modifyShape = () => {
     if (modifyButtonState === "modify") {

@@ -71,6 +71,7 @@ const Sidebar = ({
   setAlertType,
   assessStep,
   setAssessStep,
+  setLargeAoiProgress,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -115,6 +116,7 @@ const Sidebar = ({
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
+            setLargeAoiProgress={setLargeAoiProgress}
           />
         )}
         {view === "list" && (
