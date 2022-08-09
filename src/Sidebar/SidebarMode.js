@@ -7,7 +7,7 @@ const SidebarMode = ({ view, setView }) => {
 
   return (
     <>
-      {view != "selectUseCase" && (
+      {view !== "selectUseCase" && (
         <ButtonGroup toggle className="d-flex justify-content-center">
           <ToggleButton
             type="radio"

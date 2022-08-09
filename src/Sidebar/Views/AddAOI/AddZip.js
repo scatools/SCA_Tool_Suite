@@ -23,7 +23,7 @@ const AddZip = ({
   setAlertType,
 }) => {
   const dispatch = useDispatch();
-  const aoiList = Object.values(useSelector((state) => state.aoi)) 
+  const aoiList = Object.values(useSelector((state) => state.aoi));
   const onDrop = useCallback(
     async (acceptedFiles) => {
       const handleSubmitShapefile = async (
@@ -76,21 +76,20 @@ const AddZip = ({
           const reader = new FileReader();
           reader.onload = async () => {
             const myTimeoutError = setTimeout(() => timeoutHandler(), 20000);
-            const result = await shp(reader.result).catch(e => {
+            const result = await shp(reader.result).catch((e) => {
               clearTimeout(myTimeoutError);
               setAlertType("danger");
               setAlertText("The zip file uploaded is misconfigured!!");
               window.setTimeout(() => setAlertText(false), 4000);
               dispatch(setLoader(false));
-              return
+              return;
             });
             if (result) {
               // console.log(result.features);
               // Features are stored as [0:{}, 1:{}, 2:{}, ...]
               let index = 0;
               for (var num in result.features) {
-                
-                if(aoiList.length + index < 10){
+                if (aoiList.length + index < 10) {
                   index += 1;
                   var featureGeometry = result.features[num].geometry;
                   var featureGeometryType = result.features[num].geometry.type;
@@ -99,9 +98,9 @@ const AddZip = ({
                   // Check if each feature has a name-like property
                   for (var property in result.features[num].properties) {
                     if (
-                      property.indexOf("name") != -1 ||
-                      property.indexOf("Name") != -1 ||
-                      property.indexOf("NAME") != -1
+                      property.indexOf("name") !== -1 ||
+                      property.indexOf("Name") !== -1 ||
+                      property.indexOf("NAME") !== -1
                     ) {
                       featureName = result.features[num].properties[property];
                     }
@@ -113,23 +112,22 @@ const AddZip = ({
                     featureNumber,
                     featureName
                   );
-                  
-                }
-                else{
+                } else {
                   clearTimeout(myTimeoutError);
                   setAlertType("danger");
-                  setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+                  setAlertText(
+                    "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+                  );
                   window.setTimeout(() => setAlertText(false), 4000);
                   dispatch(setLoader(false));
-                  return
+                  return;
                 }
               }
-            
             }
           };
           reader.readAsArrayBuffer(file);
-      }
-    })();
+        }
+      })();
       dispatch(setLoader(true));
       // let loadTimer = setTimeout(() => timeoutHandler(), 20);
     },

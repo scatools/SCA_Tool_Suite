@@ -4,21 +4,20 @@ import NavBar from "../Components/NavBar";
 import Routes from "./Routes";
 import LoadingOverlay from "react-loading-overlay";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { getWeightsThunk } from "../Redux/thunk"
-
+import { getWeightsThunk } from "../Redux/thunk";
 
 function App(props) {
   const [reportLink, setReportLink] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(null);
-  const logIn = useSelector((state) => (state.user.loggedIn))
-  const dispatch = useDispatch()
+  const logIn = useSelector((state) => state.user.loggedIn);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if(logIn === true){
-      dispatch(getWeightsThunk)
+    if (logIn === true) {
+      dispatch(getWeightsThunk);
     }
-  },[logIn])
+  }, [logIn]);
   return (
     <LoadingOverlay
       className="myLoading"
