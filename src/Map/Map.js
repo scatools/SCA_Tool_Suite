@@ -107,7 +107,7 @@ const Map = ({
       setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
-    } else if (useCase === "inventory" && aoiSelected != false) {
+    } else if (useCase === "inventory" && aoiSelected !== false) {
       setCoordinates([undefined, undefined]);
     }
 
@@ -248,6 +248,7 @@ const Map = ({
         {hexFilterList.map((filter) => (
           <Layer
             id={filter[2]}
+            key={filter[2]}
             type="fill"
             paint={{
               "fill-outline-color": "red",
@@ -517,6 +518,33 @@ const Map = ({
             />
           </Source>
         )}
+        {/*
+        TEST LAYER FOR TROUBLE SHOOTING BBOX issues
+        <Source
+          type="geojson"
+          data={{
+            type: "Polygon",
+            coordinates: [
+              [
+                [-82.53553976107378, 26.81214012682117],
+                [-80.65961064304287, 26.81214012682117],
+                [-80.65961064304287, 28.68806924485208],
+                [-82.53553976107378, 28.68806924485208],
+                [-82.53553976107378, 26.81214012682117],
+              ],
+            ],
+          }}
+        >
+          <Layer
+            id="test"
+            type="fill"
+            paint={{
+              "fill-outline-color": "#484896",
+              "fill-color": "#000000",
+              "fill-opacity": 0.2,
+            }}
+          />
+        </Source> */}
         {hucBoundary && hucData && (
           <Source type="geojson" data={hucData}>
             <Layer
@@ -531,6 +559,7 @@ const Map = ({
             {filterList.map((filter) => (
               <Layer
                 id={filter[2]}
+                key={filter[2]}
                 type="fill"
                 paint={{
                   "fill-outline-color": "#484896",
