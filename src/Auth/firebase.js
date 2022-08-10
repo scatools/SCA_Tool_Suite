@@ -12,12 +12,13 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBCsoz9qMeXWhq5SlJo3UWm7F6osGDplXk",
-  authDomain: "scatest-f5733.firebaseapp.com",
-  projectId: "scatest-f5733",
-  storageBucket: "scatest-f5733.appspot.com",
-  messagingSenderId: "560869271098",
-  appId: "1:560869271098:web:f65c9f5cfeaab691d67703"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: "sca-project-3899b.firebaseapp.com",
+  projectId: "sca-project-3899b",
+  storageBucket: "sca-project-3899b.appspot.com",
+  messagingSenderId: "2469244391",
+  appId: "1:2469244391:web:454e2753fe8c271fea6142",
+  measurementId: "G-DEZJHVMNXS"
 };
 
 // Initialize Firebase
