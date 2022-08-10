@@ -3,6 +3,7 @@ import {
   LOAD_USER_SHAPE_LIST,
   LOAD_USER_REPORT_LIST,
   LOG_IN_USER,
+  RESET_USER_INFO
 } from "../actionType";
 
 const initialState = {
@@ -47,10 +48,15 @@ const userReducer = (state = initialState, action) => {
         ...state,
         reportList: action.data,
       };
-
+    
+    case RESET_USER_INFO:
+      return{
+        ...initialState
+      };
+    
     default:
       return state;
-  }
+  };
 };
 
 export default userReducer;

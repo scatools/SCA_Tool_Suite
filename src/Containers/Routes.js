@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
 import Homepage from "../Components/Homepage";
@@ -16,12 +17,12 @@ import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
 import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView";
+import ForgotPassword from "../User/ForgotPassword";
 
 const Routes = ({
   setReportLink,
   setLoggedIn,
-  userLoggedIn,
-  setUserLoggedIn,
+  setUserLoggedIn
 }) => {
   const [aoiSelected, setAoiSelected] = useState(null);
   const [aoiAssembled, setAoiAssembled] = useState([]);
@@ -38,12 +39,19 @@ const Routes = ({
   const [alertType, setAlertType] = useState("danger");
   const [useCase, setUseCase] = useState(null);
   const [assessStep, setAssessStep] = useState("selectAOI");
+  const userLoggedIn = useSelector((state) => state.user.loggedIn);
 
   return (
     <>
       <Switch>
         <Route exact path="/">
           <Homepage setUseCase={setUseCase} setView={setView} />
+        </Route>
+        <Route exact path="/forgotPassword">
+          <ForgotPassword
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+            />
         </Route>
         <Route exact path="/tool">
           <Main
@@ -84,7 +92,7 @@ const Routes = ({
           <Logout setLoggedIn={setLoggedIn} setUserLoggedIn={setUserLoggedIn} />
         </Route>
         <Route exact path="/user">
-          {userLoggedIn !== null ? (
+          {(userLoggedIn !== false && userLoggedIn !== null) ? (
             <UserData
               userLoggedIn={userLoggedIn}
               setReportScript={setReportScript}

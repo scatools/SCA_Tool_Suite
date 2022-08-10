@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Container, Jumbotron } from "react-bootstrap";
 import axios from "axios";
+import {auth, signInWithCustomToken} from "../Auth/firebase"
 import "../App.css";
 
 const Register = ({
@@ -19,39 +20,38 @@ const Register = ({
 
   const onSubmit = async () => {
     try {
-      // For development on local server
-      // const result = await axios.post(
-      //   'http://localhost:5000/register',
-      //   {
-      //     username: username,
-      //     password: password,
-      //     email: email,
-      //     first_name: firstName,
-      //     last_name: lastName,
-      //     is_admin: false
-      //   }
-      // );
-
-      // For production on Heroku
       const result = await axios.post(
-        "https://sca-cpt-backend.herokuapp.com/register",
+        'https://sca-cpt-backend.herokuapp.com/register',
         {
           username: username,
           password: password,
           email: email,
           first_name: firstName,
           last_name: lastName,
-          is_admin: false,
         }
       );
-
-      if (result) {
-        setLoggedIn(true);
-        setUserLoggedIn(username);
-        history.push("/user");
-        setAlertType("success");
-        setAlertText("You have successfully registered and logged in.");
-        window.setTimeout(() => setAlertText(false), 4000);
+      if(result.data.status === 'success'){
+        signInWithCustomToken(auth, result.data.info)
+        .then((userCredential) => {
+          history.push("/user");
+          setAlertType("success");
+          setAlertText("You have successfully registered and logged in.");
+          window.setTimeout(() => setAlertText(false), 4000);
+        })
+        .catch((error) => {
+          setAlertType("danger");
+          setAlertText(
+            error.message
+          );
+          window.setTimeout(() => setAlertText(false), 4000);
+        });
+      }
+      else{
+          setAlertType("danger");
+          setAlertText(
+            result.data.info
+          );
+          window.setTimeout(() => setAlertText(false), 4000);
       }
     } catch (e) {
       setAlertType("danger");
@@ -60,7 +60,7 @@ const Register = ({
       );
       window.setTimeout(() => setAlertText(false), 4000);
       console.error(e);
-    }
+    };
   };
 
   return (

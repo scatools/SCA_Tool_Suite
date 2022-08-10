@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Jumbotron } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { logoutUserThunk } from  "../Redux/thunk";
 import "../App.css";
-import { useDispatch } from "react-redux";
-import { logInUser } from "../Redux/action";
 
 const Logout = ({ setLoggedIn, setUserLoggedIn }) => {
+  const history = useHistory();
+  const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  setLoggedIn(false);
-  setUserLoggedIn(null);
-  dispatch(logInUser(false, ""));
+  useEffect(() => {
+    if(user.loggedIn == true){
+      dispatch(logoutUserThunk);
+      setLoggedIn(false);
+      setUserLoggedIn(null);
+    }
+    else{
+      history.push("/login");
+    };
+  }, []);
 
   return (
     <Container>

@@ -4,17 +4,18 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
+import { async } from "@firebase/util";
+import { getToken, logoutUserThunk } from "../Redux/thunk";
 import {
+  input_aoi,
   loadUser,
   loadUserShapeList,
   loadUserReportList,
+  mutipleSavedWeightsDelete,
+  setCurrentWeight,
+  setLoader
 } from "../Redux/action";
-import {
-  calculateArea,
-  aggregate,
-  getStatus,
-} from "../Helper/aggregateHex";
-import { input_aoi, setLoader, mutipleSavedWeightsDelete, setCurrentWeight } from "../Redux/action";
+import { aggregate, calculateArea, getStatus } from "../Helper/aggregateHex";
 import "../App.css";
 
 const UserData = ({
@@ -34,14 +35,19 @@ const UserData = ({
   const [reportDeleted, setReportDeleted] = useState(null);
   const [updateInfo, setUpdateInfo] = useState(false);
   const [updatePassword, setUpdatePassword] = useState(false);
+  const [deleteAccount, setDeleteAccount] = useState(false)
   const user = useSelector((state) => state.user);
+  const lst = useSelector((state) => state.multipleWeights);
 
-
-  const showUpdateInfo = () => setUpdateInfo(true);
+  const showUpdateInfo = () => {
+    setNewEmail(user.email);
+    setNewFirstName(user.firstName);
+    setNewLastName(user.lastName);
+    setUpdateInfo(true);
+  };
 
   const closeUpdateInfo = () => {
     setUpdateInfo(false);
-    getUserData();
   };
 
   const showUpdatePassword = () => setUpdatePassword(true);
@@ -52,100 +58,142 @@ const UserData = ({
     setNewPassword(null);
   };
 
-  const lst = useSelector((state) => state.multipleWeights)
+  const showUpdateDelete = () => setDeleteAccount(true);
 
-  const getUserData = async () => {
-    // For development on local server
-    // const result = await axios.post(
-    //   'http://localhost:5000/user',
-    //   { username: userLoggedIn }
-    // );
-
-    // For production on Heroku
-    const result = await axios.post(
-      "https://sca-cpt-backend.herokuapp.com/user",
-      { username: user.username }
-    );
-
-    setNewFirstName(result.data.rows[0].first_name);
-    setNewLastName(result.data.rows[0].last_name);
-    setNewEmail(result.data.rows[0].email);
-
-    dispatch(loadUser(result.data.rows[0]));
-  };
+  const closeUpdateDelete = () => setDeleteAccount(false);
 
   const updateUserInfo = async () => {
-    // For development on local server
-    // const result = await axios.post(
-    //   'http://localhost:5000/update/information',
-    //   {
-    //     username: userLoggedIn,
-    //     email: newEmail,
-    //     first_name: newFirstName,
-    //     last_name: newLastName
-    //   }
-    // );
-
-    // For production on Heroku
-    const result = await axios.post(
-      "https://sca-cpt-backend.herokuapp.com/update/information",
-      {
-        username: user.username,
-        email: newEmail,
-        first_name: newFirstName,
-        last_name: newLastName,
-      }
-    );
-    if (result) {
-      setAlertType("success");
-      setAlertText("You have updated your profile!");
-      window.setTimeout(() => setAlertText(false), 4000);
-      closeUpdateInfo();
-    }
-  };
-
-  const updateUserPassword = async () => {
-    // For development on local server
-    // const verification = await axios.post(
-    //   'http://localhost:5000/login',
-    //   { username: userLoggedIn, password: password }
-    // );
-
-    // For production on Heroku
-    const verification = await axios.post(
-      "https://sca-cpt-backend.herokuapp.com/login",
-      { username: user.username, password: password }
-    );
-
-    if (!verification.data.validLogin) {
-      setAlertType("danger");
-      setAlertText("Incorrect password! Please enter again.");
-      window.setTimeout(() => setAlertText(false), 4000);
-    } else {
+    try {
+      const userToken = await getToken();
+      
       // For development on local server
       // const result = await axios.post(
-      //   'http://localhost:5000/update/password',
+      //   'http://localhost:5000/update/information',
       //   {
-      //     username: userLoggedIn,
-      //     password: newPassword
+      //     token: userToken,
+      //     email: newEmail,
+      //     first_name: newFirstName,
+      //     last_name: newLastName,
       //   }
       // );
 
       // For production on Heroku
       const result = await axios.post(
+        'https://sca-cpt-backend.herokuapp.com/update/information',
+        {
+          token: userToken,
+          email: newEmail,
+          first_name: newFirstName,
+          last_name: newLastName,
+        }
+      );
+
+      if (result.data.status === 'success') {
+        let new_user = {
+          username: user.username,
+          is_admin: user.admin,
+          first_name: newFirstName,
+          last_name: newLastName,
+          email: newEmail
+        };
+        let reset = false;
+        if(user.email !== newEmail){
+          reset = true
+        };
+        dispatch(loadUser(new_user));
+        setAlertType("success");
+        setAlertText("You have updated your profile!");
+        window.setTimeout(() => setAlertText(false), 4000);
+        closeUpdateInfo();
+        if(reset){
+          dispatch(logoutUserThunk);
+        };
+      }
+      else{
+        setAlertType("danger");
+        setAlertText(result.data.info);
+        window.setTimeout(() => setAlertText(false), 4000);
+      };
+    } catch (error) {
+        setAlertType("danger");
+        setAlertText("Update failed.");
+        window.setTimeout(() => setAlertText(false), 4000);
+    };
+  };
+
+  const updateUserPassword = async () => {
+    try {
+      const userToken = await getToken();
+      
+      // For development on local server
+      // const result = await axios.post(
+      //   'http://localhost:5000/update/password',
+      //   {
+      //     token: userToken,
+      //     password: newPassword,
+      //   }
+      // );
+      
+      // For production on Heroku
+      const result = await axios.post(
         "https://sca-cpt-backend.herokuapp.com/update/password",
         {
-          username: user.username,
+          token: userToken,
           password: newPassword,
         }
       );
-      if (result) {
+
+      if (result.data.status === 'success') {
         setAlertType("success");
         setAlertText("You have updated your password!");
         window.setTimeout(() => setAlertText(false), 4000);
         closeUpdatePassword();
+        dispatch(logoutUserThunk);
       }
-    }
+      else{
+        setAlertType("danger");
+        setAlertText(result.data.info);
+        window.setTimeout(() => setAlertText(false), 4000);
+      };
+    } catch (error) {
+      setAlertType("danger");
+      setAlertText("Update failed.");
+      window.setTimeout(() => setAlertText(false), 4000);
+    };
+  };
+
+  const deleteAccountAction = async () =>{
+    try {
+      const userToken = await getToken();
+
+      // For development on local server
+      // const result = await axios.post(
+      //   'http://localhost:5000/update/disable',
+      //   { token: userToken }
+      // );
+      
+      // For production on Heroku
+      const result = await axios.post(
+        'https://sca-cpt-backend.herokuapp.com/update/disable',
+        { token: userToken }
+      );
+
+      if (result.data.status === 'success') {
+        setAlertType("success");
+        setAlertText("You have disabled your account!");
+        closeUpdateDelete();
+        dispatch(logoutUserThunk);
+      }
+      else{
+        setAlertType("danger");
+        setAlertText(result.data.info);
+        window.setTimeout(() => setAlertText(false), 4000);
+      };
+    } catch (error) {
+      setAlertType("danger");
+      setAlertText("Delete failed.");
+      window.setTimeout(() => setAlertText(false), 4000);
+    };
   };
 
   const getUserFile = async () => {
@@ -162,14 +210,13 @@ const UserData = ({
     );
 
     const shapeListArr = [];
-    console.log(response.data.rows);
     dispatch(loadUserShapeList(shapeListArr));
     if (response) {
       response.data.rows.map((row) => shapeListArr.push(row.file_name));
       response.data.rows.map((row) =>
         dispatch(loadUserShapeList(shapeListArr))
       );
-    }
+    };
   };
 
   const getUserReport = async () => {
@@ -184,11 +231,12 @@ const UserData = ({
       "https://sca-cpt-backend.herokuapp.com/user/report",
       { username: user.username }
     );
+
     if (result) {
       const reportListArr = [];
       result.data.rows.map((row) => reportListArr.push(row.report_name));
       dispatch(loadUserReportList(reportListArr));
-    }
+    };
   };
 
   const deleteUserFile = async (file) => {
@@ -203,11 +251,12 @@ const UserData = ({
       "https://sca-cpt-backend.herokuapp.com/delete/shapefile",
       { file_name: file }
     );
+
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the AOI named " + file);
       window.setTimeout(() => setAlertText(false), 4000);
-    }
+    };
     getUserFile();
   };
 
@@ -223,11 +272,12 @@ const UserData = ({
       "https://sca-cpt-backend.herokuapp.com/delete/report",
       { report_name: report }
     );
+
     if (result) {
       setAlertType("warning");
       setAlertText("You have deleted the report named " + report);
       window.setTimeout(() => setAlertText(false), 4000);
-    }
+    };
     getUserReport();
   };
 
@@ -246,6 +296,7 @@ const UserData = ({
       "https://sca-cpt-backend.herokuapp.com/user/shapefile",
       { username: user.username }
     );
+
     const fileList = result.data.rows.filter((row) => row.file_name === file);
     const fileFeature = JSON.parse(
       JSON.parse(fileList[0].geometry.slice(1, -1))
@@ -261,6 +312,7 @@ const UserData = ({
     const res = await axios.post("https://sca-cpt-backend.herokuapp.com/data", {
       data,
     });
+
     const planArea = calculateArea(newList);
     dispatch(
       input_aoi({
@@ -293,6 +345,7 @@ const UserData = ({
       "https://sca-cpt-backend.herokuapp.com/user/report",
       { username: user.username }
     );
+    
     const reportList = result.data.rows.filter(
       (row) => row.report_name === report
     );
@@ -304,7 +357,6 @@ const UserData = ({
   };
 
   useEffect(() => {
-    getUserData();
     getUserFile();
     getUserReport();
   }, [user.loggedIn]);
@@ -341,7 +393,7 @@ const UserData = ({
             <Button className="btn btn-success" onClick={showUpdatePassword}>
               Change Password
             </Button>
-            <Button className="btn btn-danger">Delete Account</Button>
+            <Button className="btn btn-danger" onClick={showUpdateDelete}>Delete Account</Button>
           </div>
 
           <hr className="my-4" />
@@ -439,6 +491,7 @@ const UserData = ({
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
+            <p style={{ marginBottom:".5rem", marginTop:".5rem"}}>Updating your email will sign you out.</p>
               Your Username:
               <input type="text" value={user.username} disabled></input>
               Your Email:
@@ -487,6 +540,8 @@ const UserData = ({
           </Modal.Header>
           <Modal.Body>
             <div className="form-group">
+            <p style={{ marginBottom:".5rem", marginTop:".5rem"}}>Updating your password will sign you out.</p>
+
               Your Username:
               <input type="text" value={user.username} disabled></input>
               Your Current Password:
@@ -528,9 +583,41 @@ const UserData = ({
             </div>
           </Modal.Body>
         </Modal>
+        <Modal
+          centered
+          show={deleteAccount}
+          onHide={closeUpdateDelete}
+          size="lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Delete your account here
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="form-group">
+            <p style={{ marginBottom:".5rem", marginTop:".5rem"}}>By confirming your account deletion, your account will be disabled, while your information will persist in case you reinstate your account.</p>
+              <br />
+              <div className="d-flex justify-content-between">
+                <Button
+                  className="btn btn-warning"
+                  onClick={closeUpdateDelete}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="btn btn-primary"
+                  onClick={deleteAccountAction}
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </Container>
     );
-  }
+  };
 };
 
 export default UserData;

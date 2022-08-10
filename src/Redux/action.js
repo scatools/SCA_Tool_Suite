@@ -11,10 +11,13 @@ import {
   LOAD_USER_SHAPE_LIST,
   LOAD_USER_REPORT_LIST,
   LOG_IN_USER,
+  RESET_USER_INFO,
   SAVED_WEIGHTS,
+  SAVED_WEIGHTS_RESET,
   MULTIPLE_SAVED_WEIGHTS,
   MULTIPLE_SAVED_WEIGHTS_UPDATE,
   MULTIPLE_SAVED_WEIGHTS_DELETE,
+  MULTIPLE_SAVED_WEIGHTS_RESET
 } from "./actionType";
 
 export function loadUser(data) {
@@ -22,21 +25,28 @@ export function loadUser(data) {
     type: LOAD_USER,
     data,
   };
-}
+};
+
+export function resetUser(data){
+  return{
+    type:RESET_USER_INFO,
+    data
+  };
+};
 
 export function loadUserShapeList(data) {
   return {
     type: LOAD_USER_SHAPE_LIST,
     data,
   };
-}
+};
 
 export function loadUserReportList(data) {
   return {
     type: LOAD_USER_REPORT_LIST,
     data,
   };
-}
+};
 
 export function logInUser(loggedIn, username) {
   return {
@@ -44,11 +54,11 @@ export function logInUser(loggedIn, username) {
     loggedIn,
     username,
   };
-}
+};
 
 export function changeMeasures(goal, data) {
   return { type: CHANGE_MEASURES, goal, data };
-}
+};
 
 export function changeMeasuresWeight(value, name, label, goal) {
   return {
@@ -58,7 +68,7 @@ export function changeMeasuresWeight(value, name, label, goal) {
     name,
     label,
   };
-}
+};
 
 export function changeGoalWeights(value, goal) {
   return {
@@ -66,21 +76,21 @@ export function changeGoalWeights(value, goal) {
     value,
     goal,
   };
-}
+};
 
 export function input_aoi(data) {
   return {
     type: INPUT_NEW_AOI,
     data,
   };
-}
+};
 
 export function delete_aoi(id) {
   return {
     type: DELETE_AOI,
     id,
   };
-}
+};
 
 export function edit_aoi(id, data) {
   return {
@@ -88,14 +98,14 @@ export function edit_aoi(id, data) {
     id,
     data,
   };
-}
+};
 
 export function generate_assessment(data) {
   return {
     type: GENERATE_ASSESSMENT,
     data,
   };
-}
+};
 
 export const setLoader = (loading) => {
   return {
@@ -105,9 +115,16 @@ export const setLoader = (loading) => {
 };
 
 export const setCurrentWeight = (data) => {
-  return {
-    type: SAVED_WEIGHTS,
-    data,
+  return{
+    type:SAVED_WEIGHTS,
+    data
+  };
+};
+
+export const currentWeightReset = (data) => {
+  return{
+    type:SAVED_WEIGHTS_RESET,
+    data
   };
 };
 
@@ -133,4 +150,11 @@ export const mutipleSavedWeightsDelete = (data) => (dispatch) => {
     data,
   });
   return Promise.resolve();
+};
+
+export const mutipleSavedWeightsReset = (data) => {
+  return{
+    type:MULTIPLE_SAVED_WEIGHTS_RESET,
+    data
+  };
 };
