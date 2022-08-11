@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Jumbotron, Modal } from "react-bootstrap";
+import { Button, Container, Dropdown, DropdownButton, Jumbotron, Modal } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
@@ -61,6 +61,28 @@ const UserData = ({
   const showUpdateDelete = () => setDeleteAccount(true);
 
   const closeUpdateDelete = () => setDeleteAccount(false);
+
+  const syncUsers = async () => {
+    try {
+      const result = await axios.get(
+        "https://sca-cpt-backend.herokuapp.com/importUsers"
+      );
+      if (result) {
+        setAlertType("success");
+        setAlertText("All user profiles have been synchronized!");
+        window.setTimeout(() => setAlertText(false), 4000);
+      }
+      else {
+        setAlertType("danger");
+        setAlertText(result.data.info);
+        window.setTimeout(() => setAlertText(false), 4000);
+      };
+    } catch (error) {
+      setAlertType("danger");
+      setAlertText("Synchronization failed.");
+      window.setTimeout(() => setAlertText(false), 4000);
+    };
+  };
 
   const updateUserInfo = async () => {
     try {
@@ -385,7 +407,9 @@ const UserData = ({
           <p>Your email: {user.email}</p>
           <div className="d-flex justify-content-between btn-container">
             {user.admin && (
-              <Button className="btn btn-success">Admin Module</Button>
+              <DropdownButton className="btn btn-warning" title="Admin Module">
+                <Dropdown.Item onClick={syncUsers}>Synchronize Users</Dropdown.Item>
+              </DropdownButton>
             )}
             <Button className="btn btn-success" onClick={showUpdateInfo}>
               Update Information
