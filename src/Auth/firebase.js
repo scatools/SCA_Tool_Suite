@@ -12,7 +12,7 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "sca-project-3899b.firebaseapp.com",
   projectId: "sca-project-3899b",
   storageBucket: "sca-project-3899b.appspot.com",
