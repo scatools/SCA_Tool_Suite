@@ -20,6 +20,7 @@ const AddAOIView = ({
   setView,
   setAlertText,
   setAlertType,
+  setLargeAoiProgress,
 }) => {
   const [inputMode, setInputMode] = useState("");
   const [hucList, setHucList] = useState([]);
@@ -88,7 +89,7 @@ const AddAOIView = ({
             onChange={(e) => {
               setAoiSelected(false);
               setInputMode(e.currentTarget.value);
-              setTimeoutError(false)
+              setTimeoutError(false);
             }}
           >
             by Drawing
@@ -102,7 +103,7 @@ const AddAOIView = ({
             onChange={(e) => {
               setDrawingMode(false);
               setInputMode(e.currentTarget.value);
-              setTimeoutError(false)
+              setTimeoutError(false);
               stopDraw();
             }}
           >
@@ -118,7 +119,7 @@ const AddAOIView = ({
               setDrawingMode(false);
               setInputMode(e.currentTarget.value);
               onLoad();
-              setTimeoutError(false)
+              setTimeoutError(false);
               stopDraw();
             }}
           >
@@ -150,6 +151,7 @@ const AddAOIView = ({
           setView={setView}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
+          setLargeAoiProgress={setLargeAoiProgress}
         />
       )}
 

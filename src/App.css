@@ -1066,3 +1066,12 @@ a img.logo {
   background: #fafafa;
   box-sizing: border-box;
 }
+
+#largeAOI-progress-bar {
+  position: fixed;
+  top: 60%;
+  left: 40%;
+  z-index: 901;
+  height: 20px;
+  width: 300px;
+}

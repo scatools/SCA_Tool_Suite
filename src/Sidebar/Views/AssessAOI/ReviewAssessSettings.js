@@ -390,7 +390,7 @@ const ReviewAssessSettings = ({
   const saveMeasures = () => {
     let input = document.getElementById("save-modal").querySelector("input");
     let save_name = input.value;
-    let lst_bool = list.some((val) => val.value == save_name);
+    let lst_bool = list.some((val) => val.value === save_name);
     if (lst_bool) {
       setAlertType("danger");
       setAlertText("This save name already exists!");
@@ -411,7 +411,7 @@ const ReviewAssessSettings = ({
 
     const list_ele = () => {
       for (let i = 0; i < measures.length; i++) {
-        if (measures[i].title == currentWeight.value) {
+        if (measures[i].title === currentWeight.value) {
           return i;
         }
       }
@@ -451,7 +451,7 @@ const ReviewAssessSettings = ({
     };
     let measures;
     let direct = "selectRestoreWeights";
-    if (dataSave == "No Saved Measures") {
+    if (dataSave === "No Saved Measures") {
       measures = default_setting;
       let keys = Object.keys(measures);
       keys.map((value, index) => {
@@ -467,7 +467,7 @@ const ReviewAssessSettings = ({
       direct = "reviewAssessSettings";
       const list_ele = () => {
         for (let i = 0; i < measures.length; i++) {
-          if (measures[i].title == dataSave) {
+          if (measures[i].title === dataSave) {
             return measures[i];
           }
         }
@@ -494,7 +494,7 @@ const ReviewAssessSettings = ({
     let measures = lst.names;
     const list_ele = () => {
       for (let i = 0; i < measures.length; i++) {
-        if (measures[i].title == currentWeight.value) {
+        if (measures[i].title === currentWeight.value) {
           return i;
         }
       }
@@ -1005,7 +1005,7 @@ const ReviewAssessSettings = ({
             >
               Create
             </Button>
-            {currentWeight.value == "No Saved Measures" ? (
+            {currentWeight.value === "No Saved Measures" ? (
               ""
             ) : (
               <Button
@@ -1042,7 +1042,7 @@ const ReviewAssessSettings = ({
               }}
               type={"text"}
               defaultValue={
-                currentWeight.value == "No Saved Measures"
+                currentWeight.value === "No Saved Measures"
                   ? ""
                   : currentWeight.value
               }

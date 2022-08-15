@@ -1,7 +1,20 @@
 import React, { useState } from "react";
-import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  FormControl,
+  InputGroup,
+  ProgressBar,
+} from "react-bootstrap";
 
-import { squareGrid, intersect, distance, square, bbox } from "@turf/turf";
+import {
+  squareGrid,
+  intersect,
+  distance,
+  square,
+  bbox,
+  buffer,
+} from "@turf/turf";
 
 import axios from "axios";
 import {
@@ -26,10 +39,12 @@ const AddDraw = ({
   setView,
   setAlertText,
   setAlertType,
+  setLargeAoiProgress,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [drawData, setDrawData] = useState("");
+  let maxProgress = 0;
 
   const handleNameChange = (e) => {
     setDrawData(e.target.value);
@@ -48,9 +63,8 @@ const AddDraw = ({
     } else {
       if (aoiList.length < 10) {
         setAlertText(false);
-        const newList = featureList;
+        const newList = JSON.parse(JSON.stringify(featureList));
         const planArea = calculateArea(newList);
-        console.log(planArea);
         const data = {
           type: "MultiPolygon",
           coordinates: newList.map((feature) => feature.geometry.coordinates),
@@ -78,132 +92,163 @@ const AddDraw = ({
           );
           setDrawingMode(false);
           setView("list");
-          clearTimeout(myTimeoutError);
+        } else {
+          setLargeAoiProgress(6);
+          // clearTimeout(myTimeoutError);
+          // setAlertType("danger");
+          // setAlertText("Your AOI is too large. Reduce the size and try again.");
+          // window.setTimeout(() => setAlertText(false), 4000);
+          const boundingBox = bbox({
+            type: "Feature",
+            geometry: data,
+          });
+          const bboxSquare = square(boundingBox); //array of verticies of the square ["minLong","minLat","maxLong","maxLat"]
+          const bboxSquareSide = distance(
+            [bboxSquare[1], bboxSquare[0]],
+            [bboxSquare[1], bboxSquare[2]]
+          );
+          let cellSide = 40;
+          if (bboxSquareSide > 1500) {
+            cellSide = bboxSquareSide / 40;
+          } else if (bboxSquareSide > 1000) {
+            cellSide = bboxSquareSide / 30;
+          } else if (bboxSquareSide > 500) {
+            cellSide = bboxSquareSide / 20;
+          } else if (bboxSquareSide > 250) {
+            cellSide = bboxSquareSide / 10;
+          } else if (bboxSquareSide > 150) {
+            cellSide = bboxSquareSide / 7;
+          } else {
+            cellSide = bboxSquareSide / 5;
+          }
 
-          // For development on local server
-          // const res = await axios.post('http://localhost:5000/data', { data });
-          // For production on Heroku
-          if (planArea < 5500) {
+          const bufferedBox = bbox(
+            buffer(
+              {
+                type: "Feature",
+                geometry: data,
+              },
+              cellSide,
+              { units: "kilometers" }
+            )
+          );
+
+          console.log("Size of each box side: " + cellSide);
+          const options = { units: "kilometers" };
+          const grid = squareGrid(bufferedBox, cellSide, options);
+
+          const postData = async (data) => {
             const res = await axios.post(
               "https://sca-cpt-backend.herokuapp.com/data",
               { data }
             );
-            // const planArea = calculateArea(newList);
+            setLargeAoiProgress((oldProgress) => {
+              const newProgress = oldProgress + 100 / maxProgress;
+              return newProgress;
+            });
+            console.log(res);
+            clearTimeout(myTimeoutError);
+            return res;
+          };
+
+          // Turf intersect returns null if no overlapping detected
+          const overlapping = grid.features.filter((square) => {
+            const aoiInSquare = intersect(data, square);
+            if (aoiInSquare) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          const overlapArray = overlapping.map((square) => {
+            return intersect(data, square).geometry;
+          });
+          console.log("Number of requests: " + overlapArray.length);
+          maxProgress = overlapArray.length;
+
+          const getAllAoiInfo = async (arrayOfAOIs) => {
+            const requests = arrayOfAOIs.map((aoi) => {
+              return postData(aoi).then((a) => {
+                return a;
+              });
+            });
+            return Promise.all(requests);
+          };
+
+          getAllAoiInfo(overlapArray).then((lotsOfObjects) => {
+            console.log("lotsOfObjects");
+            console.log(lotsOfObjects);
+            let speciesNames = [];
+            let allData = [];
+
+            lotsOfObjects.forEach(
+              (obj) =>
+                (speciesNames = [
+                  ...speciesNames.concat(
+                    obj.data.speciesName.filter(
+                      (name) => !speciesNames.includes(name)
+                    )
+                  ),
+                ])
+            );
+
+            //WITH POTENTIAL DUPLICATE VALUES TO SHOW GRID
+
+            // lotsOfObjects.forEach(
+            //   (obj) => (allData = [...allData.concat(obj.data.data)])
+            // );
+
+            //WITHOUT DUPLICATE VALUES
+
+            lotsOfObjects.forEach(
+              (obj) =>
+                (allData = [
+                  ...allData.concat(
+                    obj.data.data.filter(
+                      (gridData) =>
+                        !allData.find(
+                          (allDataHex) => allDataHex.gid === gridData.gid
+                        )
+                    )
+                  ),
+                ])
+            );
+
+            console.log("All The Data with no Dups");
+            console.log(allData);
+
             dispatch(
               input_aoi({
                 name: drawData,
                 geometry: newList,
-                hexagons: res.data.data,
-                rawScore: aggregate(res.data.data, planArea),
-                scaleScore: getStatus(aggregate(res.data.data, planArea)),
-                speciesName: res.data.speciesName,
+                hexagons: allData,
+                rawScore: aggregate(allData, planArea),
+                scaleScore: getStatus(aggregate(allData, planArea)),
+                speciesName: speciesNames,
                 id: uuid(),
               })
             );
+
             setDrawingMode(false);
             setView("list");
-          } else {
-            // clearTimeout(myTimeoutError);
-            // setAlertType("danger");
-            // setAlertText("Your AOI is too large. Reduce the size and try again.");
-            // window.setTimeout(() => setAlertText(false), 4000);
-            const boundingBox = bbox({
-              type: "Feature",
-              geometry: data,
-            });
-            const bboxSquare = square(boundingBox);
-            const bboxSquareSide =
-              distance(
-                [bboxSquare[0], bboxSquare[1]],
-                [bboxSquare[2], bboxSquare[3]]
-              ) / Math.sqrt(2);
-            console.log(bboxSquareSide);
-            var cellSide = 40;
-            if (bboxSquareSide > 1500) {
-              cellSide = bboxSquareSide / 40;
-            } else if (bboxSquareSide > 1000) {
-              cellSide = bboxSquareSide / 30;
-            } else if (bboxSquareSide > 500) {
-              cellSide = bboxSquareSide / 20;
-            } else if (bboxSquareSide > 250) {
-              cellSide = bboxSquareSide / 10;
-            } else {
-              cellSide = bboxSquareSide / 5;
-            }
-            const options = { units: "kilometers" };
-            const grid = squareGrid(bboxSquare, cellSide, options);
-            console.log(grid);
+          });
 
-            // const requestList = grid.features.map(async square => {
-            //   const aoiInSquare = intersect(data, square).geometry;
-            //   return axios.post(
-            //     "https://sca-cpt-backend.herokuapp.com/data",
-            //     { data: aoiInSquare }
-            //   );
-            // });
-
-            // axios.all(
-            //   grid.features.map(square => {
-            //     const aoiInSquare = intersect(data, square).geometry;
-            //     return axios.post(
-            //       "https://sca-cpt-backend.herokuapp.com/data",
-            //       { data: aoiInSquare }
-            //     ).then((res) => {
-            //       console.log(res);
-            //     })
-            //   })
-            // )
-            // .then(axios.spread((...res) => {
-            //   console.log(res);
-            // }));
-
-            const postData = async (data) => {
-              const res = await axios.post(
-                "https://sca-cpt-backend.herokuapp.com/data",
-                { data }
-              );
-
-              return res;
-              // axios
-              //   .post("https://sca-cpt-backend.herokuapp.com/data", { data: data })
-              //   .then((res) => {
-              //     console.log(res);
-
-              //   });
-            };
-
-            // Turf intersect returns null if no overlapping detected
-            const overlapping = grid.features.filter((square) => {
-              const aoiInSquare = intersect(data, square);
-              if (aoiInSquare) {
-                return true;
-              } else {
-                return false;
-              }
-            });
-            const overlapArray = overlapping.map(
-              (square) => {
-                return intersect(data, square).geometry;
-              }
-              // return new Promise((resolve) => resolve(postData(aoiInSquare)));
-            );
-            console.log(overlapArray);
-            const stuffArray = overlapArray.map((data) => postData(data));
-            console.log(stuffArray);
-            // Promise.all(requests).then((result) => {
-            //   console.log(result);
-            // });
-          }
-        } else {
-          clearTimeout(myTimeoutError);
-          setAlertType("danger");
-          setAlertText(
-            "The max limit of 10 AOIs was reached. Remove AOIs and try again."
-          );
-          window.setTimeout(() => setAlertText(false), 4000);
+          // Promise.allSettled(overlapArray.map((data) => postData(data))).then(
+          //   (results) => {
+          //     results.forEach((result) => {
+          //       console.log(result.status);
+          //     });
+          //   }
+          // );
         }
+      } else {
+        clearTimeout(myTimeoutError);
+        setAlertType("danger");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
+        window.setTimeout(() => setAlertText(false), 4000);
       }
-      dispatch(setLoader(false));
     }
   };
   setHucBoundary(false);
