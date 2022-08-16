@@ -257,7 +257,7 @@ const Assessment = ({
       'crossorigin="anonymous"/>' +
       "</head><body>" +
       pageHTMLObject.outerHTML +
-      "</body><script>" +
+      '</body><script type="module">' +
       'mapboxgl.accessToken = "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";' +
       'const map = new mapboxgl.Map({container: "map",' +
       'style: "mapbox://styles/mapbox/light-v9",' +
@@ -353,7 +353,7 @@ const Assessment = ({
         'crossorigin="anonymous"/>' +
         "</head><body>" +
         pageHTMLObject.outerHTML +
-        "</body><script>" +
+        '</body><script type="module">' +
         'mapboxgl.accessToken = "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";' +
         'const map = new mapboxgl.Map({container: "map",' +
         'style: "mapbox://styles/mapbox/light-v9",' +
