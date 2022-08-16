@@ -22,6 +22,7 @@ const Routes = ({
   setLoggedIn,
   userLoggedIn,
   setUserLoggedIn,
+  setLargeAoiProgress,
 }) => {
   const [aoiSelected, setAoiSelected] = useState(null);
   const [aoiAssembled, setAoiAssembled] = useState([]);
@@ -62,6 +63,7 @@ const Routes = ({
             setAlertType={setAlertType}
             assessStep={assessStep}
             setAssessStep={setAssessStep}
+            setLargeAoiProgress={setLargeAoiProgress}
           />
         </Route>
         <Route exact path="/register">

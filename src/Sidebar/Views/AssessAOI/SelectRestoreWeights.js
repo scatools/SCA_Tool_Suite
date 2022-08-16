@@ -85,7 +85,7 @@ const SelectRestoreWeights = ({
     };
     let measures;
     let direct = "selectRestoreWeights";
-    if (dataSave == "No Saved Measures") {
+    if (dataSave === "No Saved Measures") {
       measures = default_setting;
       let keys = Object.keys(measures);
       keys.map((value, index) => {
@@ -101,7 +101,7 @@ const SelectRestoreWeights = ({
       direct = "reviewAssessSettings";
       const list_ele = () => {
         for (let i = 0; i < measures.length; i++) {
-          if (measures[i].title == dataSave) {
+          if (measures[i].title === dataSave) {
             return measures[i];
           }
         }
@@ -267,8 +267,8 @@ const SelectRestoreWeights = ({
       </span>
       <Container className="add-assess-cont">
         {location.pathname !== "/user/measures"
-          ? visualizationScale != "region" &&
-            visualizationScale != "state" && (
+          ? visualizationScale !== "region" &&
+            visualizationScale !== "state" && (
               <Button
                 variant="secondary"
                 onClick={() => setAssessStep("selectAOI")}

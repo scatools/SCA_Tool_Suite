@@ -77,7 +77,7 @@ const Legend = ({ aoiList, aoiColors, useCase, visualizationOpacity }) => {
             <ul className="legend-labels">
               {aoiList.length > 0 &&
                 aoiList.map((aoi, index) => (
-                  <li id={uuid()}>
+                  <li key={index} id={uuid()}>
                     <span
                       style={{
                         background: aoiColors[index],

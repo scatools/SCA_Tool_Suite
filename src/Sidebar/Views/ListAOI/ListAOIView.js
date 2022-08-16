@@ -84,17 +84,17 @@ const ListAOIView = ({
                 dismissButton.classList.remove("active");
                 setAoiSelected(e.currentTarget.value);
                 // Use Turf to get the bounding box of the collections of features
-                var aoiBbox = bbox({
+                let aoiBbox = bbox({
                   type: "FeatureCollection",
                   features: aoi.geometry,
                 });
                 // Format of the bounding box needs to be an array of two opposite corners ([[lon,lat],[lon,lat]])
-                var viewportBbox = [
+                let viewportBbox = [
                   [aoiBbox[0], aoiBbox[1]],
                   [aoiBbox[2], aoiBbox[3]],
                 ];
                 // Use WebMercatorViewport to get center longitude/latitude and zoom level
-                var newViewport = new WebMercatorViewport({
+                let newViewport = new WebMercatorViewport({
                   width: 800,
                   height: 600,
                 }).fitBounds(viewportBbox, { padding: 100 });
@@ -130,6 +130,9 @@ const ListAOIView = ({
           setShowTableContainer={setShowTableContainer}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
+          aoiFullList={aoiList}
+          setAoiSelected={setAoiSelected}
+          setViewport={setViewport}
         />
       </ButtonGroup>
       <Container className="add-assess-cont">

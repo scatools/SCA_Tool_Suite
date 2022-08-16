@@ -47,12 +47,12 @@ const Map = ({
   setZoom,
   viewport,
   setViewport,
-  setInstruction
+  setInstruction,
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
   const [selectedSwitch, setSelectedSwitch] = useState(0);
-  const [coordinates, setCoordinates] = useState([ undefined, undefined ]);
+  const [coordinates, setCoordinates] = useState([undefined, undefined]);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
   const [hucData, setHucData] = useState(null);
   const [hovered, setHovered] = useState(false);
@@ -110,16 +110,16 @@ const Map = ({
       setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
-    } else if (useCase === "inventory" && aoiSelected != false) {
-			setCoordinates([undefined, undefined]);
-    };
-    
+    } else if (useCase === "inventory" && aoiSelected !== false) {
+      setCoordinates([undefined, undefined]);
+    }
+
     if (e.features) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
-      };
-    };
+      }
+    }
   };
 
   const onDelete = () => {
@@ -247,9 +247,11 @@ const Map = ({
             "fill-opacity": 0.2,
           }}
         />
+
         {hexFilterList.map((filter) => (
           <Layer
             id={filter[2]}
+            key={filter[2]}
             type="fill"
             paint={{
               "fill-outline-color": "red",
@@ -276,7 +278,7 @@ const Map = ({
                 "case",
                 ["boolean", ["feature-state", "hover"], false],
                 1,
-                parseInt(visualizationOpacity)/100,
+                parseInt(visualizationOpacity) / 100,
               ],
             }}
           />
@@ -400,13 +402,17 @@ const Map = ({
   useEffect(() => {
     hexFilterList.push(hexFilter);
   }, [hexFilter, hexFilterList]);
-  
+
   useEffect(() => {
     if (zoom >= 10) {
-      setInstruction("Click to explore the details of a single hexagonal area.");
+      setInstruction(
+        "Click to explore the details of a single hexagonal area."
+      );
     } else {
-      setInstruction("Please zoom in to level 10 to explore the details of a single hexagonal area.");
-    };
+      setInstruction(
+        "Please zoom in to level 10 to explore the details of a single hexagonal area."
+      );
+    }
   }, [zoom]);
 
   return (
@@ -505,6 +511,7 @@ const Map = ({
               >
                 {aoi.id && (
                   <Layer
+                    key={aoi.id}
                     id={aoi.id}
                     type="fill"
                     paint={{
@@ -521,8 +528,7 @@ const Map = ({
                 visualizationOpacity={0}
               ></Legend>
             </>
-          )
-        )}
+          ))}
         {aoiList.length > 0 && !drawingMode && !hucBoundary && (
           <Source
             type="geojson"
@@ -541,6 +547,33 @@ const Map = ({
             />
           </Source>
         )}
+        {/*
+        TEST LAYER FOR TROUBLE SHOOTING BBOX issues
+        <Source
+          type="geojson"
+          data={{
+            type: "Polygon",
+            coordinates: [
+              [
+                [-82.53553976107378, 26.81214012682117],
+                [-80.65961064304287, 26.81214012682117],
+                [-80.65961064304287, 28.68806924485208],
+                [-82.53553976107378, 28.68806924485208],
+                [-82.53553976107378, 26.81214012682117],
+              ],
+            ],
+          }}
+        >
+          <Layer
+            id="test"
+            type="fill"
+            paint={{
+              "fill-outline-color": "#484896",
+              "fill-color": "#000000",
+              "fill-opacity": 0.2,
+            }}
+          />
+        </Source> */}
         {hucBoundary && hucData && (
           <Source type="geojson" data={hucData}>
             <Layer
@@ -555,6 +588,7 @@ const Map = ({
             {filterList.map((filter) => (
               <Layer
                 id={filter[2]}
+                key={filter[2]}
                 type="fill"
                 paint={{
                   "fill-outline-color": "#484896",
@@ -569,13 +603,12 @@ const Map = ({
         {aoiList.length > 0 && hexGrid && renderHexGrid()}
         {drawingMode && renderDrawTools()}
         {hucBoundary && hovered && renderPopup()}
-        {useCase === "visualization" && 
-          visualizationSource && 
-          visualizationLayer && 
-          visualizationFillColor && 
+        {useCase === "visualization" &&
+          visualizationSource &&
+          visualizationLayer &&
+          visualizationFillColor &&
           visualizationOpacity > 0 &&
-          renderVisualization()
-        }
+          renderVisualization()}
       </MapGL>
     </>
   );
