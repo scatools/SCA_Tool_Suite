@@ -685,6 +685,28 @@ a img.logo {
   top: 0;
 }
 
+.overlayButton {
+  position: fixed;
+  top: 122px;
+  right: 10px;
+  z-index: 2;
+  min-width: 30px;
+  min-height: 42px;
+}
+
+.overlaySelect {
+  position: fixed;
+  top: 122px;
+  right: 52px;
+  z-index: 2;
+  width: 200px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: gray;
+}
+
 .glow {
   display: inline-block;
   width: initial !important;
@@ -768,7 +790,7 @@ a img.logo {
 }
 
 .mapboxgl-ctrl-top-right {
-  top: 65px !important;
+  top: 100px !important;
   right: 18px !important;
 }
 

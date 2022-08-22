@@ -4,7 +4,7 @@ import { Editor, EditingMode } from "react-map-gl-draw";
 import MultiSwitch from "react-multi-switch-toggle";
 import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { FiMap } from "react-icons/fi";
+import { FiMap, FiLayers } from "react-icons/fi";
 import "mapbox-gl/dist/mapbox-gl.css";
 import bbox from "@turf/bbox";
 import shp from "shpjs";
@@ -50,7 +50,9 @@ const Map = ({
   setInstruction,
 }) => {
   const [selectBasemap, setSelectBasemap] = useState(false);
+  const [selectOverlay, setSelectOverlay] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [overlayList, setOverlayList] = useState([]);
   const [selectedSwitch, setSelectedSwitch] = useState(0);
   const [coordinates, setCoordinates] = useState([undefined, undefined]);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
@@ -63,6 +65,10 @@ const Map = ({
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
   const [visualizationFilter, setVisualizationFilter] = useState(["in", "OBJECTID", "default"]);
   const editorRef = useRef(null);
+  
+  const overlaySources = {
+    "secas": "mapbox://chuck0520.dkcwxuvl"
+  };
 
   // Up to 10 colors for 10 different AOIs
   const aoiColors = [
@@ -420,9 +426,18 @@ const Map = ({
       <Button
         className="basemapButton"
         variant="secondary"
+        title="Base Map"
         onClick={() => setSelectBasemap(!selectBasemap)}
       >
         <FiMap />
+      </Button>
+      <Button
+        className="overlayButton"
+        variant="secondary"
+        title="Overlay Layers"
+        onClick={() => setSelectOverlay(!selectOverlay)}
+      >
+        <FiLayers />
       </Button>
       {selectBasemap && (
         <div className="basemapSwitch">
@@ -439,6 +454,25 @@ const Map = ({
             borderWidth={0}
             eachSwitchWidth={80}
           />
+        </div>
+      )}
+      {selectOverlay && (
+        <div className="overlaySelect">
+          <div>
+            <input
+              type="checkbox"
+              value="secas"
+              checked={overlayList.includes("secas")}
+              onChange={() => {
+                if (overlayList.includes("secas")) {
+                  setOverlayList(list => list.filter(element => element !== "secas"));
+                } else {
+                  setOverlayList(list => [...list, "secas"]);
+                };
+              }}
+            />
+            <span>&nbsp; Southeast Blueprint</span>
+          </div>
         </div>
       )}
       {showTableContainer && (
@@ -497,6 +531,21 @@ const Map = ({
             />
           </Source>
         )}
+        {overlayList.map((overlay) => (
+          <Source
+            type="raster"
+            url={overlaySources[overlay]}
+            maxzoom={22}
+            minzoom={0}
+          >
+            <Layer
+              type="raster"
+              id={overlay}
+              value={overlay}
+              paint={{"raster-opacity": 0.5}}
+            />
+          </Source>
+        ))}
         {aoiFullList.length > 0 &&
           !hucBoundary &&
           visualizationOpacity === 0 &&
@@ -547,33 +596,6 @@ const Map = ({
             />
           </Source>
         )}
-        {/*
-        TEST LAYER FOR TROUBLE SHOOTING BBOX issues
-        <Source
-          type="geojson"
-          data={{
-            type: "Polygon",
-            coordinates: [
-              [
-                [-82.53553976107378, 26.81214012682117],
-                [-80.65961064304287, 26.81214012682117],
-                [-80.65961064304287, 28.68806924485208],
-                [-82.53553976107378, 28.68806924485208],
-                [-82.53553976107378, 26.81214012682117],
-              ],
-            ],
-          }}
-        >
-          <Layer
-            id="test"
-            type="fill"
-            paint={{
-              "fill-outline-color": "#484896",
-              "fill-color": "#000000",
-              "fill-opacity": 0.2,
-            }}
-          />
-        </Source> */}
         {hucBoundary && hucData && (
           <Source type="geojson" data={hucData}>
             <Layer
