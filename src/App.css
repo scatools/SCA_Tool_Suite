@@ -381,6 +381,52 @@ nav a:hover {
   padding-left: 0px;
 }
 
+.reportBasemapButton {
+  position: absolute;
+  float: right;
+  top: 170px;
+  right: 50px;
+  z-index: 2;
+  min-width: 40px !important;
+  height: 42px !important;
+}
+
+.reportBasemapSwitch {
+  position: absolute;
+  float: right;
+  top: 167px;
+  right: 70px;
+  z-index: 1;
+  padding: 0px;
+  margin: 0px;
+  text-align: end;
+  transition: all ease 0.3s;
+}
+
+.reportOverlayButton {
+  position: absolute;
+  float: right;
+  top: 210px;
+  right: 50px;
+  z-index: 2;
+  min-width: 40px !important;
+  height: 42px !important;
+}
+
+.reportOverlaySelect {
+  position: absolute;
+  float: right;
+  top: 210px;
+  right: 92px;
+  z-index: 2;
+  width: 200px;
+  height: 100px;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: gray;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
