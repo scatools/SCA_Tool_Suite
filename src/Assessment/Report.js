@@ -3,8 +3,10 @@ import { Button, Container, Dropdown, Row } from "react-bootstrap";
 import MapGL, { Source, Layer, WebMercatorViewport } from "react-map-gl";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import MultiSwitch from "react-multi-switch-toggle";
 import { FaChrome } from "react-icons/fa";
 import { MdDownload, MdSave } from "react-icons/md";
+import { FiMap, FiLayers } from "react-icons/fi";
 import { download } from "shp-write";
 import bbox from "@turf/bbox";
 import axios from "axios";
@@ -17,8 +19,17 @@ const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
-  const aoi = useSelector((state) => state.aoi);
+  const [selectBasemap, setSelectBasemap] = useState(false);
+  const [selectOverlay, setSelectOverlay] = useState(false);
+  const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [overlayList, setOverlayList] = useState([]);
+  const [selectedSwitch, setSelectedSwitch] = useState(0);
+  const overlaySources = {
+    "secas": "mapbox://chuck0520.dkcwxuvl"
+  };
+  
   // Constant aoi contains all the AOIs provided so those not selected need to be filtered out
+  const aoi = useSelector((state) => state.aoi);
   const aoiList = Object.values(aoi).filter((aoi) => aoiSelected === aoi.id);
   const aoiColors = ["#00188f"];
 
@@ -44,6 +55,19 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
     longitude: newViewport.longitude,
     zoom: newViewport.zoom,
   });
+
+  const onToggle = (value) => {
+    setSelectedSwitch(value);
+    if (value === 0) {
+      setBasemapStyle("light-v10");
+    } else if (value === 1) {
+      setBasemapStyle("dark-v10");
+    } else if (value === 2) {
+      setBasemapStyle("satellite-v9");
+    } else if (value === 3) {
+      setBasemapStyle("outdoors-v11");
+    }
+  };
 
   // Download HTML report
 
@@ -205,6 +229,13 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
 
   return (
     <>
+      <div className="reportNav">
+        <a href="#map">Spatial Footprint</a>
+        <a href="#checklist">Conservation Checklist</a>
+        <a href="#summary">Overall Summary</a>
+        <a href="#appendix">Appendix</a>
+      </div>
+
       <div className="reportDownload">
         <Dropdown>
           <Dropdown.Toggle
@@ -256,12 +287,6 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
       )}
 
       <div id="reportOverview">
-        <div className="reportNav">
-          <a href="#map">Spatial Footprint</a>
-          <a href="#checklist">Conservation Checklist</a>
-          <a href="#summary">Overall Summary</a>
-          <a href="#appendix">Appendix</a>
-        </div>
         <Container style={{ position: "relative", top: "100px" }}>
           <Row>
             <h1 className="report-h1">Detailed Report for {aoiList[0].name}</h1>
@@ -269,16 +294,83 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
           <Row id="mapHeading">
             <h2>Spatial Footprint:</h2>
           </Row>
-          <Row id="map">
+          <Row id="map" style={{ width: "100%", height: "25rem" }}>
+            <Button
+              className="reportBasemapButton"
+              variant="secondary"
+              title="Base Map"
+              onClick={() => setSelectBasemap(!selectBasemap)}
+            >
+              <FiMap />
+            </Button>
+            <Button
+              className="reportOverlayButton"
+              variant="secondary"
+              title="Overlay Layers"
+              onClick={() => setSelectOverlay(!selectOverlay)}
+            >
+              <FiLayers />
+            </Button>
+            {selectBasemap && (
+              <div className="reportBasemapSwitch">
+                <MultiSwitch
+                  texts={["Light", "Dark", "Satellite", "Terrain", ""]}
+                  selectedSwitch={selectedSwitch}
+                  bgColor={"gray"}
+                  onToggleCallback={onToggle}
+                  height={"38px"}
+                  fontSize={"15px"}
+                  fontColor={"white"}
+                  selectedFontColor={"#6e599f"}
+                  selectedSwitchColor={"white"}
+                  borderWidth={0}
+                  eachSwitchWidth={80}
+                />
+              </div>
+            )}
+            {selectOverlay && (
+              <div className="reportOverlaySelect">
+                <div>
+                  <input
+                    type="checkbox"
+                    value="secas"
+                    checked={overlayList.includes("secas")}
+                    onChange={() => {
+                      if (overlayList.includes("secas")) {
+                        setOverlayList(list => list.filter(element => element !== "secas"));
+                      } else {
+                        setOverlayList(list => [...list, "secas"]);
+                      };
+                    }}
+                  />
+                  <span>&nbsp; Southeast Blueprint</span>
+                </div>
+              </div>
+            )}
             <MapGL
               {...viewport}
               style={{ position: "relative" }}
-              width="100vw"
-              height="50vh"
-              mapStyle="mapbox://styles/mapbox/light-v9"
+              width="100%"
+              height="100%"
+              mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
               onViewportChange={(nextViewport) => setViewport(nextViewport)}
               mapboxApiAccessToken={MAPBOX_TOKEN}
-            >
+            > 
+              {overlayList.map((overlay) => (
+                <Source
+                  type="raster"
+                  url={overlaySources[overlay]}
+                  maxzoom={22}
+                  minzoom={0}
+                >
+                  <Layer
+                    type="raster"
+                    id={overlay}
+                    value={overlay}
+                    paint={{"raster-opacity": 0.5}}
+                  />
+                </Source>
+              ))}
               {aoiList.length > 0 &&
                 aoiList.map((aoi) => (
                   <Source
@@ -303,7 +395,7 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
               )}
             </MapGL>
           </Row>
-          <br />
+          <hr />
           <Row id="checklist">
             <h2>Conservation Checklist:</h2>
             <ReportTable aoiSelected={aoiSelected} />

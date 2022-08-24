@@ -3,9 +3,11 @@ import { Button, Container, Dropdown, Row } from "react-bootstrap";
 import MapGL, { Source, Layer, WebMercatorViewport } from "react-map-gl";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect, useHistory } from "react-router-dom";
+import MultiSwitch from "react-multi-switch-toggle";
 import { FaChrome } from "react-icons/fa";
 import { MdDownload, MdSave } from "react-icons/md";
 import { VscFolder, VscFileSubmodule } from "react-icons/vsc";
+import { FiMap, FiLayers } from "react-icons/fi";
 import { download } from "shp-write";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 import bbox from "@turf/bbox";
@@ -36,6 +38,15 @@ const Assessment = ({
 }) => {
   const [downloading, setDownloading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [selectBasemap, setSelectBasemap] = useState(false);
+  const [selectOverlay, setSelectOverlay] = useState(false);
+  const [basemapStyle, setBasemapStyle] = useState("light-v10");
+  const [overlayList, setOverlayList] = useState([]);
+  const [selectedSwitch, setSelectedSwitch] = useState(0);
+  const overlaySources = {
+    "secas": "mapbox://chuck0520.dkcwxuvl"
+  };
+  
   const history = useHistory();
   const assessment = useSelector((state) => state.assessment);
   const aoi = useSelector((state) => state.aoi);
@@ -219,7 +230,19 @@ const Assessment = ({
 
     return planScoreList;
   });
-  // console.log(aoiScoreCustomized);
+  
+  const onToggle = (value) => {
+    setSelectedSwitch(value);
+    if (value === 0) {
+      setBasemapStyle("light-v10");
+    } else if (value === 1) {
+      setBasemapStyle("dark-v10");
+    } else if (value === 2) {
+      setBasemapStyle("satellite-v9");
+    } else if (value === 3) {
+      setBasemapStyle("outdoors-v11");
+    }
+  };
 
   // Download HTML report
 
@@ -572,25 +595,96 @@ const Assessment = ({
       </div>
 
       <div id="assessmentOverview">
-        <Container>
-          <h1 className="assessment-h1">
-            Assessment Report for:
-            <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other AOIs
-          </h1>
+        <Container style={{ position: "relative", top: "0px" }}>
+          <Row>
+            <h1 className="assessment-h1">
+              Assessment Report for:
+              <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other AOIs
+            </h1>
+          </Row>
           <Row id="mapHeading">
             <h2>Spatial Footprint:</h2>
           </Row>
           <br />
           <Row id="map" style={{ width: "100%", height: "25rem" }}>
+            <Button
+              className="reportBasemapButton"
+              variant="secondary"
+              title="Base Map"
+              style={{ top: "250px" }}
+              onClick={() => setSelectBasemap(!selectBasemap)}
+            >
+              <FiMap />
+            </Button>
+            <Button
+              className="reportOverlayButton"
+              variant="secondary"
+              title="Overlay Layers"
+              style={{ top: "290px" }}
+              onClick={() => setSelectOverlay(!selectOverlay)}
+            >
+              <FiLayers />
+            </Button>
+            {selectBasemap && (
+              <div className="reportBasemapSwitch" style={{ top: "247px" }}>
+                <MultiSwitch
+                  texts={["Light", "Dark", "Satellite", "Terrain", ""]}
+                  selectedSwitch={selectedSwitch}
+                  bgColor={"gray"}
+                  onToggleCallback={onToggle}
+                  height={"38px"}
+                  fontSize={"15px"}
+                  fontColor={"white"}
+                  selectedFontColor={"#6e599f"}
+                  selectedSwitchColor={"white"}
+                  borderWidth={0}
+                  eachSwitchWidth={80}
+                />
+              </div>
+            )}
+            {selectOverlay && (
+              <div className="reportOverlaySelect" style={{ top: "290px" }}>
+                <div>
+                  <input
+                    type="checkbox"
+                    value="secas"
+                    checked={overlayList.includes("secas")}
+                    onChange={() => {
+                      if (overlayList.includes("secas")) {
+                        setOverlayList(list => list.filter(element => element !== "secas"));
+                      } else {
+                        setOverlayList(list => [...list, "secas"]);
+                      };
+                    }}
+                  />
+                  <span>&nbsp; Southeast Blueprint</span>
+                </div>
+              </div>
+            )}
             <MapGL
               {...viewport}
               style={{ position: "relative" }}
               width="100%"
               height="100%"
-              mapStyle="mapbox://styles/mapbox/light-v9"
+              mapStyle={"mapbox://styles/mapbox/" + basemapStyle}
               onViewportChange={(nextViewport) => setViewport(nextViewport)}
               mapboxApiAccessToken={MAPBOX_TOKEN}
             >
+              {overlayList.map((overlay) => (
+                <Source
+                  type="raster"
+                  url={overlaySources[overlay]}
+                  maxzoom={22}
+                  minzoom={0}
+                >
+                  <Layer
+                    type="raster"
+                    id={overlay}
+                    value={overlay}
+                    paint={{"raster-opacity": 0.5}}
+                  />
+                </Source>
+              ))}
               {aoiList.length > 0 &&
                 aoiList.map((aoi, index) => (
                   <Source
