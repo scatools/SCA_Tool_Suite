@@ -480,122 +480,117 @@ const Assessment = ({
       </div>
 
       <div className="back-to-map">
-        <Button variant="secondary" onClick={() => history.push("/")}>
+        <Button variant="secondary" onClick={() => history.push("/tool")}>
           Back to Map View
         </Button>
+      </div>
 
-        {/* Moved containers here for responsiveness */}
-
-        <div className="reportDownloadContainer">
-          {userLoggedIn && (
-            <div className="assessmentSave">
-              <Button
-                id="assessmentSaveButton"
-                className="downloadButton"
+      <div className="buttonContainer">
+        <div className="assessmentDownload">
+          <Dropdown>
+            <Dropdown.Toggle
+              className="downloadButton"
+              variant="dark"
+            >
+              <MdDownload /> Assessment Report
+            </Dropdown.Toggle>
+            <Dropdown.Menu align="end">
+              <Dropdown.Item
                 variant="dark"
                 onClick={() => {
-                  setSaving(true);
+                  setDownloading(true);
                 }}
               >
-                <MdSave /> Save to:{" "}
-                {userLoggedIn.length > 9 ? (
-                  <span style={{ fontSize: "10px" }}>{userLoggedIn}</span>
-                ) : (
-                  userLoggedIn
-                )}
-              </Button>
-            </div>
-          )}
-          <div className="assessmentDownload">
-            <Dropdown>
-              <Dropdown.Toggle
-                id="assessmentDownloadButton"
-                className="downloadButton"
-                variant="dark"
-              >
-                <MdDownload /> Assessment Report
-              </Dropdown.Toggle>
-              <Dropdown.Menu align="end">
-                <Dropdown.Item
-                  variant="dark"
-                  onClick={() => {
-                    setDownloading(true);
-                  }}
-                >
-                  <FaChrome /> &nbsp; Download as HTML
-                </Dropdown.Item>
-                <PDFDownloader
-                  downloadFileName="Assessment"
-                  rootElementId="assessmentOverview"
-                />
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          <div id="aFootprintDownloadButton" className="footprintDownload">
-            <Dropdown>
-              <Dropdown.Toggle
-                id="footprintDownloadButton"
-                className="downloadButton"
-                variant="dark"
-              >
-                <MdDownload /> Spatial Footprint
-              </Dropdown.Toggle>
-              <Dropdown.Menu align="end">
-                <Dropdown.Item
-                  variant="dark"
-                  onClick={downloadFootprintAsSingle}
-                >
-                  <VscFolder /> &nbsp; Download as Single Shapefile
-                </Dropdown.Item>
-                <Dropdown.Item
-                  variant="dark"
-                  onClick={downloadFootprintAsMultiple}
-                >
-                  <VscFileSubmodule /> &nbsp; Download as Multiple Shapefiles
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-
-          <div className="tableDownload">
-            <Dropdown>
-              <Dropdown.Toggle
-                id="footprintDownloadButton"
-                className="downloadButton"
-                variant="dark"
-              >
-                <MdDownload /> Data Table
-              </Dropdown.Toggle>
-              <Dropdown.Menu align="end">
-                <Dropdown.Item variant="dark">
-                  <ReactHTMLTableToExcel
-                    id="tableDownloadButton"
-                    className="downloadButton"
-                    table="assessmentScoreTable"
-                    filename="Goal Scores Table"
-                    sheet="Assessment"
-                    buttonText="Goal Scores Table"
-                  />
-                </Dropdown.Item>
-                <Dropdown.Item variant="dark">
-                  <ReactHTMLTableToExcel
-                    id="tableDownloadButton"
-                    className="downloadButton"
-                    table="assessmentTable"
-                    filename="Measure Scores Table"
-                    sheet="Assessment"
-                    buttonText="Measure Scores Table"
-                  />
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
+                <FaChrome /> &nbsp; Download as HTML
+              </Dropdown.Item>
+              <PDFDownloader
+                downloadFileName="Assessment"
+                rootElementId="assessmentOverview"
+              />
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
+
+        <div className="footprintDownload">
+          <Dropdown>
+            <Dropdown.Toggle
+              className="downloadButton"
+              variant="dark"
+            >
+              <MdDownload /> Spatial Footprint
+            </Dropdown.Toggle>
+            <Dropdown.Menu align="end">
+              <Dropdown.Item
+                variant="dark"
+                onClick={downloadFootprintAsSingle}
+              >
+                <VscFolder /> &nbsp; Download as Single Shapefile
+              </Dropdown.Item>
+              <Dropdown.Item
+                variant="dark"
+                onClick={downloadFootprintAsMultiple}
+              >
+                <VscFileSubmodule /> &nbsp; Download as Multiple Shapefiles
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+
+        <div className="tableDownload">
+          <Dropdown>
+            <Dropdown.Toggle
+              className="downloadButton"
+              variant="dark"
+            >
+              <MdDownload /> Data Table
+            </Dropdown.Toggle>
+            <Dropdown.Menu align="end">
+              <Dropdown.Item variant="dark">
+                <ReactHTMLTableToExcel
+                  id="tableDownloadButton"
+                  className="downloadButton"
+                  table="assessmentScoreTable"
+                  filename="Goal Scores Table"
+                  sheet="Assessment"
+                  buttonText="Goal Scores Table"
+                />
+              </Dropdown.Item>
+              <Dropdown.Item variant="dark">
+                <ReactHTMLTableToExcel
+                  id="tableDownloadButton"
+                  className="downloadButton"
+                  table="assessmentTable"
+                  filename="Measure Scores Table"
+                  sheet="Assessment"
+                  buttonText="Measure Scores Table"
+                />
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        
+        {userLoggedIn && (
+          <div className="assessmentSave">
+            <Button
+              className="downloadButton"
+              variant="dark"
+              onClick={() => {
+                setSaving(true);
+              }}
+            >
+              <MdSave /> Save to:{" "}
+              {userLoggedIn.length > 9 ? (
+                <span style={{ fontSize: "10px" }}>{userLoggedIn}</span>
+              ) : (
+                userLoggedIn
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div id="assessmentOverview">
-        <Container style={{ position: "relative", top: "0px" }}>
+        <Container>
           <Row>
             <h1 className="assessment-h1">
               Assessment Report for:
@@ -606,7 +601,7 @@ const Assessment = ({
             <h2>Spatial Footprint:</h2>
           </Row>
           <br />
-          <Row id="map" style={{ width: "100%", height: "25rem" }}>
+          <Row id="map">
             <Button
               className="reportBasemapButton"
               variant="secondary"

@@ -124,48 +124,6 @@ nav a:hover {
   justify-content: flex-end;
 }
 
-.assessmentNav {
-  position: fixed;
-  top: 8vh;
-  left: 2vw;
-  border: 2px solid black;
-  border-radius: 15px;
-  padding: 5px;
-  z-index: 10;
-}
-
-.assessmentNav a {
-  display: block;
-  text-decoration: none;
-  color: black;
-}
-
-.assessmentNav a:hover {
-  text-decoration: underline;
-  color: gray;
-}
-
-.reportNav {
-  position: fixed;
-  top: 8vh;
-  left: 2vw;
-  border: 2px solid black;
-  border-radius: 15px;
-  padding: 5px;
-  z-index: 10;
-}
-
-.reportNav a {
-  display: block;
-  text-decoration: none;
-  color: black;
-}
-
-.reportNav a:hover {
-  text-decoration: underline;
-  color: gray;
-}
-
 .file-drop {
   width: 95% !important;
   height: auto;
@@ -214,112 +172,6 @@ nav a:hover {
 
 .mt-4 .h4 {
   font-size: 20px;
-}
-
-.reportDownload {
-  position: absolute;
-  right: 20px;
-  top: 1%;
-  margin-top: 10px;
-}
-
-.reportDownloadContainer {
-  position: absolute;
-  right: 20px;
-  width: fit-content;
-}
-
-.reportDownloadContainer > div {
-  margin-bottom: 20px;
-}
-
-.back-to-map > * .dropdown-menu {
-  inset: 0px 0px auto auto !important;
-}
-
-#map {
-  width: 100%;
-  height: 25rem;
-}
-
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-  .assessmentNav {
-    display: none;
-  }
-  .back-to-map {
-    display: none;
-  }
-  .back-to-map > * {
-    display: none;
-  }
-  .back-to-map > button {
-    display: none;
-  }
-
-  #assessmentOverview {
-    margin-top: -10rem;
-  }
-  #dataHeading {
-    break-before: always;
-  }
-  #map {
-    width: 100%;
-    height: 25rem;
-  }
-  .graphRow {
-    flex-wrap: nowrap !important;
-  }
-  .buttonGraph {
-    display: none !important;
-  }
-}
-
-.footprintDownload {
-  position: absolute;
-  right: 20px;
-  top: 2%;
-  margin-top: 10px;
-}
-
-#aFootprintDownloadButton {
-  right: 0px;
-  top: 85%;
-}
-
-.tableDownload {
-  position: absolute;
-  right: 0px;
-  top: 205%;
-}
-
-/* 
-.assessmentDownload {
-  position: absolute;
-  right: 20px;
-  top: 1%;
-  margin-top: 20px;
-}
-
-.reportSave {
-  position: absolute;
-  right: 20px;
-  top: 3%;
-}
-
-.assessmentSave {
-  position: absolute;
-  right: 20px;
-  top: 4%;
-} 
-*/
-
-.downloadButton {
-  height: 40px;
-  width: 200px;
 }
 
 .legend {
@@ -690,13 +542,6 @@ a img.logo {
   font-size: 16px !important;
 }
 
-.back-to-map {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 80px;
-  margin-top: 20px;
-}
-
 .basemapButton {
   position: fixed;
   top: 80px;
@@ -868,15 +713,110 @@ a img.logo {
 
 /* Report and assessment */
 
-#reportSaveButton,
-#assessmentSaveButton {
-  width: auto;
-  min-width: 200px;
+.reportNav {
+  position: fixed;
+  top: 8vh;
+  left: 2vw;
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 5px;
+  z-index: 10;
+}
+
+.reportNav a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+.reportNav a:hover {
+  text-decoration: underline;
+  color: gray;
+}
+
+.assessmentNav {
+  position: fixed;
+  top: 8vh;
+  left: 2vw;
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 5px;
+  z-index: 10;
+}
+
+.assessmentNav a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+.assessmentNav a:hover {
+  text-decoration: underline;
+  color: gray;
+}
+
+.back-to-map {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 80px;
+  margin-top: 20px;
+}
+
+.back-to-map > * .dropdown-menu {
+  inset: 0px 0px auto auto !important;
+}
+
+.reportDownload,
+.assessmentDownload {
+  position: absolute;
+  right: 20px;
+  top: 1%;
+  margin-top: 10px;
+}
+
+.footprintDownload {
+  position: absolute;
+  right: 20px;
+  top: 2%;
+  margin-top: 10px;
+}
+
+.tableDownload {
+  position: absolute;
+  right: 20px;
+  top: 3%;
+  margin-top: 10px;
+}
+
+.reportSave {
+  position: absolute;
+  right: 20px;
+  top: 3%;
+  margin-top: 10px;
+}
+
+.assessmentSave {
+  position: absolute;
+  right: 20px;
+  top: 4%;
+  margin-top: 10px;
+}
+
+.downloadButton {
+  height: 40px;
+  width: 200px;
 }
 
 #reportOverview .container,
 #assessmentOverview .container {
+  position: relative;
   width: 65%;
+  top: 0px;
+}
+
+#map {
+  width: 100%;
+  height: 25rem;
 }
 
 .modal-dialog.modal-xl.modal-dialog-centered {
@@ -885,6 +825,50 @@ a img.logo {
 
 .recharts-legend-wrapper {
   right: 0 !important;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .reportNav {
+    display: none;
+  }
+  .assessmentNav {
+    display: none;
+  }
+  .back-to-map {
+    display: none;
+  }
+  .back-to-map > * {
+    display: none;
+  }
+  .back-to-map > button {
+    display: none;
+  }
+  .buttonContainer {
+    display: none;
+  }
+  #reportOverview {
+    margin-top: 0rem;
+  }
+  #assessmentOverview {
+    margin-top: 0rem;
+  }
+  #dataHeading {
+    break-before: always;
+  }
+  #map {
+    width: 100%;
+    height: 25rem;
+  }
+  .graphRow {
+    flex-wrap: nowrap !important;
+  }
+  .buttonGraph {
+    display: none !important;
+  }
 }
 
 /* Entire plan table */

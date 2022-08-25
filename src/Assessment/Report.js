@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Container, Dropdown, Row } from "react-bootstrap";
 import MapGL, { Source, Layer, WebMercatorViewport } from "react-map-gl";
+import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import MultiSwitch from "react-multi-switch-toggle";
@@ -27,7 +28,9 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
   const overlaySources = {
     "secas": "mapbox://chuck0520.dkcwxuvl"
   };
-  
+
+  const history = useHistory();
+
   // Constant aoi contains all the AOIs provided so those not selected need to be filtered out
   const aoi = useSelector((state) => state.aoi);
   const aoiList = Object.values(aoi).filter((aoi) => aoiSelected === aoi.id);
@@ -236,65 +239,70 @@ const Report = ({ aoiSelected, userLoggedIn, setAlertText, setAlertType }) => {
         <a href="#appendix">Appendix</a>
       </div>
 
-      <div className="reportDownload">
-        <Dropdown>
-          <Dropdown.Toggle
-            id="assessmentDownloadButton"
-            className="downloadButton"
-            variant="dark"
-          >
-            <MdDownload /> Detailed Report
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item variant="dark" onClick={downloadHTML}>
-              <FaChrome /> &nbsp; Download as HTML
-            </Dropdown.Item>
-            <PDFDownloader
-              downloadFileName="Report"
-              rootElementId="reportOverview"
-            />
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
-      <div className="footprintDownload">
-        <Button
-          id="ReportFootprintDownloadButton"
-          className="downloadButton"
-          variant="dark"
-          onClick={downloadFootprint}
-        >
-          <MdDownload /> Spatial Footprint
+      <div className="back-to-map">
+        <Button variant="secondary" onClick={() => history.push("/tool")}>
+          Back to Map View
         </Button>
       </div>
-      {console.log(userLoggedIn)}
-      {userLoggedIn && (
-        <div className="reportSave">
+
+      <div className="buttonContainer">
+        <div className="reportDownload">
+          <Dropdown>
+            <Dropdown.Toggle
+              className="downloadButton"
+              variant="dark"
+            >
+              <MdDownload /> Detailed Report
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item variant="dark" onClick={downloadHTML}>
+                <FaChrome /> &nbsp; Download as HTML
+              </Dropdown.Item>
+              <PDFDownloader
+                downloadFileName="Report"
+                rootElementId="reportOverview"
+              />
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+
+        <div className="footprintDownload">
           <Button
-            id="reportSaveButton"
             className="downloadButton"
             variant="dark"
-            onClick={saveReport}
+            onClick={downloadFootprint}
           >
-            <MdSave /> Save to:
-            {userLoggedIn.length > 9 ? (
-              <span style={{ fontSize: "10px" }}>{userLoggedIn}</span>
-            ) : (
-              userLoggedIn
-            )}
+            <MdDownload /> Spatial Footprint
           </Button>
         </div>
-      )}
+        
+        {userLoggedIn && (
+          <div className="reportSave">
+            <Button
+              className="downloadButton"
+              variant="dark"
+              onClick={saveReport}
+            >
+              <MdSave /> Save to:
+              {userLoggedIn.length > 9 ? (
+                <span style={{ fontSize: "10px" }}>{userLoggedIn}</span>
+              ) : (
+                userLoggedIn
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div id="reportOverview">
-        <Container style={{ position: "relative", top: "100px" }}>
+        <Container>
           <Row>
             <h1 className="report-h1">Detailed Report for {aoiList[0].name}</h1>
           </Row>
           <Row id="mapHeading">
             <h2>Spatial Footprint:</h2>
           </Row>
-          <Row id="map" style={{ width: "100%", height: "25rem" }}>
+          <Row id="map">
             <Button
               className="reportBasemapButton"
               variant="secondary"
