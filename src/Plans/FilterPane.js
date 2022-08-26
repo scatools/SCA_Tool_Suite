@@ -21,7 +21,7 @@ const FilterPane = ({ currentFilterConfig, onFilterConfigChange, size }) => {
 							setFilterConfigInForm({ ...filterConfigInForm, state: event.target.value })
 						}}
 					>
-						<option value="ALL">All Scale</option>
+						<option value="ALL">All Gulf States</option>
 						<option value="AL">Alabama</option>
 						<option value="FL">Florida</option>
 						<option value="LA">Louisiana</option>
@@ -39,12 +39,10 @@ const FilterPane = ({ currentFilterConfig, onFilterConfigChange, size }) => {
 							setFilterConfigInForm({ ...filterConfigInForm, time: event.target.value })
 						}}
 					>
-						<option value="All">
-							All Plans
-						</option>
-						<option value="5">Plan within 5 years</option>
-						<option value="10">Plan within 10 years</option>
-						<option value="10+">Plans longer than 10 years</option>
+						<option value="All">All Time</option>
+						<option value="5">Within 5 Years</option>
+						<option value="10">Within 10 Years</option>
+						<option value="10+">Older Than 10 Years</option>
 					</select>
 				</div>
 				<div
