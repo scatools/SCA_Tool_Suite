@@ -67,7 +67,7 @@ const AddBoundary = ({
         const planArea = calculateArea(newList);
         dispatch(
           input_aoi({
-            name: "Combined Watershed Area",
+            name: newList.length === 1 ? newList[0].properties.NAME : "Combined Watershed Area",
             geometry: newList,
             hexagons: res.data.data,
             rawScore: aggregate(res.data.data, planArea),
