@@ -31,6 +31,7 @@ const Main = ({
   setAoiAssembled,
   setReportLink,
   customizedMeasures,
+  setCustomizedMeasures,
   userLoggedIn,
   view,
   setView,
@@ -118,6 +119,7 @@ const Main = ({
         setFilterList={setFilterList}
         setReportLink={setReportLink}
         customizedMeasures={customizedMeasures}
+        setCustomizedMeasures={setCustomizedMeasures}
         setHexGrid={setHexGrid}
         setHexDeselection={setHexDeselection}
         hexIDDeselected={hexIDDeselected}

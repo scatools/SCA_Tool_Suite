@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
-import { MultiSelect } from "../../../Components/MultiSelect";
 import { useDispatch, useSelector } from "react-redux";
-import { changeMeasures, changeMeasuresWeight } from "../../../Redux/action";
 import ReactTooltip from "react-tooltip";
 import parse from "html-react-parser";
 import { GoInfo } from "react-icons/go";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { MultiSelect } from "../../../Components/MultiSelect";
+import { changeMeasures, changeMeasuresWeight } from "../../../Redux/action";
 
 const SingleMeasure = ({
   useCase,
   customizedMeasures,
+  setCustomizedMeasures,
   customizeMeasure,
   setAssessStep,
 }) => {
   const weights = useSelector((state) => state.weights);
   const dispatch = useDispatch();
+  const [goalIndex, setGoalIndex] = useState(0);
+  let goalList = ["hab", "wq", "lcmr", "cl", "eco"];
+
+  for (const goal of goalList) {
+    if (!weights[goal].weight) {
+      goalList = goalList.filter((e) => e !== goal);
+    };
+  };
 
   const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
   const plusCircle = (
@@ -25,7 +34,7 @@ const SingleMeasure = ({
       icon={faPlusCircle}
       size="lg"
       onClick={() => {
-        customizeMeasure(dataMeasList[dataI]);
+        customizeMeasure(goalList[goalIndex]);
       }}
     />
   );
@@ -39,35 +48,31 @@ const SingleMeasure = ({
   // For customized data measures
 
   const setMeasureUtility = (goal, index, newUtility) => {
-    customizedMeasures[goal][index].utility = newUtility;
+    let updatedMeasures = Object.assign({}, customizedMeasures);
+    updatedMeasures[goal][index].utility = newUtility;
+    setCustomizedMeasures(updatedMeasures);
   };
 
   const setMeasureWeight = (goal, index, newWeight) => {
-    customizedMeasures[goal][index].weight = newWeight;
+    let updatedMeasures = Object.assign({}, customizedMeasures);
+    updatedMeasures[goal][index].weight = newWeight;
+    setCustomizedMeasures(updatedMeasures);
   };
 
-  let dataMeasList = ["hab", "wq", "lcmr", "cl", "eco"];
-  const [dataI, setDataI] = useState(0);
-
-  for (const elem of dataMeasList) {
-    if (!weights[elem].weight)
-      dataMeasList = dataMeasList.filter((a) => a !== elem);
-  }
-
   const handleNext = () => {
-    if (dataI === dataMeasList.length - 1) {
+    if (goalIndex === goalList.length - 1) {
       setAssessStep("reviewAssessSettings");
     } else {
-      setDataI(dataI + 1);
+      setGoalIndex(goalIndex + 1);
     }
   };
 
   const handleBack = () => {
-    if (dataI === 0) {
+    if (goalIndex === 0) {
       setAssessStep("selectRestoreWeights");
     } else {
-      let newI = dataI - 1;
-      setDataI(newI);
+      let newI = goalIndex - 1;
+      setGoalIndex(newI);
     }
   };
 
@@ -595,12 +600,12 @@ const SingleMeasure = ({
 
   let currentDataMeasure =
     useCase === "visualization"
-      ? visualizationOptions[dataMeasList[dataI]]
-      : options[dataMeasList[dataI]];
+      ? visualizationOptions[goalList[goalIndex]]
+      : options[goalList[goalIndex]];
 
   return (
     <div>
-      <span>{options[dataMeasList[dataI]].name}</span>
+      <span>{options[goalList[goalIndex]].name}</span>
       <MultiSelect
         styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
         menuPortalTarget={document.body}
@@ -608,17 +613,17 @@ const SingleMeasure = ({
         isMulti
         isClearable={false}
         placeholder={`Select ${currentDataMeasure.name} measures...`}
-        name={dataMeasList[dataI]}
+        name={goalList[goalIndex]}
         className="basic-multi-select"
         classNamePrefix="select"
         value={
           useCase === "visualization"
-            ? !weights[dataMeasList[dataI]].selected
+            ? !weights[goalList[goalIndex]].selected
               ? ""
-              : weights[dataMeasList[dataI]].selected.filter(
+              : weights[goalList[goalIndex]].selected.filter(
                   (e) => e.value !== "hab0"
                 )
-            : weights[dataMeasList[dataI]].selected
+            : weights[goalList[goalIndex]].selected
         }
         onChange={(selectedOption) => {
           let state;
@@ -631,7 +636,7 @@ const SingleMeasure = ({
           } else {
             state = null;
           }
-          dispatch(changeMeasures([dataMeasList[dataI]], state));
+          dispatch(changeMeasures([goalList[goalIndex]], state));
         }}
       />
       {useCase !== "visualization" && (
@@ -641,8 +646,8 @@ const SingleMeasure = ({
         </div>
       )}
       <br />
-      {weights[dataMeasList[dataI]].selected &&
-        weights[dataMeasList[dataI]].selected.map((measure) => (
+      {weights[goalList[goalIndex]].selected &&
+        weights[goalList[goalIndex]].selected.map((measure) => (
           <div className="m-2 measure-container" key={measure.value}>
             <span style={{ display: "block" }} className="my-1">
               {measure.label} &nbsp;
@@ -678,7 +683,7 @@ const SingleMeasure = ({
                         e.currentTarget.value,
                         e.currentTarget.name,
                         measure.value,
-                        [dataMeasList[dataI]]
+                        [goalList[goalIndex]]
                       )
                     }
                   >
@@ -697,7 +702,7 @@ const SingleMeasure = ({
                         e.currentTarget.value,
                         e.currentTarget.name,
                         measure.value,
-                        [dataMeasList[dataI]]
+                        [goalList[goalIndex]]
                       )
                     }
                   >
@@ -722,7 +727,7 @@ const SingleMeasure = ({
                         e.currentTarget.value,
                         e.currentTarget.name,
                         measure.value,
-                        [dataMeasList[dataI]]
+                        [goalList[goalIndex]]
                       )
                     }
                   >
@@ -739,7 +744,7 @@ const SingleMeasure = ({
                         e.currentTarget.value,
                         e.currentTarget.name,
                         measure.value,
-                        [dataMeasList[dataI]]
+                        [goalList[goalIndex]]
                       )
                     }
                   >
@@ -756,7 +761,7 @@ const SingleMeasure = ({
                         e.currentTarget.value,
                         e.currentTarget.name,
                         measure.value,
-                        [dataMeasList[dataI]]
+                        [goalList[goalIndex]]
                       )
                     }
                   >
@@ -767,8 +772,8 @@ const SingleMeasure = ({
             </div>
           </div>
         ))}
-      {!!customizedMeasures[dataMeasList[dataI]].length &&
-        customizedMeasures[dataMeasList[dataI]].map((measure, index) => (
+      {!!customizedMeasures[goalList[goalIndex]].length &&
+        customizedMeasures[goalList[goalIndex]].map((measure, index) => (
           <div className="m-2 measure-container" key={measure.name}>
             <span style={{ display: "block" }} className="my-1">
               {measure.name}
@@ -785,18 +790,18 @@ const SingleMeasure = ({
                     type="radio"
                     variant="outline-secondary"
                     data-tip
-                    data-for={`positive-${[dataMeasList[dataI]]}-c`}
+                    data-for={`positive-${[goalList[goalIndex]]}-c`}
                     name="utility"
                     value="1"
                     checked={measure.utility === "1"}
                     onChange={(e) =>
-                      setMeasureUtility([dataMeasList[dataI]], index, "1")
+                      setMeasureUtility([goalList[goalIndex]], index, "1")
                     }
                   >
                     Higher
                   </ToggleButton>
                   <ReactTooltip
-                    id={`positive-${[dataMeasList[dataI]]}-c`}
+                    id={`positive-${[goalList[goalIndex]]}-c`}
                     place="top"
                   >
                     More is better
@@ -805,18 +810,18 @@ const SingleMeasure = ({
                     type="radio"
                     variant="outline-secondary"
                     data-tip
-                    data-for={`negative-${[dataMeasList[dataI]]}-c`}
+                    data-for={`negative-${[goalList[goalIndex]]}-c`}
                     name="utility"
                     value="-1"
                     checked={measure.utility === "-1"}
                     onChange={(e) =>
-                      setMeasureUtility([dataMeasList[dataI]], index, "-1")
+                      setMeasureUtility([goalList[goalIndex]], index, "-1")
                     }
                   >
                     Lower
                   </ToggleButton>
                   <ReactTooltip
-                    id={`negative-${[dataMeasList[dataI]]}-c`}
+                    id={`negative-${[goalList[goalIndex]]}-c`}
                     place="top"
                   >
                     Less is better
@@ -835,7 +840,7 @@ const SingleMeasure = ({
                     value="low"
                     checked={measure.weight === "low"}
                     onChange={(e) =>
-                      setMeasureWeight([dataMeasList[dataI]], index, "low")
+                      setMeasureWeight([goalList[goalIndex]], index, "low")
                     }
                   >
                     Low
@@ -847,7 +852,7 @@ const SingleMeasure = ({
                     value="medium"
                     checked={measure.weight === "medium"}
                     onChange={(e) =>
-                      setMeasureWeight([dataMeasList[dataI]], index, "medium")
+                      setMeasureWeight([goalList[goalIndex]], index, "medium")
                     }
                   >
                     Medium
@@ -859,7 +864,7 @@ const SingleMeasure = ({
                     value="high"
                     checked={measure.weight === "high"}
                     onChange={(e) =>
-                      setMeasureWeight([dataMeasList[dataI]], index, "high")
+                      setMeasureWeight([goalList[goalIndex]], index, "high")
                     }
                   >
                     High

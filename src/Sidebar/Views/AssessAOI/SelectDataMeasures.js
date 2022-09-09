@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Button, Container, Table } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
-
+import { Button, Container, Modal, Table } from "react-bootstrap";
 import { useSelector } from "react-redux";
-
 import SingleMeasure from "./SingleMeasure";
 
 const SelectDataMeasures = ({
@@ -11,6 +8,7 @@ const SelectDataMeasures = ({
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
+  setCustomizedMeasures
 }) => {
   const [show, setShow] = useState(false);
   const [restoreGoal, setRestoreGoal] = useState("");
@@ -35,8 +33,7 @@ const SelectDataMeasures = ({
   };
 
   const submitMeasure = (goal) => {
-    const customizedMeasureID =
-      goal + "-c" + String(customizedMeasures[goal].length + 1);
+    const customizedMeasureID = goal + "-c" + String(customizedMeasures[goal].length + 1);
     customizedMeasures[goal].push({
       name: inputMeasureName,
       value: customizedMeasureID,
@@ -151,6 +148,7 @@ const SelectDataMeasures = ({
       <SingleMeasure
         useCase={useCase}
         customizedMeasures={customizedMeasures}
+        setCustomizedMeasures={setCustomizedMeasures}
         customizeMeasure={customizeMeasure}
         setAssessStep={setAssessStep}
       />

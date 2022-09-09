@@ -11,6 +11,7 @@ const AssessAOIView = ({
   aoiAssembled,
   setAoiAssembled,
   customizedMeasures,
+  setCustomizedMeasures,
   visualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
@@ -71,6 +72,7 @@ const AssessAOIView = ({
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}
+          setCustomizedMeasures={setCustomizedMeasures}
         />
       )}
 
