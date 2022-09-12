@@ -58,7 +58,7 @@ const NavBar = ({ reportLink, loggedIn, userLoggedIn }) => {
             </NavLink>
             <NavDropdown title="More" className="ml-3">
               <NavDropdown.Item
-                href="https://www.quest.fwrc.msstate.edu/sca/about-the-project.php"
+                href="https://www.quest.fwrc.msstate.edu/sca-project.php"
                 target="_blank"
               >
                 Strategic Conservation Assessment (SCA) Project
