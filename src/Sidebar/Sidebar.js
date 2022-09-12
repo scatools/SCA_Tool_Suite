@@ -48,6 +48,7 @@ const Sidebar = ({
   setFilterList,
   setReportLink,
   customizedMeasures,
+  setCustomizedMeasures,
   setHexGrid,
   setHexDeselection,
   hexIDDeselected,
@@ -155,6 +156,7 @@ const Sidebar = ({
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}
+            setCustomizedMeasures={setCustomizedMeasures}
             visualizationScale={visualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}

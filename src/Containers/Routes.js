@@ -26,13 +26,7 @@ const Routes = ({
 }) => {
   const [aoiSelected, setAoiSelected] = useState(null);
   const [aoiAssembled, setAoiAssembled] = useState([]);
-  const [customizedMeasures] = useState({
-    hab: [],
-    wq: [],
-    lcmr: [],
-    cl: [],
-    eco: [],
-  });
+  const [customizedMeasures, setCustomizedMeasures] = useState({hab: [], wq: [], lcmr: [], cl: [], eco: []});
   const [view, setView] = useState("add");
   const [reportScript, setReportScript] = useState("");
   const [alertText, setAlertText] = useState(false);
@@ -56,6 +50,7 @@ const Routes = ({
             setAoiAssembled={setAoiAssembled}
             setReportLink={setReportLink}
             customizedMeasures={customizedMeasures}
+            setCustomizedMeasures={setCustomizedMeasures}
             userLoggedIn={userLoggedIn}
             view={view}
             setView={setView}
