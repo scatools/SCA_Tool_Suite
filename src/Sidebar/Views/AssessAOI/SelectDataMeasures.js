@@ -70,13 +70,23 @@ const SelectDataMeasures = ({
     <Container>
       <Modal centered show={show} onHide={handleClose} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Input Your Customized Measure</Modal.Title>
+          <Modal.Title>Input Your Custom Measure</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div style={{ float: "left" }}>
             <b>Goal:</b> {goalName}
           </div>
-          <br />
+          <br /><br />
+          <p>
+            <b>Please enter a value between 0 and 1 for each AOI </b>
+            to represent the influence of this custom data measure.
+            If raw values are provided, please choose the appropriate
+            <a href="https://en.wikipedia.org/wiki/Feature_scaling" target="_blank"> feature scaling </a>
+            method to scale the values to the range from 0 to 1.
+          </p>
+          <p style={{color: "red"}}>
+            * Please note: A name and all values within the correct range are required to proceed.
+          </p>
           <br />
           <Table
             striped
@@ -109,10 +119,20 @@ const SelectDataMeasures = ({
                   <td>
                     <input
                       type="number"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      style={
+                        {
+                          border:
+                            (inputMeasureValueList[index] < 0 || inputMeasureValueList[index] > 1) ?
+                            "solid 1px red" : "solid 1px black"
+                        }
+                      }
                       onChange={(e) => {
-                        inputMeasureValueList[index] = parseFloat(
-                          e.target.value
-                        );
+                        let updatedMeasureValueList = inputMeasureValueList.slice();
+                        updatedMeasureValueList[index] = parseFloat(e.target.value);
+                        setInputMeasureValueList(updatedMeasureValueList);
                       }}
                     />
                   </td>
@@ -124,8 +144,14 @@ const SelectDataMeasures = ({
           <br />
           <div className="d-flex justify-content-center text-center">
             <Button
-              variant="dark"
+              variant="primary"
               type="submit"
+              disabled={
+                inputMeasureName &&
+                inputMeasureValueList.length === aoiList.length &&
+                inputMeasureValueList.every((value) => (value >= 0 && value <= 1)) ?
+                false : true
+              }
               onClick={() => submitMeasure(restoreGoal)}
             >
               Submit
