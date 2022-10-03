@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { WebMercatorViewport } from "react-map-gl";
@@ -42,19 +42,25 @@ const ListAOIView = ({
   const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
   let dismissButton = document.querySelector("#dismiss-detail");
+  const [aoiListLength, setAoiListLength] = useState(aoiList.length);
 
   useEffect(() => {
     if (useCase === "inventory") setShowTableContainer(true);
-    console.log(useCase);
   }, [useCase]);
 
   useEffect(() => {
+    console.log(aoiList);
+    console.log(aoiListLength);
+    setAoiListLength(aoiList.length);
+  }, [aoiList]);
+
+  useEffect(() => {
     if (view === "list" && aoiList.length > 0) {
-      let viewThisAoi = aoiList[0].id;
+      let viewThisAoi = aoiList[aoiListLength - 1].id;
       setAoiSelected(viewThisAoi);
       let aoiBbox = bbox({
         type: "FeatureCollection",
-        features: aoiList[0].geometry,
+        features: aoiList[aoiListLength - 1].geometry,
       });
       // Format of the bounding box needs to be an array of two opposite corners ([[lon,lat],[lon,lat]])
       let viewportBbox = [
