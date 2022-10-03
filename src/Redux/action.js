@@ -15,6 +15,7 @@ import {
   MULTIPLE_SAVED_WEIGHTS,
   MULTIPLE_SAVED_WEIGHTS_UPDATE,
   MULTIPLE_SAVED_WEIGHTS_DELETE,
+  USECASE,
 } from "./actionType";
 
 export function loadUser(data) {
@@ -101,6 +102,13 @@ export const setLoader = (loading) => {
   return {
     type: LOADER,
     payload: loading,
+  };
+};
+
+export const setUseCase = (usecase) => {
+  return {
+    type: USECASE,
+    payload: usecase,
   };
 };
 

@@ -17,7 +17,6 @@ const MAPBOX_TOKEN =
 
 const Map = ({
   mapRef,
-  useCase,
   drawingMode,
   setFeatureList,
   aoiSelected,
@@ -48,7 +47,9 @@ const Map = ({
   viewport,
   setViewport,
   setInstruction,
+  view,
 }) => {
+  const useCase = useSelector((state) => state.usecase.useCase);
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [selectOverlay, setSelectOverlay] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -63,11 +64,15 @@ const Map = ({
   const [clickedProperty, setClickedProperty] = useState(null);
   const [filter, setFilter] = useState(["in", "HUC12", "default"]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
-  const [visualizationFilter, setVisualizationFilter] = useState(["in", "OBJECTID", "default"]);
+  const [visualizationFilter, setVisualizationFilter] = useState([
+    "in",
+    "OBJECTID",
+    "default",
+  ]);
   const editorRef = useRef(null);
-  
+
   const overlaySources = {
-    "secas": "mapbox://chuck0520.dkcwxuvl"
+    secas: "mapbox://chuck0520.dkcwxuvl",
   };
 
   // Up to 10 colors for 10 different AOIs
@@ -105,15 +110,23 @@ const Map = ({
     }
   };
 
+  console.log(interactiveLayerIds);
+
   const onClick = (e) => {
+    console.log("MAP LOGS");
+    console.log(aoiSelected);
+    console.log(useCase);
+    console.log(view);
+    console.log(drawingMode);
+    console.log(hucBoundary);
+    console.log(hexGrid);
     if (
       useCase === "inventory" &&
-      !aoiSelected &&
+      view !== "list" &&
       !drawingMode &&
       !hucBoundary &&
       !hexGrid
     ) {
-      setInteractiveLayerIds([]);
       setCoordinates(e.lngLat);
       setShowTableContainer(true);
     } else if (useCase === "inventory" && aoiSelected !== false) {
@@ -297,7 +310,6 @@ const Map = ({
         <Legend
           aoiList={[]}
           aoiColors={[]}
-          useCase={useCase}
           visualizationOpacity={visualizationOpacity}
         ></Legend>
       </>
@@ -341,16 +353,16 @@ const Map = ({
     } else if (
       useCase === "visualization" &&
       !drawingMode &&
-      visualizationSource && 
-      visualizationLayer && 
-      visualizationFillColor && 
+      visualizationSource &&
+      visualizationLayer &&
+      visualizationFillColor &&
       visualizationOpacity > 0 &&
       viewport.zoom >= 10
     ) {
       setInteractiveLayerIds(["visualization-layer"]);
     } else if (!drawingMode) {
       setInteractiveLayerIds([]);
-    };
+    }
   }, [
     drawingMode,
     hexGrid,
@@ -362,7 +374,7 @@ const Map = ({
     visualizationLayer,
     visualizationFillColor,
     visualizationOpacity,
-    setInteractiveLayerIds
+    setInteractiveLayerIds,
   ]);
 
   useEffect(() => {
@@ -378,7 +390,7 @@ const Map = ({
           label: clickedProperty.HUC12,
         });
         setFilter(["in", "HUC12", clickedProperty.HUC12]);
-      };
+      }
 
       // For hex grid layer, same hexagon won't be counted twice
       if (
@@ -388,17 +400,14 @@ const Map = ({
         // Array hexIDDeselected is stored in a simple array format
         hexIDDeselected.push(clickedProperty.objectid);
         setHexFilter(["in", "objectid", clickedProperty.objectid]);
-      };
+      }
 
       // For visualization layer
-      if (
-        useCase === "visualization" &&
-        clickedProperty.OBJECTID
-      ) {
+      if (useCase === "visualization" && clickedProperty.OBJECTID) {
         setVisualizedHexagon(clickedProperty);
         setVisualizationFilter(["in", "OBJECTID", clickedProperty.OBJECTID]);
-      };
-    };
+      }
+    }
   }, [clickedProperty, hexIDDeselected, hucIDSelected]);
 
   useEffect(() => {
@@ -465,10 +474,12 @@ const Map = ({
               checked={overlayList.includes("secas")}
               onChange={() => {
                 if (overlayList.includes("secas")) {
-                  setOverlayList(list => list.filter(element => element !== "secas"));
+                  setOverlayList((list) =>
+                    list.filter((element) => element !== "secas")
+                  );
                 } else {
-                  setOverlayList(list => [...list, "secas"]);
-                };
+                  setOverlayList((list) => [...list, "secas"]);
+                }
               }}
             />
             <span>&nbsp; Southeast Blueprint</span>
@@ -480,6 +491,8 @@ const Map = ({
           coordinates={coordinates}
           aoiSelected={aoiSelected}
           setShowTableContainer={setShowTableContainer}
+          showTableContainer={showTableContainer}
+          view={view}
         />
       )}
       <MapGL
@@ -542,7 +555,7 @@ const Map = ({
               type="raster"
               id={overlay}
               value={overlay}
-              paint={{"raster-opacity": 0.5}}
+              paint={{ "raster-opacity": 0.5 }}
             />
           </Source>
         ))}

@@ -15,7 +15,6 @@ import { useLocation } from "react-router-dom";
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const SelectRestoreWeights = ({
-  useCase,
   setAssessStep,
   visualizationScale,
   setAlertText,
@@ -125,14 +124,12 @@ const SelectRestoreWeights = ({
   };
 
   return (
-    <Container>
+    <Container className="test">
       <h3>RESTORE Council Goal Weights:</h3>
       <p className="smaller-text">
         Below are the 5 RESTORE Council Goals
         <br />
         Rank them by importance to your organization
-        <br />
-        <br />
         {loggedIn === true ? (
           <Select
             styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
@@ -151,6 +148,14 @@ const SelectRestoreWeights = ({
           ""
         )}
         <span className="glow">Total must add up to 100</span>
+        <span className="sum-text">
+          Total:
+          {sumWeights !== 100 ? (
+            <span className="error-text">{sumWeights}</span>
+          ) : (
+            <span className="total-text">{sumWeights}</span>
+          )}
+        </span>
       </p>
       {/* 
       <a href="https://scatoolsuite.gitbook.io/sca-tool-suite/introduction/definitions-acronyms-and-abbreviations"
@@ -257,14 +262,7 @@ const SelectRestoreWeights = ({
           </Form.Group>
         </>
       </Form>
-      <span className="sum-text">
-        Total:
-        {sumWeights !== 100 ? (
-          <span className="error-text">{sumWeights}</span>
-        ) : (
-          <span className="total-text">{sumWeights}</span>
-        )}
-      </span>
+
       <Container className="add-assess-cont">
         {location.pathname !== "/user/measures"
           ? visualizationScale !== "region" &&

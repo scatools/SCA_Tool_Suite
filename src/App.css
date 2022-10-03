@@ -85,11 +85,6 @@
   font-size: 20px;
 }
 
-#sidebar .ControlWrapper .card {
-  border: 1px solid #363c3f;
-  margin: 30px auto;
-}
-
 #sidebar .ControlWrapper .card-header {
   background-color: #6f7072;
 }
@@ -355,9 +350,15 @@ button.sidebarControlBtn.btn.btn-secondary {
 }
 
 .add-assess-cont {
+  position: absolute;
+  top: 20px;
+  left: 0;
   display: flex;
   justify-content: space-between;
-  padding-top: 20px;
+  padding: 20px 0;
+  margin: 30px 0;
+  z-index: 9;
+  background: #292a2b;
 }
 
 .error-text {
@@ -371,6 +372,7 @@ button.sidebarControlBtn.btn.btn-secondary {
 
 .sum-text {
   font-size: 24px;
+  margin-left: 20px;
 }
 
 #assessment-card {
@@ -936,13 +938,13 @@ a img.logo {
   padding: 10px;
   max-height: 60%;
   overflow-y: scroll;
-  background-color: white;
+  background-color: #ffffffaa;
   border: 1px solid gray;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 #map-table-container {
-  background-color: white;
+  background-color: none;
 }
 
 #map-table-container::-webkit-scrollbar {
@@ -955,6 +957,15 @@ a img.logo {
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
   background: rgba(0, 0, 0, 0.2);
+}
+
+#plan-table-pagination {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
 }
 
 .map-table-filter-button {
@@ -1126,4 +1137,36 @@ a img.logo {
   z-index: 901;
   height: 20px;
   width: 300px;
+}
+
+.test {
+  max-height: 67vh;
+  overflow: scroll;
+}
+
+#sidebar-view-detial {
+  margin: 20px 0 0 0;
+  border: 1px solid #363c3f;
+}
+
+.accordion .card:first-child {
+  margin-top: 20px;
+}
+
+.accordion .card:last-child {
+  margin-bottom: 20px;
+}
+
+.lg-padding {
+  padding: 50px;
+}
+
+.sm-padding {
+  padding: 0px;
+}
+
+.vis-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }

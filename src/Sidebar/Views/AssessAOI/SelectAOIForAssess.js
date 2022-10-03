@@ -15,7 +15,6 @@ import { getWeightsThunk } from "../../../Redux/thunk";
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const SelectAOIForAssess = ({
-  useCase,
   setAssessStep,
   aoiAssembled,
   setAoiAssembled,
@@ -32,6 +31,7 @@ const SelectAOIForAssess = ({
     label: item.name,
     value: item.id,
   }));
+  const useCase = useSelector((state) => state.usecase.useCase);
 
   const handleNext = () => {
     if (aoiAssembled && aoiAssembled.length >= 11) {

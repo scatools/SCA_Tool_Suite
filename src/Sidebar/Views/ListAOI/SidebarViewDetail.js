@@ -29,7 +29,14 @@ import {
 } from "../../../Helper/aggregateHex";
 import { WebMercatorViewport } from "react-map-gl";
 
-import bbox from "@turf/bbox";
+import {
+  squareGrid,
+  intersect,
+  distance,
+  square,
+  bbox,
+  buffer,
+} from "@turf/turf";
 
 const alertIcon = (
   <FontAwesomeIcon
@@ -58,15 +65,16 @@ const SidebarViewDetail = ({
   editMode,
   stopDraw,
   setShowTableContainer,
+  showTableContainer,
   setAlertText,
   setAlertType,
-  aoiFullList,
-  setAoiSelected,
-  setViewport,
+  setLargeAoiProgress,
+  setView,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
     (aoi) => aoi.id === aoiSelected
   );
+  const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
   const history = useHistory();
   const [aoiName, setAoiName] = useState("");
@@ -82,6 +90,8 @@ const SidebarViewDetail = ({
   const [deselectButtonDisabled, setDeselectButtonDisabled] = useState(true);
   const [confirmButtonDisabled, setConfirmButtonDisabled] = useState(true);
   const [confirmShow, setConfirmShow] = useState(false);
+
+  let maxProgress = 0;
 
   useEffect(() => {
     dispatch(setLoader(false));
@@ -127,61 +137,211 @@ const SidebarViewDetail = ({
     }
   };
 
-  const handleBasicEdit = async () => {
+  const handleSubmit = async () => {
+    dispatch(setLoader(true));
     if (!aoiName) {
       setAlertType("danger");
-      setAlertText("Name is required.");
+      setAlertText("A name for this area of interest is required.");
+      window.setTimeout(() => setAlertText(false), 4000);
+    } else if (featureList.length === 0) {
+      setAlertType("danger");
+      setAlertText("At least one polygon is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      dispatch(setLoader(true));
-      setEditAOI(false);
-      setAlertText(false);
-      const newList = featureList;
-
-      const planArea = calculateArea(newList);
-      console.log(planArea);
-      if (planArea < 5500) {
+      if (aoiList.length < 10) {
+        setAlertText(false);
+        const newList = JSON.parse(JSON.stringify(featureList));
+        const planArea = calculateArea(newList);
         const data = {
           type: "MultiPolygon",
           coordinates: newList.map((feature) => feature.geometry.coordinates),
         };
-        // console.log(data);
 
         // For development on local server
         // const res = await axios.post('http://localhost:5000/data', { data });
-
         // For production on Heroku
-        const res = await axios.post(
-          "https://sca-cpt-backend.herokuapp.com/data",
-          { data }
-        );
-        const planArea = calculateArea(newList);
-        dispatch(
-          edit_aoi(aoiList[0].id, {
-            name: aoiName,
-            geometry: newList && newList.length ? newList : aoiList[0].geometry,
-            hexagons:
-              newList && newList.length ? res.data.data : aoiList[0].hexagons,
-            rawScore:
-              newList && newList.length
-                ? aggregate(res.data.data, planArea)
-                : aoiList[0].rawScore,
-            scaleScore: newList.length
-              ? getStatus(aggregate(res.data.data, planArea))
-              : aoiList[0].scaleScore,
-            speciesName: newList.length
-              ? res.data.speciesName
-              : aoiList[0].speciesName,
-            id: aoiList[0].id,
-          })
-        );
+        if (planArea < 5500) {
+          const res = await axios.post(
+            "https://sca-cpt-backend.herokuapp.com/data",
+            { data }
+          );
+          // const planArea = calculateArea(newList);
+          dispatch(
+            edit_aoi(aoiList[0].id, {
+              name: aoiName,
+              geometry:
+                newList && newList.length ? newList : aoiList[0].geometry,
+              hexagons:
+                newList && newList.length ? res.data.data : aoiList[0].hexagons,
+              rawScore:
+                newList && newList.length
+                  ? aggregate(res.data.data, planArea)
+                  : aoiList[0].rawScore,
+              scaleScore: newList.length
+                ? getStatus(aggregate(res.data.data, planArea))
+                : aoiList[0].scaleScore,
+              speciesName: newList.length
+                ? res.data.speciesName
+                : aoiList[0].speciesName,
+              id: aoiList[0].id,
+            })
+          );
+          setDrawingMode(false);
+
+          dispatch(setLoader(false));
+        } else {
+          setLargeAoiProgress(6);
+          const boundingBox = bbox({
+            type: "Feature",
+            geometry: data,
+          });
+          const bboxSquare = square(boundingBox); //array of verticies of the square ["minLong","minLat","maxLong","maxLat"]
+          const bboxSquareSide = distance(
+            [bboxSquare[1], bboxSquare[0]],
+            [bboxSquare[1], bboxSquare[2]]
+          );
+          let cellSide = 40;
+          if (bboxSquareSide > 1500) {
+            cellSide = bboxSquareSide / 40;
+          } else if (bboxSquareSide > 1000) {
+            cellSide = bboxSquareSide / 30;
+          } else if (bboxSquareSide > 500) {
+            cellSide = bboxSquareSide / 20;
+          } else if (bboxSquareSide > 250) {
+            cellSide = bboxSquareSide / 10;
+          } else if (bboxSquareSide > 150) {
+            cellSide = bboxSquareSide / 7;
+          } else {
+            cellSide = bboxSquareSide / 5;
+          }
+
+          const bufferedBox = bbox(
+            buffer(
+              {
+                type: "Feature",
+                geometry: data,
+              },
+              cellSide,
+              { units: "kilometers" }
+            )
+          );
+
+          console.log("Size of each box side: " + cellSide);
+          const options = { units: "kilometers" };
+          const grid = squareGrid(bufferedBox, cellSide, options);
+
+          const postData = async (data) => {
+            const res = await axios.post(
+              "https://sca-cpt-backend.herokuapp.com/data",
+              { data }
+            );
+            setLargeAoiProgress((oldProgress) => {
+              const newProgress = oldProgress + 100 / maxProgress;
+              return newProgress;
+            });
+            console.log(res);
+            return res;
+          };
+
+          // Turf intersect returns null if no overlapping detected
+          const overlapping = grid.features.filter((square) => {
+            const aoiInSquare = intersect(data, square);
+            if (aoiInSquare) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          const overlapArray = overlapping.map((square) => {
+            return intersect(data, square).geometry;
+          });
+          console.log("Number of requests: " + overlapArray.length);
+          maxProgress = overlapArray.length;
+
+          const getAllAoiInfo = async (arrayOfAOIs) => {
+            const requests = arrayOfAOIs.map((aoi) => {
+              return postData(aoi).then((a) => {
+                return a;
+              });
+            });
+            return Promise.all(requests);
+          };
+
+          getAllAoiInfo(overlapArray).then((lotsOfObjects) => {
+            console.log("lotsOfObjects");
+            console.log(lotsOfObjects);
+            let speciesNames = [];
+            let allData = [];
+
+            lotsOfObjects.forEach(
+              (obj) =>
+                (speciesNames = [
+                  ...speciesNames.concat(
+                    obj.data.speciesName.filter(
+                      (name) => !speciesNames.includes(name)
+                    )
+                  ),
+                ])
+            );
+
+            //WITH POTENTIAL DUPLICATE VALUES TO SHOW GRID
+
+            // lotsOfObjects.forEach(
+            //   (obj) => (allData = [...allData.concat(obj.data.data)])
+            // );
+
+            //WITHOUT DUPLICATE VALUES
+
+            lotsOfObjects.forEach(
+              (obj) =>
+                (allData = [
+                  ...allData.concat(
+                    obj.data.data.filter(
+                      (gridData) =>
+                        !allData.find(
+                          (allDataHex) => allDataHex.gid === gridData.gid
+                        )
+                    )
+                  ),
+                ])
+            );
+
+            console.log("All The Data with no Dups");
+            console.log(allData);
+
+            dispatch(
+              edit_aoi(aoiList[0].id, {
+                name: aoiName,
+                geometry:
+                  newList && newList.length ? newList : aoiList[0].geometry,
+                hexagons:
+                  newList && newList.length ? allData : aoiList[0].hexagons,
+                rawScore:
+                  newList && newList.length
+                    ? aggregate(allData, planArea)
+                    : aoiList[0].rawScore,
+                scaleScore: newList.length
+                  ? getStatus(aggregate(allData, planArea))
+                  : aoiList[0].scaleScore,
+                speciesName: newList.length
+                  ? allData.speciesName
+                  : aoiList[0].speciesName,
+                id: aoiList[0].id,
+              })
+            );
+
+            setDrawingMode(false);
+
+            dispatch(setLoader(false));
+          });
+        }
       } else {
         setAlertType("danger");
-        setAlertText("Your AOI is too large. Reduce the size and try again.");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
         window.setTimeout(() => setAlertText(false), 4000);
       }
-      setDrawingMode(false);
-      dispatch(setLoader(false));
     }
   };
 
@@ -195,62 +355,26 @@ const SidebarViewDetail = ({
       setEditAOI(false);
       setAlertText(false);
       // Use the unselected hexagons as new geometry to recalculate AOI
-      const newList = aoiList[0].hexagons.filter(
+      const filteredHexList = aoiList[0].hexagons.filter(
         (hexagon) => !hexIDDeselected.includes(hexagon.objectid)
       );
-      const data = {
-        type: "MultiPolygon",
-        coordinates: newList.map((feature) => {
-          const geometry = JSON.parse(feature.geometry);
-          // Database returns all hexagons intersecting with the input shape, including overlapping and touching
-          // Shrink the size of input shapes so that the hexagons only sharing mutual sides won't be involved
-          const coordinates = geometry.coordinates[0][0].map(
-            (coords, index) => {
-              let longitude = coords[0];
-              let latitude = coords[1];
-              if (index === 0 || index === 6) {
-                longitude = coords[0] - 0.0001;
-              } else if (index === 1 || index === 2) {
-                latitude = coords[1] + 0.0001;
-              } else if (index === 3) {
-                longitude = coords[0] + 0.0001;
-              } else if (index === 4 || index === 5) {
-                latitude = coords[1] - 0.0001;
-              }
-              return [longitude, latitude];
-            }
-          );
+      console.log(filteredHexList);
 
-          return [coordinates];
-        }),
-      };
-      // console.log(data);
-
-      // For development on local server
-      // const res = await axios.post('http://localhost:5000/data', { data });
-
-      // For production on Heroku
-      const res = await axios.post(
-        "https://sca-cpt-backend.herokuapp.com/data",
-        { data }
-      );
-      // Keep the original id, name, geometry (also area)
-      // Replace the scores with the query result
       const planArea = aoiList[0].rawScore.hab0;
       dispatch(
         edit_aoi(aoiList[0].id, {
           name: aoiName,
           geometry: aoiList[0].geometry,
-          hexagons: newList.length ? res.data.data : aoiList[0].hexagons,
-          rawScore: newList.length
-            ? aggregate(res.data.data, planArea)
+          hexagons: filteredHexList.length
+            ? filteredHexList
+            : aoiList[0].hexagons,
+          rawScore: filteredHexList.length
+            ? aggregate(filteredHexList, planArea)
             : aoiList[0].rawScore,
-          scaleScore: newList.length
-            ? getStatus(aggregate(res.data.data, planArea))
+          scaleScore: filteredHexList.length
+            ? getStatus(aggregate(filteredHexList, planArea))
             : aoiList[0].scaleScore,
-          speciesName: newList.length
-            ? res.data.speciesName
-            : aoiList[0].speciesName,
+          speciesName: aoiList[0].speciesName,
           id: aoiList[0].id,
         })
       );
@@ -314,7 +438,7 @@ const SidebarViewDetail = ({
 
   const confirmEdit = () => {
     if (featureList.length) {
-      handleBasicEdit();
+      handleSubmit();
     } else if (hexIDDeselected.length) {
       handleAdvancedEdit();
     } else if (aoiName) {
@@ -365,7 +489,7 @@ const SidebarViewDetail = ({
   };
 
   const showPlan = () => {
-    setShowTableContainer(true);
+    setShowTableContainer(!showTableContainer);
   };
 
   const accordionReset = () => {
@@ -443,9 +567,12 @@ const SidebarViewDetail = ({
               >
                 <FaFileExport /> &nbsp; Export Shapefile
               </Button>
-              <Button variant="dark" className="ml-1" onClick={showPlan}>
-                <IoFileTrayFull /> &nbsp; Related Conservation Plans
-              </Button>
+
+              {useCase !== "inventory" && (
+                <Button variant="dark" className="ml-1" onClick={showPlan}>
+                  <IoFileTrayFull /> &nbsp; Related Conservation Plans
+                </Button>
+              )}
               {userLoggedIn && (
                 <Button variant="dark" className="ml-1" onClick={saveFile}>
                   <MdSave /> &nbsp; Save to: {userLoggedIn}
@@ -455,6 +582,31 @@ const SidebarViewDetail = ({
                 <MdDelete /> &nbsp; Delete
               </Button>
             </Container>
+
+            {useCase === "inventory" && (
+              <Container
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "20px",
+                }}
+              >
+                <Button variant="secondary" onClick={showPlan}>
+                  <IoFileTrayFull /> &nbsp;{" "}
+                  {showTableContainer ? "Hide" : "View"} Related Plans
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setShowTableContainer(false);
+                    history.push("/tool");
+                    setView("selectUseCase");
+                  }}
+                >
+                  More Methods to View Plans
+                </Button>
+              </Container>
+            )}
             {editAOI && (
               <>
                 <Accordion>

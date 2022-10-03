@@ -44,9 +44,9 @@ const Assessment = ({
   const [overlayList, setOverlayList] = useState([]);
   const [selectedSwitch, setSelectedSwitch] = useState(0);
   const overlaySources = {
-    "secas": "mapbox://chuck0520.dkcwxuvl"
+    secas: "mapbox://chuck0520.dkcwxuvl",
   };
-  
+
   const history = useHistory();
   const assessment = useSelector((state) => state.assessment);
   const aoi = useSelector((state) => state.aoi);
@@ -230,7 +230,7 @@ const Assessment = ({
 
     return planScoreList;
   });
-  
+
   const onToggle = (value) => {
     setSelectedSwitch(value);
     if (value === 0) {
@@ -483,15 +483,18 @@ const Assessment = ({
         <Button variant="secondary" onClick={() => history.push("/tool")}>
           Back to Map View
         </Button>
+        <Button variant="secondary" onClick={() => history.push("/tool")}>
+          AOI Heatmap Visualization
+        </Button>
+        <Button variant="secondary" onClick={() => history.push("/tool")}>
+          Find Related Conservation Plans
+        </Button>
       </div>
 
       <div className="buttonContainer">
         <div className="assessmentDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Assessment Report
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
@@ -513,17 +516,11 @@ const Assessment = ({
 
         <div className="footprintDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Spatial Footprint
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
-              <Dropdown.Item
-                variant="dark"
-                onClick={downloadFootprintAsSingle}
-              >
+              <Dropdown.Item variant="dark" onClick={downloadFootprintAsSingle}>
                 <VscFolder /> &nbsp; Download as Single Shapefile
               </Dropdown.Item>
               <Dropdown.Item
@@ -538,10 +535,7 @@ const Assessment = ({
 
         <div className="tableDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Data Table
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
@@ -568,7 +562,7 @@ const Assessment = ({
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        
+
         {userLoggedIn && (
           <div className="assessmentSave">
             <Button
@@ -594,7 +588,8 @@ const Assessment = ({
           <Row>
             <h1 className="assessment-h1">
               Assessment Report for:
-              <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other AOIs
+              <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other
+              AOIs
             </h1>
           </Row>
           <Row id="mapHeading">
@@ -646,10 +641,12 @@ const Assessment = ({
                     checked={overlayList.includes("secas")}
                     onChange={() => {
                       if (overlayList.includes("secas")) {
-                        setOverlayList(list => list.filter(element => element !== "secas"));
+                        setOverlayList((list) =>
+                          list.filter((element) => element !== "secas")
+                        );
                       } else {
-                        setOverlayList(list => [...list, "secas"]);
-                      };
+                        setOverlayList((list) => [...list, "secas"]);
+                      }
                     }}
                   />
                   <span>&nbsp; Southeast Blueprint</span>
@@ -676,7 +673,7 @@ const Assessment = ({
                     type="raster"
                     id={overlay}
                     value={overlay}
-                    paint={{"raster-opacity": 0.5}}
+                    paint={{ "raster-opacity": 0.5 }}
                   />
                 </Source>
               ))}

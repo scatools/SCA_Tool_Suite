@@ -6,6 +6,7 @@ import loadingActionReducer from "./loadingActionReducer";
 import userReducer from "./userReducer";
 import currentWeightReducer from "./currentWeightReducer";
 import multipleWeightReducer from "./multipleWeightReducer";
+import useCaseReducer from "./useCaseReducer";
 
 const rootReducer = combineReducers({
   aoi: aoiReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   currentWeight: currentWeightReducer,
   multipleWeights: multipleWeightReducer,
+  usecase: useCaseReducer,
 });
 
 export default rootReducer;

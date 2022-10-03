@@ -4,6 +4,7 @@ import AddZip from "./AddZip";
 import AddBoundary from "./AddBoundary";
 import AddDraw from "./AddDraw";
 import shp from "shpjs";
+import { useSelector } from "react-redux";
 
 const AddAOIView = ({
   setDrawingMode,
@@ -28,6 +29,7 @@ const AddAOIView = ({
   const [hucIDList, setHucIDList] = useState([]);
   const [hucNameSelected, setHucNameSelected] = useState([]);
   const [timeoutError, setTimeoutError] = useState(false);
+  const useCase = useSelector((state) => state.usecase.useCase);
 
   const timeoutHandler = () => {
     setTimeoutError(true);
@@ -75,6 +77,9 @@ const AddAOIView = ({
 
   return (
     <Container>
+      <h2 style={{ marginBottom: "20px", marginTop: "-20px" }}>
+        {useCase === "inventory" ? "Inventory of Conservation Plans" : ""}
+      </h2>
       <h3 style={{ marginBottom: "20px" }}>
         Define Your Area of Interest (AOI)
       </h3>
@@ -127,16 +132,16 @@ const AddAOIView = ({
           </ToggleButton>
         </ButtonGroup>
       </Container>
-      <Container className="instruction">
-        {inputMode === "" && (
+      {!inputMode && (
+        <Container className="instruction">
           <p>
             You can define one or more areas of interest by uploading a
             shapefile with one or more areas, choose from an existing set of
-            areas of interest like watersheds, or draw your own. Choose the type
-            above to get started.
+            areas of interest like watersheds, or draw your own.
           </p>
-        )}
-      </Container>
+          <p> Choose the type above to get started.</p>
+        </Container>
+      )}
       {inputMode === "draw" && (
         <AddDraw
           setDrawingMode={setDrawingMode}

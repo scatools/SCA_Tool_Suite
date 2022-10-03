@@ -10,13 +10,13 @@ import { MultiSelect } from "../../../Components/MultiSelect";
 import { changeMeasures, changeMeasuresWeight } from "../../../Redux/action";
 
 const SingleMeasure = ({
-  useCase,
   customizedMeasures,
   setCustomizedMeasures,
   customizeMeasure,
   setAssessStep,
 }) => {
   const weights = useSelector((state) => state.weights);
+  const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
   const [goalIndex, setGoalIndex] = useState(0);
   let goalList = ["hab", "wq", "lcmr", "cl", "eco"];
@@ -24,8 +24,8 @@ const SingleMeasure = ({
   for (const goal of goalList) {
     if (!weights[goal].weight) {
       goalList = goalList.filter((e) => e !== goal);
-    };
-  };
+    }
+  }
 
   const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
   const plusCircle = (

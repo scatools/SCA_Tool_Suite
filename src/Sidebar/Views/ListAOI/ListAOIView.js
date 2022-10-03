@@ -6,12 +6,13 @@ import bbox from "@turf/bbox";
 import SidebarViewDetail from "./SidebarViewDetail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
+import { setUseCase } from "../../../Redux/action";
 
 const arrowLeft = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 const arrowRight = <FontAwesomeIcon icon={faArrowRight} size="lg" />;
 
 const ListAOIView = ({
-  useCase,
   aoiSelected,
   setAoiSelected,
   setActiveTable,
@@ -30,14 +31,22 @@ const ListAOIView = ({
   editMode,
   stopDraw,
   setShowTableContainer,
+  showTableContainer,
   view,
   setView,
   setAlertText,
   setAlertType,
+  setLargeAoiProgress,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
-
+  const useCase = useSelector((state) => state.usecase.useCase);
+  const dispatch = useDispatch();
   let dismissButton = document.querySelector("#dismiss-detail");
+
+  useEffect(() => {
+    if (useCase === "inventory") setShowTableContainer(true);
+    console.log(useCase);
+  }, [useCase]);
 
   useEffect(() => {
     if (view === "list" && aoiList.length > 0) {
@@ -68,7 +77,49 @@ const ListAOIView = ({
 
   return (
     <Container className="test">
-      <h3 style={{ marginBottom: "20px" }}>Review/Edit Current AOIs</h3>
+      <h3 style={{ marginBottom: "20px" }}>
+        {useCase === "inventory"
+          ? "View Plans for Selected AOI"
+          : "Review/Edit Current AOIs"}
+      </h3>
+      <Container className="add-assess-cont">
+        {useCase === "inventory" ? (
+          <Button
+            variant="primary"
+            onClick={() => {
+              dispatch(setUseCase("prioritization"));
+              setShowTableContainer(false);
+              setView("add");
+            }}
+          >
+            Compare Multiple AOIs
+          </Button>
+        ) : (
+          <Button variant="secondary" onClick={() => setView("add")}>
+            {arrowLeft} Add More AOIs
+          </Button>
+        )}
+        {useCase === "visualization" ? (
+          <Button variant="primary" onClick={() => setView("assess")}>
+            Visualize AOI {arrowRight}
+          </Button>
+        ) : useCase === "prioritization" ? (
+          <Button variant="primary" onClick={() => setView("assess")}>
+            Evaluate AOIs {arrowRight}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            onClick={() => {
+              dispatch(setUseCase("visualization"));
+              setShowTableContainer(false);
+              setView("assess");
+            }}
+          >
+            Visualize AOI Heatmap
+          </Button>
+        )}
+      </Container>
       <ButtonGroup toggle className="mb-2 " vertical style={{ width: "100%" }}>
         {aoiList.length > 0 &&
           aoiList.map((aoi) => (
@@ -128,27 +179,16 @@ const ListAOIView = ({
           editMode={editMode}
           stopDraw={stopDraw}
           setShowTableContainer={setShowTableContainer}
+          showTableContainer={showTableContainer}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
           aoiFullList={aoiList}
           setAoiSelected={setAoiSelected}
           setViewport={setViewport}
+          setLargeAoiProgress={setLargeAoiProgress}
+          setView={setView}
         />
       </ButtonGroup>
-      <Container className="add-assess-cont">
-        <Button variant="secondary" onClick={() => setView("add")}>
-          {arrowLeft} Add More AOIs
-        </Button>
-        {useCase === "visualization" ? (
-          <Button variant="primary" onClick={() => setView("assess")}>
-            Visualize AOI {arrowRight}
-          </Button>
-        ) : (
-          <Button variant="primary" onClick={() => setView("assess")}>
-            Evaluate AOIs {arrowRight}
-          </Button>
-        )}
-      </Container>
     </Container>
   );
 };

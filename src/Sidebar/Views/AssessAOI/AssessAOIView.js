@@ -5,9 +5,9 @@ import SelectDataMeasures from "./SelectDataMeasures";
 import ReviewAssessSettings from "./ReviewAssessSettings";
 import { useLocation } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const AssessAOIView = ({
-  useCase,
   aoiAssembled,
   setAoiAssembled,
   customizedMeasures,
@@ -25,6 +25,7 @@ const AssessAOIView = ({
   setAssessStep,
 }) => {
   const location = useLocation();
+  const useCase = useSelector((state) => state.usecase.useCase);
   useEffect(() => {
     if (
       useCase === "visualization" &&
@@ -43,7 +44,6 @@ const AssessAOIView = ({
     <Container>
       {assessStep === "selectAOI" && location.pathname !== "/user/measures" && (
         <SelectAOIForAssess
-          useCase={useCase}
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           setAoiAssembled={setAoiAssembled}
@@ -58,7 +58,6 @@ const AssessAOIView = ({
 
       {assessStep === "selectRestoreWeights" && (
         <SelectRestoreWeights
-          useCase={useCase}
           setAssessStep={setAssessStep}
           visualizationScale={visualizationScale}
           setAlertText={setAlertText}
@@ -68,7 +67,6 @@ const AssessAOIView = ({
 
       {assessStep === "selectDataMeasures" && (
         <SelectDataMeasures
-          useCase={useCase}
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}
@@ -78,7 +76,6 @@ const AssessAOIView = ({
 
       {assessStep === "reviewAssessSettings" && (
         <ReviewAssessSettings
-          useCase={useCase}
           setAssessStep={setAssessStep}
           aoiAssembled={aoiAssembled}
           customizedMeasures={customizedMeasures}

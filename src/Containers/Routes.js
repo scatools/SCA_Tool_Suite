@@ -16,6 +16,7 @@ import Register from "../User/Register";
 import UserData from "../User/UserData";
 import UserReport from "../User/UserReport";
 import AssessAOIView from "../Sidebar/Views/AssessAOI/AssessAOIView";
+import { useSelector } from "react-redux";
 
 const Routes = ({
   setReportLink,
@@ -26,41 +27,51 @@ const Routes = ({
 }) => {
   const [aoiSelected, setAoiSelected] = useState(null);
   const [aoiAssembled, setAoiAssembled] = useState([]);
-  const [customizedMeasures, setCustomizedMeasures] = useState({hab: [], wq: [], lcmr: [], cl: [], eco: []});
+  const [customizedMeasures, setCustomizedMeasures] = useState({
+    hab: [],
+    wq: [],
+    lcmr: [],
+    cl: [],
+    eco: [],
+  });
   const [view, setView] = useState("add");
   const [reportScript, setReportScript] = useState("");
   const [alertText, setAlertText] = useState(false);
   const [alertType, setAlertType] = useState("danger");
-  const [useCase, setUseCase] = useState(null);
   const [assessStep, setAssessStep] = useState("selectAOI");
+  const useCase = useSelector((state) => state.usecase.useCase);
 
   return (
     <>
       <Switch>
         <Route exact path="/">
-          <Homepage setUseCase={setUseCase} setView={setView} />
+          <Homepage setView={setView} />
         </Route>
-        <Route exact path="/tool">
-          <Main
-            useCase={useCase}
-            setUseCase={setUseCase}
-            aoiSelected={aoiSelected}
-            setAoiSelected={setAoiSelected}
-            aoiAssembled={aoiAssembled}
-            setAoiAssembled={setAoiAssembled}
-            setReportLink={setReportLink}
-            customizedMeasures={customizedMeasures}
-            setCustomizedMeasures={setCustomizedMeasures}
-            userLoggedIn={userLoggedIn}
-            view={view}
-            setView={setView}
-            setAlertText={setAlertText}
-            setAlertType={setAlertType}
-            assessStep={assessStep}
-            setAssessStep={setAssessStep}
-            setLargeAoiProgress={setLargeAoiProgress}
-          />
-        </Route>
+        {!!useCase ? (
+          <Route exact path="/tool">
+            <Main
+              aoiSelected={aoiSelected}
+              setAoiSelected={setAoiSelected}
+              aoiAssembled={aoiAssembled}
+              setAoiAssembled={setAoiAssembled}
+              setReportLink={setReportLink}
+              customizedMeasures={customizedMeasures}
+              setCustomizedMeasures={setCustomizedMeasures}
+              userLoggedIn={userLoggedIn}
+              view={view}
+              setView={setView}
+              setAlertText={setAlertText}
+              setAlertType={setAlertType}
+              assessStep={assessStep}
+              setAssessStep={setAssessStep}
+              setLargeAoiProgress={setLargeAoiProgress}
+            />
+          </Route>
+        ) : (
+          <Route>
+            <Redirect to="/" />
+          </Route>
+        )}
         <Route exact path="/register">
           <Register
             setLoggedIn={setLoggedIn}
@@ -87,7 +98,6 @@ const Routes = ({
               setReportScript={setReportScript}
               setAlertText={setAlertText}
               setAlertType={setAlertType}
-              useCase={useCase}
               aoiAssembled={aoiAssembled}
               setAoiAssembled={setAoiAssembled}
               customizedMeasures={customizedMeasures}
@@ -103,7 +113,6 @@ const Routes = ({
         <Route exact path="/user/measures">
           <div className="userMeasures">
             <AssessAOIView
-              useCase={useCase}
               userLoggedIn={userLoggedIn}
               aoiAssembled={aoiAssembled}
               setAoiAssembled={setAoiAssembled}

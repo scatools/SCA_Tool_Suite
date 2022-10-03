@@ -1,7 +1,10 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
 import { gcrLayerSource } from "../../../Map/layerSource";
-import { gcrVisualizationLayer, gcrVisualizationHighlight } from "../../../Map/layerStyle";
+import {
+  gcrVisualizationLayer,
+  gcrVisualizationHighlight,
+} from "../../../Map/layerStyle";
 
 const SelectVisualizeScale = ({
   setView,
@@ -9,13 +12,12 @@ const SelectVisualizeScale = ({
   setVisualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
-  setVisualizaitonHighlight
+  setVisualizaitonHighlight,
 }) => {
   return (
     <div>
       <h4>I would like to create the visualization within ...</h4>
-      <hr /><hr /><hr />
-      <Container className="d-flex flex-column justify-content-between" style={{height:"50vh"}}>
+      <Container className="vis-select" style={{ height: "50vh" }}>
         <Button
           variant="outline-light"
           onClick={() => {

@@ -23,8 +23,6 @@ const expandIcon = (
 );
 
 const Main = ({
-  useCase,
-  setUseCase,
   aoiSelected,
   setAoiSelected,
   aoiAssembled,
@@ -93,15 +91,11 @@ const Main = ({
         activeTable={activeTable}
         setActiveTable={setActiveTable}
       />
-      <HexagonScoreTable
-        visualizedHexagon={visualizedHexagon}
-      />
+      <HexagonScoreTable visualizedHexagon={visualizedHexagon} />
       <Sidebar
         mapRef={mapRef}
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
-        useCase={useCase}
-        setUseCase={setUseCase}
         setActiveTable={setActiveTable}
         setDrawingMode={setDrawingMode}
         featureList={featureList}
@@ -145,6 +139,7 @@ const Main = ({
         assessStep={assessStep}
         setAssessStep={setAssessStep}
         setLargeAoiProgress={setLargeAoiProgress}
+        showTableContainer={showTableContainer}
       />
       <div className="content">
         <Button
@@ -164,7 +159,6 @@ const Main = ({
         </Button>
         <Map
           mapRef={mapRef}
-          useCase={useCase}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
           aoiSelected={aoiSelected}
@@ -195,6 +189,7 @@ const Main = ({
           viewport={viewport}
           setViewport={setViewport}
           setInstruction={setInstruction}
+          view={view}
         />
       </div>
     </div>
