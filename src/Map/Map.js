@@ -122,6 +122,7 @@ const Map = ({
 
     if (e.features) {
       const featureClicked = e.features[0];
+      console.log(featureClicked);
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
@@ -278,6 +279,7 @@ const Map = ({
           <Layer
             {...visualizationLayer}
             id="visualization-layer"
+            type="fill"
             paint={{
               "fill-color": visualizationFillColor,
               "fill-opacity": [
@@ -291,6 +293,7 @@ const Map = ({
           <Layer
             {...visualizationHighlight}
             id="visualization-highlight"
+            type="fill"
             filter={visualizationFilter}
           />
         </Source>
@@ -393,7 +396,7 @@ const Map = ({
       // For visualization layer
       if (
         useCase === "visualization" &&
-        clickedProperty.OBJECTID
+        clickedProperty.gid
       ) {
         setVisualizedHexagon(clickedProperty);
         setVisualizationFilter(["in", "OBJECTID", clickedProperty.OBJECTID]);

@@ -5,10 +5,12 @@ const HexagonScoreTable = ({ visualizedHexagon })=> {
 	const [ scoreTableClass, setScoreTableClass ] = useState("score-table");
 	
   const filterData = (value) => {
-		if (parseFloat(value) === -1) {
-			return "No Data";
-		} else {
-			return value.toFixed(2);
+		if (value !== undefined) {
+			if (parseFloat(value) === -1) {
+				return "No Data";
+			} else {
+				return value.toFixed(2);
+			};
 		};
 	};
 
