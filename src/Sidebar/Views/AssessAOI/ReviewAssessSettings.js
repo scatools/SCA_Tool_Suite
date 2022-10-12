@@ -518,7 +518,6 @@ const ReviewAssessSettings = ({
           value={currentWeight}
           options={list}
           isClearable={false}
-          name="colors"
           className="basic-multi-select"
           classNamePrefix="select"
           onChange={(value) => {

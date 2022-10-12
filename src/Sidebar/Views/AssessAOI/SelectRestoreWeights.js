@@ -137,7 +137,6 @@ const SelectRestoreWeights = ({
             options={list}
             value={currentWeight}
             isClearable={false}
-            name="colors"
             className="basic-multi-select"
             classNamePrefix="select"
             onChange={(value) => {

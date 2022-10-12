@@ -47,9 +47,13 @@ const SelectAOIForAssess = ({
   }, []);
 
   const handleNext = () => {
-    if (aoiAssembled && aoiAssembled.length >= 11) {
+    if (
+      aoiAssembled &&
+      aoiAssembled.length >= 11 &&
+      useCase === "prioritization"
+    ) {
       setAlertType("danger");
-      setAlertText("Max amount of AOIs is 10, remove AOIs for comparison");
+      setAlertText("Max number of AOIs is 10. Remove AOI(s) to continue");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (useCase === "visualization") {
@@ -124,6 +128,7 @@ const SelectAOIForAssess = ({
               Number(measures[value].weight) > 100
                 ? 100
                 : Number(measures[value].weight);
+            console.log(measures[value].selected);
             dispatch(changeGoalWeights(newValue, value));
             dispatch(changeMeasures(value, measures[value].selected));
           });
@@ -155,7 +160,6 @@ const SelectAOIForAssess = ({
           isMulti={false}
           isClearable={true}
           placeholder="Select areas of interests..."
-          name="colors"
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
@@ -176,7 +180,6 @@ const SelectAOIForAssess = ({
           isMulti
           isClearable={true}
           placeholder="Select areas of interests..."
-          name="colors"
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
