@@ -110,21 +110,7 @@ const Map = ({
     }
   };
 
-  useEffect(() => {
-    console.log("VISUALIZATION VARIABLES: ");
-    console.log("LAYER: ");
-    console.log(visualizationLayer);
-    console.log("OPACITY: ");
-    console.log(visualizationOpacity);
-    console.log("SOURCE: ");
-    console.log(visualizationSource);
-    console.log("FILL COLOR: ");
-    console.log(visualizationFillColor);
-    console.log("FILTER: ");
-    console.log(visualizationFilter);
-    console.log("HIGHLIGHT: ");
-    console.log(visualizationHighlight);
-  }, [
+  useEffect(() => {}, [
     visualizationFillColor,
     visualizationFilter,
     visualizationHighlight,
@@ -134,8 +120,6 @@ const Map = ({
   ]);
 
   const onClick = (e) => {
-    console.log("click");
-    console.log(interactiveLayerIds);
     if (
       useCase === "inventory" &&
       view !== "list" &&
@@ -149,12 +133,10 @@ const Map = ({
       setCoordinates([undefined, undefined]);
     }
 
-    if (e.features) {
+    if (e.features && zoom >= 10) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
-        console.log("clicked");
-        console.log(e.features);
       }
     }
   };
@@ -424,9 +406,6 @@ const Map = ({
 
       // For visualization layer
 
-      console.log(useCase);
-      console.log(interactiveLayerIds);
-      console.log(clickedProperty.objectid);
       if (
         useCase === "visualization" &&
         interactiveLayerIds[0] !== "huc" &&
