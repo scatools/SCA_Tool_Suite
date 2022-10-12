@@ -21,6 +21,8 @@ const SelectDataMeasures = ({
     aoiAssembledList.includes(aoi.id)
   );
 
+  console.log(aoiAssembled);
+
   // For customized data measures
 
   const handleClose = () => setShow(false);

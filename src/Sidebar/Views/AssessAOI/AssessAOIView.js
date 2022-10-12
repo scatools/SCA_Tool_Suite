@@ -23,6 +23,7 @@ const AssessAOIView = ({
   setAlertType,
   assessStep,
   setAssessStep,
+  setInteractiveLayerIds,
 }) => {
   const location = useLocation();
   const useCase = useSelector((state) => state.usecase.useCase);
@@ -84,6 +85,7 @@ const AssessAOIView = ({
           setView={setView}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
+          setInteractiveLayerIds={setInteractiveLayerIds}
         />
       )}
     </Container>

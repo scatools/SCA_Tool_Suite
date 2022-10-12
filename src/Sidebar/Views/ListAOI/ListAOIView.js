@@ -49,8 +49,6 @@ const ListAOIView = ({
   }, [useCase]);
 
   useEffect(() => {
-    console.log(aoiList);
-    console.log(aoiListLength);
     setAoiListLength(aoiList.length);
   }, [aoiList]);
 

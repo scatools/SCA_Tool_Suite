@@ -73,6 +73,8 @@ const Sidebar = ({
   assessStep,
   setAssessStep,
   setLargeAoiProgress,
+  setInteractiveLayerIds,
+  setScoreTableClass,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -175,10 +177,12 @@ const Sidebar = ({
             setAlertType={setAlertType}
             assessStep={assessStep}
             setAssessStep={setAssessStep}
+            setInteractiveLayerIds={setInteractiveLayerIds}
           />
         )}
         {view === "visualize" && (
           <VisualizeAOIView
+            setInteractiveLayerIds={setInteractiveLayerIds}
             mapRef={mapRef}
             visualizationOpacity={visualizationOpacity}
             setVisualizationOpacity={setVisualizationOpacity}
@@ -186,6 +190,7 @@ const Sidebar = ({
             instruction={instruction}
             setAssessStep={setAssessStep}
             setView={setView}
+            setScoreTableClass={setScoreTableClass}
           />
         )}
       </div>

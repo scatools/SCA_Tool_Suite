@@ -110,16 +110,32 @@ const Map = ({
     }
   };
 
-  console.log(interactiveLayerIds);
+  useEffect(() => {
+    console.log("VISUALIZATION VARIABLES: ");
+    console.log("LAYER: ");
+    console.log(visualizationLayer);
+    console.log("OPACITY: ");
+    console.log(visualizationOpacity);
+    console.log("SOURCE: ");
+    console.log(visualizationSource);
+    console.log("FILL COLOR: ");
+    console.log(visualizationFillColor);
+    console.log("FILTER: ");
+    console.log(visualizationFilter);
+    console.log("HIGHLIGHT: ");
+    console.log(visualizationHighlight);
+  }, [
+    visualizationFillColor,
+    visualizationFilter,
+    visualizationHighlight,
+    visualizationLayer,
+    visualizationOpacity,
+    visualizationSource,
+  ]);
 
   const onClick = (e) => {
-    console.log("MAP LOGS");
-    console.log(aoiSelected);
-    console.log(useCase);
-    console.log(view);
-    console.log(drawingMode);
-    console.log(hucBoundary);
-    console.log(hexGrid);
+    console.log("click");
+    console.log(interactiveLayerIds);
     if (
       useCase === "inventory" &&
       view !== "list" &&
@@ -137,6 +153,8 @@ const Map = ({
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
+        console.log("clicked");
+        console.log(e.features);
       }
     }
   };
@@ -291,6 +309,7 @@ const Map = ({
           <Layer
             {...visualizationLayer}
             id="visualization-layer"
+            type="fill"
             paint={{
               "fill-color": visualizationFillColor,
               "fill-opacity": [
@@ -305,6 +324,7 @@ const Map = ({
             {...visualizationHighlight}
             id="visualization-highlight"
             filter={visualizationFilter}
+            type="fill"
           />
         </Source>
         <Legend
@@ -360,7 +380,7 @@ const Map = ({
       viewport.zoom >= 10
     ) {
       setInteractiveLayerIds(["visualization-layer"]);
-    } else if (!drawingMode) {
+    } else if (!drawingMode && useCase !== "visualization") {
       setInteractiveLayerIds([]);
     }
   }, [
@@ -403,9 +423,17 @@ const Map = ({
       }
 
       // For visualization layer
-      if (useCase === "visualization" && clickedProperty.OBJECTID) {
+
+      console.log(useCase);
+      console.log(interactiveLayerIds);
+      console.log(clickedProperty.objectid);
+      if (
+        useCase === "visualization" &&
+        interactiveLayerIds[0] !== "huc" &&
+        clickedProperty.objectid
+      ) {
         setVisualizedHexagon(clickedProperty);
-        setVisualizationFilter(["in", "OBJECTID", clickedProperty.OBJECTID]);
+        setVisualizationFilter(["in", "OBJECTID", clickedProperty.objectid]);
       }
     }
   }, [clickedProperty, hexIDDeselected, hucIDSelected]);
@@ -421,7 +449,7 @@ const Map = ({
   useEffect(() => {
     if (zoom >= 10) {
       setInstruction(
-        "Click to explore the details of a single hexagonal area."
+        "Click individual hexagon to explore the details of a single hexagonal area."
       );
     } else {
       setInstruction(
@@ -554,6 +582,7 @@ const Map = ({
             <Layer
               type="raster"
               id={overlay}
+              key={overlay}
               value={overlay}
               paint={{ "raster-opacity": 0.5 }}
             />

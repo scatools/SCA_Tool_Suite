@@ -62,6 +62,8 @@ const Main = ({
   const [visualizedHexagon, setVisualizedHexagon] = useState(null);
   const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
+
+  const [scoreTableClass, setScoreTableClass] = useState("score-table");
   const [viewport, setViewport] = useState({
     latitude: 27.8,
     longitude: -88.4,
@@ -91,7 +93,11 @@ const Main = ({
         activeTable={activeTable}
         setActiveTable={setActiveTable}
       />
-      <HexagonScoreTable visualizedHexagon={visualizedHexagon} />
+      <HexagonScoreTable
+        setScoreTableClass={setScoreTableClass}
+        scoreTableClass={scoreTableClass}
+        visualizedHexagon={visualizedHexagon}
+      />
       <Sidebar
         mapRef={mapRef}
         activeSidebar={activeSidebar}
@@ -140,6 +146,8 @@ const Main = ({
         setAssessStep={setAssessStep}
         setLargeAoiProgress={setLargeAoiProgress}
         showTableContainer={showTableContainer}
+        setInteractiveLayerIds={setInteractiveLayerIds}
+        setScoreTableClass={setScoreTableClass}
       />
       <div className="content">
         <Button

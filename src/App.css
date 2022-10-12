@@ -759,9 +759,11 @@ a img.logo {
 
 .back-to-map {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin-bottom: 80px;
   margin-top: 20px;
+  width: 60%;
+  margin: 80px auto;
 }
 
 .back-to-map > * .dropdown-menu {

@@ -155,6 +155,7 @@ const Routes = ({
         {aoiAssembled && aoiAssembled.length ? (
           <Route exact path="/assessment">
             <Assessment
+              setView={setView}
               aoiAssembled={aoiAssembled}
               setAoiSelected={setAoiSelected}
               setReportLink={setReportLink}
@@ -162,6 +163,7 @@ const Routes = ({
               userLoggedIn={userLoggedIn}
               setAlertText={setAlertText}
               setAlertType={setAlertType}
+              setAssessStep={setAssessStep}
             />
           </Route>
         ) : (

@@ -599,8 +599,9 @@ const SidebarViewDetail = ({
                   variant="secondary"
                   onClick={() => {
                     setShowTableContainer(false);
-                    history.push("/tool");
+                    history.push("/");
                     setView("selectUseCase");
+                    history.push("/tool");
                   }}
                 >
                   More Methods to View Plans
