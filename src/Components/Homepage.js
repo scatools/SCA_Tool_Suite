@@ -1,14 +1,18 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUseCase } from "../Redux/action";
 
 // React-Bootstrap doesn't handle the respnsiveness correctly for this use case for larger screens
-const Homepage = ({ setUseCase, setView }) => {
+const Homepage = ({ setView }) => {
   const navigate = useHistory();
+  const dispatch = useDispatch();
   const routeChange = (useCase) => {
     let path = `/tool`;
     navigate.push(path);
-    setUseCase(useCase);
+    dispatch(setUseCase(useCase));
+    console.log(useCase);
     setView("selectUseCase");
   };
   const homePageCards = [
@@ -102,7 +106,11 @@ const Homepage = ({ setUseCase, setView }) => {
               onClick={() => routeChange(card.useCase)}
             >
               <div className="card-home-container">
-                <img className="card-home-background" src={card.imgSrc} />
+                <img
+                  alt=""
+                  className="card-home-background"
+                  src={card.imgSrc}
+                />
                 <h2 className="card-home-title">{card.title}</h2>
               </div>
               <div className="card-home-description-container">

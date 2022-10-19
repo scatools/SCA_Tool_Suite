@@ -4,21 +4,24 @@ import { useSelector } from "react-redux";
 import SingleMeasure from "./SingleMeasure";
 
 const SelectDataMeasures = ({
-  useCase,
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
-  setCustomizedMeasures
+  setCustomizedMeasures,
 }) => {
   const [show, setShow] = useState(false);
   const [restoreGoal, setRestoreGoal] = useState("");
   const [inputMeasureName, setInputMeasureName] = useState("");
   const [inputMeasureValueList, setInputMeasureValueList] = useState([]);
+  const useCase = useSelector((state) => state.usecase.useCase);
   const aoi = useSelector((state) => state.aoi);
-  const aoiAssembledList = (useCase === "visualization" ? [] : (aoiAssembled.map((aoi) => aoi.value)));
+  const aoiAssembledList =
+    useCase === "visualization" ? [] : aoiAssembled.map((aoi) => aoi.value);
   const aoiList = Object.values(aoi).filter((aoi) =>
     aoiAssembledList.includes(aoi.id)
   );
+
+  console.log(aoiAssembled);
 
   // For customized data measures
 
@@ -33,7 +36,8 @@ const SelectDataMeasures = ({
   };
 
   const submitMeasure = (goal) => {
-    const customizedMeasureID = goal + "-c" + String(customizedMeasures[goal].length + 1);
+    const customizedMeasureID =
+      goal + "-c" + String(customizedMeasures[goal].length + 1);
     customizedMeasures[goal].push({
       name: inputMeasureName,
       value: customizedMeasureID,
@@ -67,7 +71,7 @@ const SelectDataMeasures = ({
   }
 
   return (
-    <Container>
+    <Container className="test">
       <Modal centered show={show} onHide={handleClose} size="xl">
         <Modal.Header closeButton>
           <Modal.Title>Input Your Custom Measure</Modal.Title>
@@ -76,16 +80,25 @@ const SelectDataMeasures = ({
           <div style={{ float: "left" }}>
             <b>Goal:</b> {goalName}
           </div>
-          <br /><br />
+          <br />
+          <br />
           <p>
             <b>Please enter a value between 0 and 1 for each AOI </b>
-            to represent the influence of this custom data measure.
-            If raw values are provided, please choose the appropriate
-            <a href="https://en.wikipedia.org/wiki/Feature_scaling" target="_blank"> feature scaling </a>
+            to represent the influence of this custom data measure. If raw
+            values are provided, please choose the appropriate
+            <a
+              href="https://en.wikipedia.org/wiki/Feature_scaling"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {" "}
+              feature scaling{" "}
+            </a>
             method to scale the values to the range from 0 to 1.
           </p>
-          <p style={{color: "red"}}>
-            * Please note: A name and all values within the correct range are required to proceed.
+          <p style={{ color: "red" }}>
+            * Please note: A name and all values within the correct range are
+            required to proceed.
           </p>
           <br />
           <Table
@@ -122,16 +135,19 @@ const SelectDataMeasures = ({
                       min={0}
                       max={1}
                       step={0.01}
-                      style={
-                        {
-                          border:
-                            (inputMeasureValueList[index] < 0 || inputMeasureValueList[index] > 1) ?
-                            "solid 1px red" : "solid 1px black"
-                        }
-                      }
+                      style={{
+                        border:
+                          inputMeasureValueList[index] < 0 ||
+                          inputMeasureValueList[index] > 1
+                            ? "solid 1px red"
+                            : "solid 1px black",
+                      }}
                       onChange={(e) => {
-                        let updatedMeasureValueList = inputMeasureValueList.slice();
-                        updatedMeasureValueList[index] = parseFloat(e.target.value);
+                        let updatedMeasureValueList =
+                          inputMeasureValueList.slice();
+                        updatedMeasureValueList[index] = parseFloat(
+                          e.target.value
+                        );
                         setInputMeasureValueList(updatedMeasureValueList);
                       }}
                     />
@@ -149,8 +165,9 @@ const SelectDataMeasures = ({
               disabled={
                 inputMeasureName &&
                 inputMeasureValueList.length === aoiList.length &&
-                inputMeasureValueList.every((value) => (value >= 0 && value <= 1)) ?
-                false : true
+                inputMeasureValueList.every((value) => value >= 0 && value <= 1)
+                  ? false
+                  : true
               }
               onClick={() => submitMeasure(restoreGoal)}
             >
@@ -172,7 +189,6 @@ const SelectDataMeasures = ({
       </p>
 
       <SingleMeasure
-        useCase={useCase}
         customizedMeasures={customizedMeasures}
         setCustomizedMeasures={setCustomizedMeasures}
         customizeMeasure={customizeMeasure}

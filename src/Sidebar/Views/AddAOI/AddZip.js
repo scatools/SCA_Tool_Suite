@@ -185,6 +185,12 @@ const AddZip = ({
             <li>.prj</li>
           </ul>
         </p>
+        <p>Your zip file must include at least the following files:</p>
+        <ul>
+          <li>.shp</li>
+          <li>.shx</li>
+          <li>.prj</li>
+        </ul>
       </Container>
       <Container className="m-auto file-drop">
         <Dropzone onDrop={onDrop} accept={[".zip", ".kml"]}>

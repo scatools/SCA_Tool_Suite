@@ -26,8 +26,7 @@ export const MultiSelect = (props) => {
       utility: selected["utility"] || "1",
       weight: selected["weight"] || "medium",
     }));
-
-    dispatch(changeMeasures([props.name], state));
+    if (props.name) dispatch(changeMeasures([props.name], state));
   }
 
   const selectAllOption = {

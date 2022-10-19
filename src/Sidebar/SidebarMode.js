@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 
 const SidebarMode = ({ view, setView }) => {
   const aoi = useSelector((state) => state.aoi);
-
+  const useCase = useSelector((state) => state.usecase.useCase);
   return (
     <>
-      {view !== "selectUseCase" && (
+      {view !== "selectUseCase" && useCase !== "inventory" && (
         <ButtonGroup toggle className="d-flex justify-content-center">
           <ToggleButton
             type="radio"
@@ -19,7 +19,6 @@ const SidebarMode = ({ view, setView }) => {
           >
             Add New AOIs
           </ToggleButton>
-
           {Object.keys(aoi).length > 0 ? (
             <ToggleButton
               type="radio"
@@ -45,29 +44,33 @@ const SidebarMode = ({ view, setView }) => {
             </ToggleButton>
           )}
 
-          {Object.keys(aoi).length > 1 ? (
-            <ToggleButton
-              type="radio"
-              variant="outline-secondary"
-              name="assess"
-              value="assess"
-              checked={view === "assess"}
-              onChange={(e) => setView(e.currentTarget.value)}
-            >
-              Evaluate AOIs
-            </ToggleButton>
+          {useCase === "prioritization" ? (
+            Object.keys(aoi).length > 1 ? (
+              <ToggleButton
+                type="radio"
+                variant="outline-secondary"
+                name="assess"
+                value="assess"
+                checked={view === "assess"}
+                onChange={(e) => setView(e.currentTarget.value)}
+              >
+                Evaluate AOIs
+              </ToggleButton>
+            ) : (
+              <ToggleButton
+                disabled
+                type="radio"
+                variant="outline-secondary"
+                name="assess"
+                value="assess"
+                checked={view === "assess"}
+                onChange={(e) => setView(e.currentTarget.value)}
+              >
+                Evaluate AOIs
+              </ToggleButton>
+            )
           ) : (
-            <ToggleButton
-              disabled
-              type="radio"
-              variant="outline-secondary"
-              name="assess"
-              value="assess"
-              checked={view === "assess"}
-              onChange={(e) => setView(e.currentTarget.value)}
-            >
-              Evaluate AOIs
-            </ToggleButton>
+            ""
           )}
         </ButtonGroup>
       )}
