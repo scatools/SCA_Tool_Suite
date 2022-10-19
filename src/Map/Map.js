@@ -326,7 +326,6 @@ const Map = ({
             id="visualization-highlight"
             type="fill"
             filter={visualizationFilter}
-            type="fill"
           />
         </Source>
         <Legend
