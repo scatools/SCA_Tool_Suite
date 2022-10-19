@@ -1,27 +1,8 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  FormControl,
-  InputGroup,
-  ProgressBar,
-} from "react-bootstrap";
-
-import {
-  squareGrid,
-  intersect,
-  distance,
-  square,
-  bbox,
-  buffer,
-} from "@turf/turf";
-
+import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import { bbox, buffer, distance, intersect, square, squareGrid } from "@turf/turf";
 import axios from "axios";
-import {
-  calculateArea,
-  aggregate,
-  getStatus,
-} from "../../../Helper/aggregateHex";
+import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 import { setLoader, input_aoi } from "../../../Redux/action";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +16,6 @@ const AddDraw = ({
   autoDraw,
   timeoutError,
   timeoutHandler,
-  setHucBoundary,
   setView,
   setAlertText,
   setAlertType,
@@ -50,8 +30,7 @@ const AddDraw = ({
     setDrawData(e.target.value);
   };
   const handleSubmit = async () => {
-    dispatch(setLoader(true));
-    const myTimeoutError = setTimeout(() => timeoutHandler(), 28000);
+    // const myTimeoutError = setTimeout(() => timeoutHandler(), 28000);
     if (!drawData) {
       setAlertType("danger");
       setAlertText("A name for this area of interest is required.");
@@ -62,6 +41,7 @@ const AddDraw = ({
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (aoiList.length < 10) {
+        dispatch(setLoader(true));
         setAlertText(false);
         const newList = JSON.parse(JSON.stringify(featureList));
         const planArea = calculateArea(newList);
@@ -147,7 +127,7 @@ const AddDraw = ({
               return newProgress;
             });
             console.log(res);
-            clearTimeout(myTimeoutError);
+            // clearTimeout(myTimeoutError);
             return res;
           };
 
@@ -242,7 +222,7 @@ const AddDraw = ({
           // );
         }
       } else {
-        clearTimeout(myTimeoutError);
+        // clearTimeout(myTimeoutError);
         setAlertType("danger");
         setAlertText(
           "The max limit of 10 AOIs was reached. Remove AOIs and try again."
@@ -251,7 +231,7 @@ const AddDraw = ({
       }
     }
   };
-  setHucBoundary(false);
+
   return (
     <Container className="mt-3">
       {timeoutError && <TimeoutError />}

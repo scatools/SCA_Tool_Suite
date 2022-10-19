@@ -39,6 +39,8 @@ function App(props) {
           className="App"
           style={{
             minHeight: "100vh",
+            maxWidth: "100vw",
+            overflow: "hidden",
             display: "flex",
             flexDirection: "column",
             position: "relative",

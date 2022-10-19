@@ -29,8 +29,6 @@ const Sidebar = ({
   mapRef,
   activeSidebar,
   setActiveSidebar,
-  useCase,
-  setUseCase,
   setActiveTable,
   setDrawingMode,
   featureList,
@@ -65,6 +63,7 @@ const Sidebar = ({
   visualizationOpacity,
   setVisualizationOpacity,
   setShowTableContainer,
+  showTableContainer,
   zoom,
   instruction,
   view,
@@ -74,11 +73,14 @@ const Sidebar = ({
   assessStep,
   setAssessStep,
   setLargeAoiProgress,
+  setInteractiveLayerIds,
+  setScoreTableClass,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
     window.location.reload(true);
   };
+  const useCase = useSelector((state) => state.usecase.useCase);
   const [confirmShow, setConfirmShow] = useState(false);
   const [visualizationScale, setVisualizationScale] = useState(null);
 
@@ -87,20 +89,27 @@ const Sidebar = ({
   const confirmClose = () => setConfirmShow(false);
   const showConfirm = () => setConfirmShow(true);
 
+  const inventoryStyle = {
+    paddingTop: "0px",
+  };
+
   return (
     <div id="sidebar" className={activeSidebar ? "active" : ""}>
       <SidebarDismiss setActiveSidebar={setActiveSidebar} />
-      <div className="ControlWrapper">
+      <div
+        style={useCase === "inventory" ? inventoryStyle : {}}
+        className="ControlWrapper"
+      >
         <SidebarMode view={view} setView={setView} />
-        <hr />
+        <hr className={useCase === "inventory" ? "lg-padding" : "sm-padding"} />
         {view === "selectUseCase" && (
           <UseCaseView
-            useCase={useCase}
             setVisualizationScale={setVisualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
             setVisualizaitonHighlight={setVisualizaitonHighlight}
             setView={setView}
+            setShowTableContainer={setShowTableContainer}
           />
         )}
         {view === "add" && (
@@ -124,7 +133,6 @@ const Sidebar = ({
         )}
         {view === "list" && (
           <ListAOIView
-            useCase={useCase}
             aoiSelected={aoiSelected}
             setAoiSelected={setAoiSelected}
             setActiveTable={setActiveTable}
@@ -143,16 +151,17 @@ const Sidebar = ({
             editMode={editMode}
             stopDraw={stopDraw}
             setShowTableContainer={setShowTableContainer}
+            showTableContainer={showTableContainer}
             view={view}
             setView={setView}
             setAlertText={setAlertText}
             setAlertType={setAlertType}
             setAssessStep={setAssessStep}
+            setLargeAoiProgress={setLargeAoiProgress}
           />
         )}
         {view === "assess" && (
           <AssessAOIView
-            useCase={useCase}
             aoiAssembled={aoiAssembled}
             setAoiAssembled={setAoiAssembled}
             customizedMeasures={customizedMeasures}
@@ -168,10 +177,12 @@ const Sidebar = ({
             setAlertType={setAlertType}
             assessStep={assessStep}
             setAssessStep={setAssessStep}
+            setInteractiveLayerIds={setInteractiveLayerIds}
           />
         )}
         {view === "visualize" && (
           <VisualizeAOIView
+            setInteractiveLayerIds={setInteractiveLayerIds}
             mapRef={mapRef}
             visualizationOpacity={visualizationOpacity}
             setVisualizationOpacity={setVisualizationOpacity}
@@ -179,6 +190,7 @@ const Sidebar = ({
             instruction={instruction}
             setAssessStep={setAssessStep}
             setView={setView}
+            setScoreTableClass={setScoreTableClass}
           />
         )}
       </div>

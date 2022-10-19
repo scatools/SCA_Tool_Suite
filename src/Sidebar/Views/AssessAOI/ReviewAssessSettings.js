@@ -38,7 +38,6 @@ const RESTOREGoal = [
 ];
 
 const ReviewAssessSettings = ({
-  useCase,
   setAssessStep,
   aoiAssembled,
   customizedMeasures,
@@ -47,10 +46,12 @@ const ReviewAssessSettings = ({
   setView,
   setAlertText,
   setAlertType,
+  setInteractiveLayerIds,
 }) => {
   const weights = useSelector((state) => state.weights);
   const currentWeight = useSelector((state) => state.currentWeight);
   const aoi = useSelector((state) => state.aoi);
+  const useCase = useSelector((state) => state.usecase.useCase);
   const [confirmShow, setConfirmShow] = useState(false);
   const confirmClose = () => setConfirmShow(false);
   const showConfirm = () => setConfirmShow(true);
@@ -138,8 +139,10 @@ const ReviewAssessSettings = ({
     await setVisualizationFillColor(fillColor);
     setVisualizationOpacity(50);
   };
-
+  console.log("Aoi Assembled: ");
+  console.log(aoiAssembled);
   const createAssessment = () => {
+    console.log(aoiAssembled);
     dispatch(setLoader(true));
     async function calculateNewData() {
       const newAoiData = aoiAssembled.map((item) =>
@@ -515,7 +518,6 @@ const ReviewAssessSettings = ({
           value={currentWeight}
           options={list}
           isClearable={false}
-          name="colors"
           className="basic-multi-select"
           classNamePrefix="select"
           onChange={(value) => {
@@ -529,8 +531,36 @@ const ReviewAssessSettings = ({
       <Container
         id="assessment-card"
         style={{ paddingBottom: "1.25rem", marginTop: "1.25rem" }}
-        className="card-body"
+        className="test card-body"
       >
+        Goal Weights:
+        <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>RESTORE Council Goal</th>
+              <th>
+                Goal Weights &nbsp;
+                <GoInfo data-tip data-for="goalWeights" />
+                <ReactTooltip id="goalWeights" type="dark">
+                  <span>
+                    Goal weights are set by users to emphasize specific RESTORE
+                    goals
+                  </span>
+                </ReactTooltip>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {RESTOREGoal.map((goal, idx) => {
+              return (
+                <tr key={idx}>
+                  <td>{goal}</td>
+                  <td>{Object.values(weights)[idx].weight}%</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
         Data Measure Weights Summary:
         <Table striped bordered hover size="sm">
           <thead>
@@ -890,34 +920,6 @@ const ReviewAssessSettings = ({
               ))}
           </tbody>
         </Table>
-        Goal Weights:
-        <Table striped bordered hover size="sm">
-          <thead>
-            <tr>
-              <th>RESTORE Council Goal</th>
-              <th>
-                Goal Weights &nbsp;
-                <GoInfo data-tip data-for="goalWeights" />
-                <ReactTooltip id="goalWeights" type="dark">
-                  <span>
-                    Goal weights are set by users to emphasize specific RESTORE
-                    goals
-                  </span>
-                </ReactTooltip>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {RESTOREGoal.map((goal, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{goal}</td>
-                  <td>{Object.values(weights)[idx].weight}%</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
         <div className="d-flex justify-content-between">
           {loggedIn === true ? (
             <Button
@@ -969,6 +971,7 @@ const ReviewAssessSettings = ({
               variant="primary"
               style={{ float: "right" }}
               onClick={() => {
+                setInteractiveLayerIds(["visualization-layer"]);
                 createVisualization();
                 setView("visualize");
               }}

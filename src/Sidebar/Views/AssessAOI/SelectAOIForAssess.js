@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,6 @@ import { getWeightsThunk } from "../../../Redux/thunk";
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
 const SelectAOIForAssess = ({
-  useCase,
   setAssessStep,
   aoiAssembled,
   setAoiAssembled,
@@ -32,19 +31,39 @@ const SelectAOIForAssess = ({
     label: item.name,
     value: item.id,
   }));
+  const useCase = useSelector((state) => state.usecase.useCase);
+
+  const changeToArray = (obj) => {
+    if (typeof obj === "object" && !Array.isArray(obj) && obj !== null) {
+      console.log("CHANGE FROM OBJECT TO ARRAY");
+      setAoiAssembled([obj]);
+    }
+  };
+
+  console.log(aoiAssembled);
+
+  useEffect(() => {
+    setAoiAssembled([]);
+  }, []);
 
   const handleNext = () => {
-    if (aoiAssembled && aoiAssembled.length >= 11) {
+    if (
+      aoiAssembled &&
+      aoiAssembled.length >= 11 &&
+      useCase === "prioritization"
+    ) {
       setAlertType("danger");
-      setAlertText("Max amount of AOIs is 10, remove AOIs for comparison");
+      setAlertText("Max number of AOIs is 10. Remove AOI(s) to continue");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (useCase === "visualization") {
-        // aoiAssembled is an object for single select
-        if (aoiAssembled && aoiAssembled.value) {
+        if (aoiAssembled) {
+          console.log(aoi);
           const aoiVisualized = Object.values(aoi).filter(
-            (item) => item.id === aoiAssembled.value
+            (item) => item.id === aoiAssembled[0].value
           );
+          console.log(aoiVisualized);
+
           const hexFeatureList = aoiVisualized[0].hexagons.map((hex) => {
             // Parse all the properties for measure scores to numbers
             let hexProperties = hex;
@@ -68,7 +87,7 @@ const SelectAOIForAssess = ({
             data: hexData,
           });
           setVisualizationLayer({
-            id: "aoi-visualization",
+            id: "visualization-layer",
             type: "fill",
           });
           setAssessStep("selectRestoreWeights");
@@ -80,7 +99,7 @@ const SelectAOIForAssess = ({
       } else {
         // aoiAssembled is an array for multiple selects
         if (aoiAssembled && aoiAssembled.length > 1) {
-          const default_setting = {
+          const measures = {
             hab: {
               selected: null,
               weight: 0,
@@ -102,13 +121,14 @@ const SelectAOIForAssess = ({
               weight: 0,
             },
           };
-          let measures = default_setting;
+
           let keys = Object.keys(measures);
           keys.map((value, index) => {
             const newValue =
               Number(measures[value].weight) > 100
                 ? 100
                 : Number(measures[value].weight);
+            console.log(measures[value].selected);
             dispatch(changeGoalWeights(newValue, value));
             dispatch(changeMeasures(value, measures[value].selected));
           });
@@ -140,11 +160,11 @@ const SelectAOIForAssess = ({
           isMulti={false}
           isClearable={true}
           placeholder="Select areas of interests..."
-          name="colors"
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
-              setAoiAssembled(selectedOption);
+              changeToArray(selectedOption);
+              // setAoiAssembled(selectedOption);
             } else {
               setAoiAssembled([]);
             }
@@ -160,7 +180,6 @@ const SelectAOIForAssess = ({
           isMulti
           isClearable={true}
           placeholder="Select areas of interests..."
-          name="colors"
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
@@ -179,7 +198,7 @@ const SelectAOIForAssess = ({
           {arrowIcon} Review/Edit AOIs
         </Button>
         {useCase === "visualization" ? (
-          aoiAssembled && aoiAssembled.value ? (
+          aoiAssembled && aoiAssembled.length === 1 ? (
             <Button variant="primary" onClick={() => handleNext()}>
               Next
             </Button>

@@ -8,17 +8,21 @@ import FilterPane from "./FilterPane";
 import CustomPagination from "./CustomPagination";
 import ReactTooltip from "react-tooltip";
 import { GoInfo } from "react-icons/go";
+import Draggable from "react-draggable";
 
 const TableContainer = ({
   coordinates,
   aoiSelected,
   setShowTableContainer,
+  showTableContainer,
+  view,
 }) => {
   const history = useHistory();
   const [tableDetails, setTableDetails] = useState();
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilterPane, setShowFilterPane] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const [filterConfig, setFilterConfig] = useState({
     state: "All",
     time: "All",
@@ -58,12 +62,13 @@ const TableContainer = ({
         },
       }
     );
-    setTableDetails(response.data.data);
-    setTotalCount(response.data.totalRowCount);
-    if (response.data.totalRowCount !== 0) {
-      setShowTableContainer(true);
-    } else {
-      setShowTableContainer(false);
+    setLoadingTable(false);
+    if (showTableContainer) {
+      setTableDetails(response.data.data);
+      setTotalCount(response.data.totalRowCount);
+      if (response.data.totalRowCount === 0) {
+        setShowTableContainer(false);
+      }
     }
   };
 
@@ -88,115 +93,121 @@ const TableContainer = ({
         },
       }
     );
-    setTableDetails(response.data.data);
-    setTotalCount(response.data.totalRowCount);
-    if (response.data.totalRowCount !== 0) {
-      setShowTableContainer(true);
-    } else {
-      setShowTableContainer(false);
+    setLoadingTable(false);
+    if (showTableContainer) {
+      setTableDetails(response.data.data);
+      setTotalCount(response.data.totalRowCount);
+      if (response.data.totalRowCount === 0) {
+        setShowTableContainer(false);
+      }
     }
   };
 
   useEffect(() => {
-    if (coordinates[0] && coordinates[1]) {
+    if (view !== "list" && coordinates[0] && coordinates[1]) {
+      setLoadingTable(true);
       planQueryByPOI();
     }
-  }, [currentPage, filterConfig, coordinates]);
+  }, [currentPage, filterConfig, coordinates, view]);
 
   useEffect(() => {
-    if (aoiSelected) {
+    if (view === "list" && aoiSelected) {
+      setLoadingTable(true);
       planQueryByAOI();
     }
-  }, [currentPage, filterConfig, aoiSelected]);
+  }, [currentPage, filterConfig, aoiSelected, view]);
 
   return (
-    <div className="table-container-wrapper">
-      {showFilterPane && (
-        <FilterPane
-          currentFilterConfig={filterConfig}
-          onFilterConfigChange={onFilterConfigChange}
-          size="small"
-        />
-      )}
-      <div className="map-table-filter-button">
-        <Button variant="secondary" onClick={toggleFilterPane}>
-          Filter
-        </Button>
-      </div>
-      <div id="map-table-container">
-        <CloseButton onClick={() => setShowTableContainer(false)} />
-        <Table hover borderless striped>
-          <thead>
-            <tr style={{ borderBottom: "1px solid black" }}>
-              <th>Plan Name</th>
-              <th>Related State</th>
-              <th>Plan Details</th>
-              <GoInfo data-tip data-for="plan-disclaimer" />
-              <ReactTooltip
-                id="plan-disclaimer"
-                delayHide={500}
-                delayUpdate={500}
-                clickable="true"
-                type="dark"
-                place="right"
-              >
-                <span>
-                  Every effort was made to ensure plan overviews are correct but
-                  we cannot guarantee the summaries to be accurate. Please view
-                  the raw document for the most accurate plan information.
-                </span>
-              </ReactTooltip>
-            </tr>
-          </thead>
-          <tbody style={{ borderBottom: "1px solid black" }}>
-            {!!tableDetails ? (
-              tableDetails.map((row) => (
-                <tr key={row.id}>
-                  <td style={{ width: "50%" }}>
-                    <div
-                      style={{
-                        overflow: "hidden",
-                        height: 50,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                      }}
-                      title={row.agency_lead}
-                    >
-                      {row.plan_name}
-                    </div>
-                  </td>
-                  <td>{row.related_state}</td>
-                  <td>
-                    <Button
-                      onClick={() => {
-                        history.push(`/plan/${row.id}`);
-                      }}
-                    >
-                      Learn more
-                    </Button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="3" align="center">
-                  Loading table
-                  <BeatLoader size={5} />
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-        {!!tableDetails && (
-          <CustomPagination
-            totalCount={totalCount}
-            onPageChange={onPageChange}
-            currentPage={currentPage}
+    <Draggable>
+      <div className="table-container-wrapper">
+        {showFilterPane && (
+          <FilterPane
+            currentFilterConfig={filterConfig}
+            onFilterConfigChange={onFilterConfigChange}
+            size="small"
           />
         )}
+        <div className="map-table-filter-button">
+          <Button variant="secondary" onClick={toggleFilterPane}>
+            Filter
+          </Button>
+        </div>
+        <div id="map-table-container">
+          <CloseButton onClick={() => setShowTableContainer(false)} />
+          <Table hover borderless striped>
+            <thead>
+              <tr style={{ borderBottom: "1px solid black" }}>
+                <th>Plan Name</th>
+                <th>Related State</th>
+                <th>Plan Details</th>
+                <GoInfo data-tip data-for="plan-disclaimer" />
+                <ReactTooltip
+                  id="plan-disclaimer"
+                  delayHide={500}
+                  delayUpdate={500}
+                  clickable="true"
+                  type="dark"
+                  place="right"
+                >
+                  <span>
+                    Every effort was made to ensure plan overviews are correct
+                    but we cannot guarantee the summaries to be accurate. Please
+                    view the raw document for the most accurate plan
+                    information.
+                  </span>
+                </ReactTooltip>
+              </tr>
+            </thead>
+            <tbody style={{ borderBottom: "1px solid black" }}>
+              {!loadingTable && tableDetails ? (
+                tableDetails.map((row) => (
+                  <tr key={row.id}>
+                    <td style={{ width: "50%" }}>
+                      <div
+                        style={{
+                          overflow: "hidden",
+                          height: 50,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                        title={row.agency_lead}
+                      >
+                        {row.plan_name}
+                      </div>
+                    </td>
+                    <td>{row.related_state}</td>
+                    <td>
+                      <Button
+                        onClick={() => {
+                          history.push(`/plan/${row.id}`);
+                        }}
+                      >
+                        Learn more
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" align="center">
+                    Loading table
+                    <BeatLoader size={5} />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+          {!!tableDetails && !loadingTable && (
+            <CustomPagination
+              totalCount={totalCount}
+              onPageChange={onPageChange}
+              currentPage={currentPage}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </Draggable>
   );
 };
 

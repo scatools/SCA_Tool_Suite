@@ -23,8 +23,6 @@ const expandIcon = (
 );
 
 const Main = ({
-  useCase,
-  setUseCase,
   aoiSelected,
   setAoiSelected,
   aoiAssembled,
@@ -64,6 +62,8 @@ const Main = ({
   const [visualizedHexagon, setVisualizedHexagon] = useState(null);
   const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
+
+  const [scoreTableClass, setScoreTableClass] = useState("score-table");
   const [viewport, setViewport] = useState({
     latitude: 27.8,
     longitude: -88.4,
@@ -94,14 +94,14 @@ const Main = ({
         setActiveTable={setActiveTable}
       />
       <HexagonScoreTable
+        setScoreTableClass={setScoreTableClass}
+        scoreTableClass={scoreTableClass}
         visualizedHexagon={visualizedHexagon}
       />
       <Sidebar
         mapRef={mapRef}
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
-        useCase={useCase}
-        setUseCase={setUseCase}
         setActiveTable={setActiveTable}
         setDrawingMode={setDrawingMode}
         featureList={featureList}
@@ -145,6 +145,9 @@ const Main = ({
         assessStep={assessStep}
         setAssessStep={setAssessStep}
         setLargeAoiProgress={setLargeAoiProgress}
+        showTableContainer={showTableContainer}
+        setInteractiveLayerIds={setInteractiveLayerIds}
+        setScoreTableClass={setScoreTableClass}
       />
       <div className="content">
         <Button
@@ -164,7 +167,6 @@ const Main = ({
         </Button>
         <Map
           mapRef={mapRef}
-          useCase={useCase}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
           aoiSelected={aoiSelected}
@@ -195,6 +197,7 @@ const Main = ({
           viewport={viewport}
           setViewport={setViewport}
           setInstruction={setInstruction}
+          view={view}
         />
       </div>
     </div>

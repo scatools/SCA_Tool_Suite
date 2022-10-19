@@ -1,8 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { v4 as uuid } from "uuid";
 
-const Legend = ({ aoiList, aoiColors, useCase, visualizationOpacity }) => {
+const Legend = ({ aoiList, aoiColors, visualizationOpacity }) => {
   const legendOpacity = parseInt(visualizationOpacity) / 100;
+  const useCase = useSelector((state) => state.usecase.useCase);
   return (
     <div className="legend">
       {/* {aoiList.length > 0 && visualizationOpacity === 0 && (

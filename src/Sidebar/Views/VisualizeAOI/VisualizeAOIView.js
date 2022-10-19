@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Container, Modal } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
 import {
@@ -8,9 +8,14 @@ import {
   RiScreenshot2Fill,
 } from "react-icons/ri";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCheck, faBan } from "@fortawesome/free-solid-svg-icons";
+import { setUseCase } from "../../../Redux/action";
 
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
+
+const checkMark = <FontAwesomeIcon icon={faCheck} size="lg" color="green" />;
+
+const redEx = <FontAwesomeIcon icon={faBan} size="lg" color="red" />;
 
 const VisualizeAOIView = ({
   mapRef,
@@ -20,11 +25,14 @@ const VisualizeAOIView = ({
   instruction,
   setAssessStep,
   setView,
+  setScoreTableClass,
 }) => {
   const [show, setShow] = useState(false);
   const [imageURL, setImageURL] = useState(null);
   const [resizedImageURL, setResizedImageURL] = useState(null);
   const user = useSelector((state) => state.user);
+  const useCase = useSelector((state) => state.usecase.useCase);
+  const dispatch = useDispatch();
 
   const handleClose = () => setShow(false);
 
@@ -79,7 +87,9 @@ const VisualizeAOIView = ({
       <p>
         <em>{instruction}</em>
       </p>
-      <p>Current Zoom Level : {zoom}</p>
+      <p>
+        Current Zoom Level : {zoom} {zoom >= 10 ? checkMark : redEx}
+      </p>
       <label>Layer Opacity (%) :</label>
       <RangeSlider
         step={1}
@@ -132,6 +142,39 @@ const VisualizeAOIView = ({
           </div>
         </Modal.Body>
       </Modal>
+
+      <Container
+        style={{
+          marginTop: "30px",
+          display: "flex",
+          justifyContent: "space-around",
+        }}
+        className="view-change-vis"
+      >
+        <Button
+          variant="primary"
+          onClick={() => {
+            dispatch(setUseCase("prioritization"));
+            setScoreTableClass("score-table");
+            setVisualizationOpacity(0);
+            setView("add");
+          }}
+        >
+          Evaluate Multiple AOIs
+        </Button>
+
+        <Button
+          variant="primary"
+          onClick={() => {
+            dispatch(setUseCase("inventory"));
+            setScoreTableClass("score-table");
+            setVisualizationOpacity(0);
+            setView("selectUseCase");
+          }}
+        >
+          View Related Plans
+        </Button>
+      </Container>
     </Container>
   );
 };

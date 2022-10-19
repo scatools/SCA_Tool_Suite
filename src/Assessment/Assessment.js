@@ -22,7 +22,7 @@ import Appendix from "./Appendix";
 import Legend from "../Components/Legend";
 import ReactTooltip from "react-tooltip";
 import { GoInfo } from "react-icons/go";
-import { setLoader } from "../Redux/action";
+import { setLoader, setUseCase } from "../Redux/action";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
@@ -35,6 +35,8 @@ const Assessment = ({
   userLoggedIn,
   setAlertText,
   setAlertType,
+  setView,
+  setAssessStep,
 }) => {
   const [downloading, setDownloading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -44,14 +46,15 @@ const Assessment = ({
   const [overlayList, setOverlayList] = useState([]);
   const [selectedSwitch, setSelectedSwitch] = useState(0);
   const overlaySources = {
-    "secas": "mapbox://chuck0520.dkcwxuvl"
+    secas: "mapbox://chuck0520.dkcwxuvl",
   };
-  
+
   const history = useHistory();
   const assessment = useSelector((state) => state.assessment);
   const aoi = useSelector((state) => state.aoi);
   const user = useSelector((state) => state.user);
-  var aoiAssembly = [];
+  const useCase = useSelector((state) => state.usecase.useCase);
+  let aoiAssembly = [];
 
   const dispatch = useDispatch();
   dispatch(setLoader(false));
@@ -79,24 +82,24 @@ const Assessment = ({
   );
 
   // AOIs are stored as [0:{}, 1:{}, 2:{}, ...]
-  for (var num in aoiList) {
+  for (let num in aoiList) {
     aoiAssembly = aoiAssembly.concat(aoiList[num].geometry);
   }
 
   // Use the set of all selected AOIs to calculate the bounding box
-  var aoiBbox = bbox({
+  let aoiBbox = bbox({
     type: "FeatureCollection",
     features: aoiAssembly,
   });
 
   // Format of the bounding box needs to be an array of two opposite corners ([[lon,lat],[lon,lat]])
-  var viewportBbox = [
+  let viewportBbox = [
     [aoiBbox[0], aoiBbox[1]],
     [aoiBbox[2], aoiBbox[3]],
   ];
 
   // Use WebMercatorViewport to get center longitude/latitude and zoom level
-  var newViewport = new WebMercatorViewport({
+  let newViewport = new WebMercatorViewport({
     width: 800,
     height: 600,
   }).fitBounds(viewportBbox, { padding: 200 });
@@ -121,7 +124,7 @@ const Assessment = ({
     // hab
     if (customizedMeasures.hab.length > 0) {
       let planScoreValue = 0;
-      for (var i = 0; i < customizedMeasures.hab.length; i++) {
+      for (let i = 0; i < customizedMeasures.hab.length; i++) {
         if (customizedMeasures.hab[i].utility === "1") {
           planScoreValue =
             planScoreValue +
@@ -143,7 +146,7 @@ const Assessment = ({
     // wq
     if (customizedMeasures.wq.length > 0) {
       let planScoreValue = 0;
-      for (var j = 0; j < customizedMeasures.wq.length; j++) {
+      for (let j = 0; j < customizedMeasures.wq.length; j++) {
         if (customizedMeasures.wq[j].utility === "1") {
           planScoreValue =
             planScoreValue +
@@ -165,7 +168,7 @@ const Assessment = ({
     // lcmr
     if (customizedMeasures.lcmr.length > 0) {
       let planScoreValue = 0;
-      for (var k = 0; k < customizedMeasures.lcmr.length; k++) {
+      for (let k = 0; k < customizedMeasures.lcmr.length; k++) {
         if (customizedMeasures.lcmr[k].utility === "1") {
           planScoreValue =
             planScoreValue +
@@ -187,7 +190,7 @@ const Assessment = ({
     // cl
     if (customizedMeasures.cl.length > 0) {
       let planScoreValue = 0;
-      for (var l = 0; l < customizedMeasures.cl.length; l++) {
+      for (let l = 0; l < customizedMeasures.cl.length; l++) {
         if (customizedMeasures.cl[l].utility === "1") {
           planScoreValue =
             planScoreValue +
@@ -209,7 +212,7 @@ const Assessment = ({
     // eco
     if (customizedMeasures.eco.length > 0) {
       let planScoreValue = 0;
-      for (var m = 0; m < customizedMeasures.eco.length; m++) {
+      for (let m = 0; m < customizedMeasures.eco.length; m++) {
         if (customizedMeasures.eco[m].utility === "1") {
           planScoreValue =
             planScoreValue +
@@ -230,7 +233,7 @@ const Assessment = ({
 
     return planScoreList;
   });
-  
+
   const onToggle = (value) => {
     setSelectedSwitch(value);
     if (value === 0) {
@@ -267,8 +270,8 @@ const Assessment = ({
   const downloadHTML = async () => {
     // Delay 2 seconds for the charts to render before downloading
     await delay(2000);
-    var pageHTMLObject = document.getElementsByClassName("container")[0];
-    var pageHTML =
+    let pageHTMLObject = document.getElementsByClassName("container")[0];
+    let pageHTML =
       "<html><head>" +
       '<meta charset="utf-8">' +
       '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">' +
@@ -317,7 +320,7 @@ const Assessment = ({
         .join("") +
       "</script></html>";
 
-    var tempElement = document.createElement("a");
+    let tempElement = document.createElement("a");
     tempElement.href =
       "data:text/html;charset=UTF-8," + encodeURIComponent(pageHTML);
     tempElement.target = "_blank";
@@ -326,8 +329,8 @@ const Assessment = ({
   };
 
   const downloadFootprintAsSingle = () => {
-    var aoiGeoJson = { type: "FeatureCollection", features: aoiAssembly };
-    var options = {
+    let aoiGeoJson = { type: "FeatureCollection", features: aoiAssembly };
+    let options = {
       folder: "Spatial Footprint",
       types: {
         polygon: "Combined Assessment Area",
@@ -338,8 +341,8 @@ const Assessment = ({
 
   const downloadFootprintAsMultiple = () => {
     aoiList.forEach((aoi, index) => {
-      var aoiGeoJson = { type: "FeatureCollection", features: aoi.geometry };
-      var options = {
+      let aoiGeoJson = { type: "FeatureCollection", features: aoi.geometry };
+      let options = {
         folder: "Spatial Footprint " + (index + 1).toString,
         types: {
           polygon: aoi.name,
@@ -353,8 +356,8 @@ const Assessment = ({
     try {
       // Delay 2 seconds for the charts to render before saving
       await delay(2000);
-      var today = new Date().toISOString().slice(0, 10);
-      var reportName =
+      let today = new Date().toISOString().slice(0, 10);
+      let reportName =
         "Assessment Report for " +
         aoiList[0].name +
         " and " +
@@ -363,8 +366,8 @@ const Assessment = ({
         " (" +
         today +
         ")";
-      var pageHTMLObject = document.getElementsByClassName("container")[0];
-      var pageHTML =
+      let pageHTMLObject = document.getElementsByClassName("container")[0];
+      let pageHTML =
         "<html><head>" +
         '<meta charset="utf-8">' +
         '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">' +
@@ -444,7 +447,7 @@ const Assessment = ({
       console.error(e);
     }
   };
-
+  console.log(useCase);
   useEffect(() => {
     if (!assessment.hasOwnProperty("aoi")) {
       return <Redirect to="/" />;
@@ -480,18 +483,41 @@ const Assessment = ({
       </div>
 
       <div className="back-to-map">
-        <Button variant="secondary" onClick={() => history.push("/tool")}>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            history.push("/tool");
+          }}
+        >
           Back to Map View
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            dispatch(setUseCase("visualization"));
+            setView("assess");
+            setAssessStep("selectAOI");
+            history.push("/tool");
+          }}
+        >
+          AOI Heatmap Visualization
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            dispatch(setUseCase("inventory"));
+            setView("list");
+            history.push("/tool");
+          }}
+        >
+          Find Related Conservation Plans
         </Button>
       </div>
 
       <div className="buttonContainer">
         <div className="assessmentDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Assessment Report
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
@@ -513,17 +539,11 @@ const Assessment = ({
 
         <div className="footprintDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Spatial Footprint
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
-              <Dropdown.Item
-                variant="dark"
-                onClick={downloadFootprintAsSingle}
-              >
+              <Dropdown.Item variant="dark" onClick={downloadFootprintAsSingle}>
                 <VscFolder /> &nbsp; Download as Single Shapefile
               </Dropdown.Item>
               <Dropdown.Item
@@ -538,10 +558,7 @@ const Assessment = ({
 
         <div className="tableDownload">
           <Dropdown>
-            <Dropdown.Toggle
-              className="downloadButton"
-              variant="dark"
-            >
+            <Dropdown.Toggle className="downloadButton" variant="dark">
               <MdDownload /> Data Table
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
@@ -568,7 +585,7 @@ const Assessment = ({
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        
+
         {userLoggedIn && (
           <div className="assessmentSave">
             <Button
@@ -594,7 +611,8 @@ const Assessment = ({
           <Row>
             <h1 className="assessment-h1">
               Assessment Report for:
-              <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other AOIs
+              <br /> {aoiList[0].name} and {String(aoiList.length - 1)} Other
+              AOIs
             </h1>
           </Row>
           <Row id="mapHeading">
@@ -646,10 +664,12 @@ const Assessment = ({
                     checked={overlayList.includes("secas")}
                     onChange={() => {
                       if (overlayList.includes("secas")) {
-                        setOverlayList(list => list.filter(element => element !== "secas"));
+                        setOverlayList((list) =>
+                          list.filter((element) => element !== "secas")
+                        );
                       } else {
-                        setOverlayList(list => [...list, "secas"]);
-                      };
+                        setOverlayList((list) => [...list, "secas"]);
+                      }
                     }}
                   />
                   <span>&nbsp; Southeast Blueprint</span>
@@ -676,7 +696,7 @@ const Assessment = ({
                     type="raster"
                     id={overlay}
                     value={overlay}
-                    paint={{"raster-opacity": 0.5}}
+                    paint={{ "raster-opacity": 0.5 }}
                   />
                 </Source>
               ))}
