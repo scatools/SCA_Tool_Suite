@@ -1,27 +1,8 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  FormControl,
-  InputGroup,
-  ProgressBar,
-} from "react-bootstrap";
-
-import {
-  squareGrid,
-  intersect,
-  distance,
-  square,
-  bbox,
-  buffer,
-} from "@turf/turf";
-
+import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import { bbox, buffer, distance, intersect, square, squareGrid } from "@turf/turf";
 import axios from "axios";
-import {
-  calculateArea,
-  aggregate,
-  getStatus,
-} from "../../../Helper/aggregateHex";
+import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 import { setLoader, input_aoi } from "../../../Redux/action";
 import { useDispatch, useSelector } from "react-redux";
