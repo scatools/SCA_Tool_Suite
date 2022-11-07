@@ -175,7 +175,8 @@ const AddZip = ({
         <p>
           You can upload a zipped shapefile or KML file with one or more areas of interest.
           Each record in the file will become a separate area of interest. Please make sure
-          the geometry of your area of interest is either Polygon or MultiPolygon.{" "}
+          the geometry of your area of interest is either Polygon or MultiPolygon. Note that
+          a MultiPolygon will be recognized as a single area of interest.{" "}
         </p>
         <p>
           If uploading a zip file, please make sure it includes at least the following files:
@@ -185,12 +186,6 @@ const AddZip = ({
             <li>.prj</li>
           </ul>
         </p>
-        <p>Your zip file must include at least the following files:</p>
-        <ul>
-          <li>.shp</li>
-          <li>.shx</li>
-          <li>.prj</li>
-        </ul>
       </Container>
       <Container className="m-auto file-drop">
         <Dropzone onDrop={onDrop} accept={[".zip", ".kml"]}>
