@@ -102,7 +102,7 @@ const VisualizeAOIView = ({
         <RiScreenshot2Fill /> &nbsp; Export Current View
       </Button>
 
-      <div className="add-assess-cont container">
+      <div className="button-container container">
         <Button
           style={{ float: "left" }}
           variant="secondary"
