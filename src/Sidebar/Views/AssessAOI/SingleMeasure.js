@@ -875,7 +875,7 @@ const SingleMeasure = ({
           </div>
         ))}
       <br />
-      <Container className="add-assess-cont">
+      <Container className="button-container">
         <Button variant="secondary" onClick={handleBack}>
           {arrowIcon} Back
         </Button>

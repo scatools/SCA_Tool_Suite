@@ -193,7 +193,7 @@ const SelectAOIForAssess = ({
         />
       )}
       <br />
-      <Container className="add-assess-cont">
+      <Container className="button-container">
         <Button variant="secondary" onClick={() => setView("list")}>
           {arrowIcon} Review/Edit AOIs
         </Button>

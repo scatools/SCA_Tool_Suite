@@ -262,7 +262,7 @@ const SelectRestoreWeights = ({
         </>
       </Form>
 
-      <Container className="add-assess-cont">
+      <Container className="button-container">
         {location.pathname !== "/user/measures"
           ? visualizationScale !== "region" &&
             visualizationScale !== "state" && (

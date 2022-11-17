@@ -955,7 +955,7 @@ const ReviewAssessSettings = ({
           )}
         </div>
       </Container>
-      <div className="add-assess-cont container">
+      <div className="button-container container">
         <Button
           style={{ float: "left" }}
           variant="secondary"

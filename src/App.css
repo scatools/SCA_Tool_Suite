@@ -295,9 +295,9 @@ nav a:hover {
   justify-content: space-around;
 }
 
-button.btn-dark.ml-1.btn {
-  font-size: 14px;
-  margin: 5px;
+.btn-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .btn-success,
@@ -307,20 +307,21 @@ button.btn-dark.ml-1.btn {
   min-width: 180px;
 }
 
-button.ml-1.btn.btn-danger {
-  margin: 5px;
+button.btn.btn-dark.ml-1,
+button.btn.btn-secondary.ml-1 {
   font-size: 14px;
+  margin: 5px;
+}
+
+button.btn.btn-danger.ml-1 {
+  font-size: 14px;
+  margin: 5px;
   min-width: initial;
 }
 
 button.sidebarControlBtn.btn.btn-secondary {
   min-width: initial;
   width: initial;
-}
-
-.btn-container {
-  display: flex;
-  flex-direction: row;
 }
 
 #resetButton {
@@ -349,7 +350,7 @@ button.sidebarControlBtn.btn.btn-secondary {
   font-size: 14px;
 }
 
-.add-assess-cont {
+.button-container {
   position: absolute;
   top: 20px;
   left: 0;
@@ -359,6 +360,44 @@ button.sidebarControlBtn.btn.btn-secondary {
   margin: 30px 0;
   z-index: 9;
   background: #292a2b;
+}
+
+.aoi-list-container {
+  max-height: 67vh;
+  overflow: auto;
+}
+
+.carousel-container {
+  padding: 20px 0;
+  margin: 30px 20px;
+  z-index: 9;
+}
+
+#sidebar-view-detial {
+  margin: 20px 0 0 0;
+  border: 1px solid #363c3f;
+}
+
+.accordion .card:first-child {
+  margin-top: 20px;
+}
+
+.accordion .card:last-child {
+  margin-bottom: 20px;
+}
+
+.lg-padding {
+  padding: 50px;
+}
+
+.sm-padding {
+  padding: 0px;
+}
+
+.vis-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .error-text {
@@ -1139,36 +1178,4 @@ a img.logo {
   z-index: 901;
   height: 20px;
   width: 300px;
-}
-
-.test {
-  max-height: 67vh;
-  overflow: scroll;
-}
-
-#sidebar-view-detial {
-  margin: 20px 0 0 0;
-  border: 1px solid #363c3f;
-}
-
-.accordion .card:first-child {
-  margin-top: 20px;
-}
-
-.accordion .card:last-child {
-  margin-bottom: 20px;
-}
-
-.lg-padding {
-  padding: 50px;
-}
-
-.sm-padding {
-  padding: 0px;
-}
-
-.vis-select {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
 }

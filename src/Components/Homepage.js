@@ -30,7 +30,7 @@ const Homepage = ({ setView }) => {
       useCase: "inventory",
     },
     {
-      title: "Evaluate a Set of AOIs",
+      title: "Evaluate a Set of Areas of Interest",
       about: `Analyzing the most common geographically variable inputs requires geospatial intelligence. 
 					This intelligence is stored in spatial data layers that can be accessed through a web browser with 
 					little (to no) technical training. The CPT provides the underlying algorithms to support procedures 
