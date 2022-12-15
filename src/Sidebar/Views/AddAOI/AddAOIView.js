@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ButtonGroup, Container, ToggleButton } from "react-bootstrap";
+import { ButtonGroup, Container, ToggleButton, Button } from "react-bootstrap";
 import AddZip from "./AddZip";
 import AddBoundary from "./AddBoundary";
 import AddDraw from "./AddDraw";
@@ -14,7 +14,7 @@ const AddAOIView = ({
   setHucBoundary,
   hucIDSelected,
   setHucIDSelected,
-  setFilterList,
+  setHucFilterList,
   setReportLink,
   autoDraw,
   stopDraw,
@@ -22,6 +22,7 @@ const AddAOIView = ({
   setAlertText,
   setAlertType,
   setLargeAoiProgress,
+  setClickedProperty,
 }) => {
   const [inputMode, setInputMode] = useState("");
   const [hucList, setHucList] = useState([]);
@@ -66,6 +67,12 @@ const AddAOIView = ({
       });
   };
 
+  const handleBack = () => {
+    if (useCase === "inventory") {
+      setView("selectUseCase");
+    }
+  };
+
   useEffect(() => {
     if (inputMode === "draw") {
       setDrawingMode(true);
@@ -77,6 +84,13 @@ const AddAOIView = ({
 
   return (
     <Container>
+      {useCase === "inventory" && (
+        <Container style={{ marginTop: "-85px", marginBottom: "35px" }}>
+          <Button variant="secondary" onClick={handleBack}>
+            Back
+          </Button>
+        </Container>
+      )}
       <h2 style={{ marginBottom: "20px", marginTop: "-20px" }}>
         {useCase === "inventory" ? "Inventory of Conservation Plans" : ""}
       </h2>
@@ -184,10 +198,11 @@ const AddAOIView = ({
           setHucIDSelected={setHucIDSelected}
           hucBoundary={hucBoundary}
           setHucBoundary={setHucBoundary}
-          setFilterList={setFilterList}
+          setHucFilterList={setHucFilterList}
           setView={setView}
           setAlertText={setAlertText}
           setAlertType={setAlertType}
+          setClickedProperty={setClickedProperty}
         />
       )}
     </Container>

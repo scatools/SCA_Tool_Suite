@@ -21,12 +21,13 @@ const AddBoundary = ({
   setHucIDSelected,
   hucBoundary,
   setHucBoundary,
-  setFilterList,
+  setHucFilterList,
   setView,
   setAlertText,
   setAlertType,
+  setClickedProperty,
 }) => {
-  const aoiList = Object.values(useSelector((state) => state.aoi)) 
+  const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [retrievingOptions, setRetrievingOptions] = useState("");
 
@@ -36,9 +37,10 @@ const AddBoundary = ({
       setAlertText("At least one of the existing boundaries is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      if(aoiList.length < 10){
+      if (aoiList.length < 10) {
         if (hucBoundary) {
           setHucBoundary(false);
+          setClickedProperty(null);
         }
         setAlertText(false);
         const newList = hucList.filter(
@@ -67,7 +69,10 @@ const AddBoundary = ({
         const planArea = calculateArea(newList);
         dispatch(
           input_aoi({
-            name: newList.length === 1 ? newList[0].properties.NAME : "Combined Watershed Area",
+            name:
+              newList.length === 1
+                ? newList[0].properties.NAME
+                : "Combined Watershed Area",
             geometry: newList,
             hexagons: res.data.data,
             rawScore: aggregate(res.data.data, planArea),
@@ -79,12 +84,13 @@ const AddBoundary = ({
         dispatch(setLoader(false));
         setHucNameSelected([]);
         setHucIDSelected([]);
-        setFilterList([]);
+        setHucFilterList([]);
         setView("list");
-      }
-      else{
+      } else {
         setAlertType("danger");
-        setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
         window.setTimeout(() => setAlertText(false), 4000);
       }
     }
@@ -96,9 +102,11 @@ const AddBoundary = ({
       setAlertText("At least one of the existing boundaries is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      if(aoiList.length < 10){
+      if (aoiList.length < 10) {
         if (hucBoundary) {
           setHucBoundary(false);
+
+          setClickedProperty(null);
         }
         setAlertText(false);
         const newList = hucList.filter(
@@ -112,46 +120,48 @@ const AddBoundary = ({
         );
         // console.log(newList);
         newList.forEach(async (feature, idx) => {
-          if(aoiList.length + idx < 10){
-          const data = feature.geometry;
-          // For development on local server
-          // const res = await axios.post('http://localhost:5000/data', { data });
-          // For production on Heroku
-          dispatch(setLoader(true));
-          const res = await axios.post(
-            "https://sca-cpt-backend.herokuapp.com/data",
-            { data }
-          );
-          const planArea = calculateArea([feature]);
-          // Geometry needs to be a list
-          dispatch(
-            input_aoi({
-              name: feature.properties.NAME,
-              geometry: [feature],
-              hexagons: res.data.data,
-              rawScore: aggregate(res.data.data, planArea),
-              scaleScore: getStatus(aggregate(res.data.data, planArea)),
-              speciesName: res.data.speciesName,
-              id: uuid(),
-            })
-          );
-          dispatch(setLoader(false));
-        }
-        else{
-          setAlertType("danger");
-          setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
-          window.setTimeout(() => setAlertText(false), 4000);
-          return;
-        }
+          if (aoiList.length + idx < 10) {
+            const data = feature.geometry;
+            // For development on local server
+            // const res = await axios.post('http://localhost:5000/data', { data });
+            // For production on Heroku
+            dispatch(setLoader(true));
+            const res = await axios.post(
+              "https://sca-cpt-backend.herokuapp.com/data",
+              { data }
+            );
+            const planArea = calculateArea([feature]);
+            // Geometry needs to be a list
+            dispatch(
+              input_aoi({
+                name: feature.properties.NAME,
+                geometry: [feature],
+                hexagons: res.data.data,
+                rawScore: aggregate(res.data.data, planArea),
+                scaleScore: getStatus(aggregate(res.data.data, planArea)),
+                speciesName: res.data.speciesName,
+                id: uuid(),
+              })
+            );
+            dispatch(setLoader(false));
+          } else {
+            setAlertType("danger");
+            setAlertText(
+              "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+            );
+            window.setTimeout(() => setAlertText(false), 4000);
+            return;
+          }
         });
         setHucNameSelected([]);
         setHucIDSelected([]);
-        setFilterList([]);
+        setHucFilterList([]);
         setView("list");
-      }
-      else{
+      } else {
         setAlertType("danger");
-        setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
         window.setTimeout(() => setAlertText(false), 4000);
       }
     }
@@ -201,7 +211,7 @@ const AddBoundary = ({
             setRetrievingOptions(e.value);
             setHucNameSelected([]);
             setHucIDSelected([]);
-            setFilterList([]);
+            setHucFilterList([]);
             if (e.value === "hucBoundary") {
               setHucBoundary(true);
             } else {

@@ -99,6 +99,7 @@ const SelectAOIForAssess = ({
       } else {
         // aoiAssembled is an array for multiple selects
         if (aoiAssembled && aoiAssembled.length > 1) {
+          console.log("RESETTING GOAL WEIGHTS");
           const measures = {
             hab: {
               selected: null,

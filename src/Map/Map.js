@@ -24,7 +24,9 @@ const Map = ({
   editAOI,
   hucBoundary,
   hucIDSelected,
-  filterList,
+  setHucIDSelected,
+  hucFilterList,
+  setHucFilterList,
   mode,
   setMode,
   interactiveLayerIds,
@@ -48,6 +50,8 @@ const Map = ({
   setViewport,
   setInstruction,
   view,
+  clickedProperty,
+  setClickedProperty,
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
   const [selectBasemap, setSelectBasemap] = useState(false);
@@ -61,8 +65,7 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [clickedProperty, setClickedProperty] = useState(null);
-  const [filter, setFilter] = useState(["in", "HUC12", "default"]);
+  const [hucFilter, setHucFilter] = useState(["in", "HUC12", "default"]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
   const [visualizationFilter, setVisualizationFilter] = useState([
     "in",
@@ -110,15 +113,6 @@ const Map = ({
     }
   };
 
-  useEffect(() => {}, [
-    visualizationFillColor,
-    visualizationFilter,
-    visualizationHighlight,
-    visualizationLayer,
-    visualizationOpacity,
-    visualizationSource,
-  ]);
-
   const onClick = (e) => {
     if (
       useCase === "inventory" &&
@@ -133,10 +127,33 @@ const Map = ({
       setCoordinates([undefined, undefined]);
     }
 
-    if (e.features && zoom >= 10) {
+    if (e.features && useCase === "visualization" && zoom >= 10) {
       const featureClicked = e.features[0];
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
+      }
+    }
+
+    if (e.features && hucBoundary) {
+      const featureClicked = e.features[0].properties;
+      if (featureClicked) {
+        setClickedProperty(featureClicked);
+
+        if (
+          featureClicked.HUC12 &&
+          hucIDSelected.includes(featureClicked.HUC12)
+        ) {
+          console.log("TRUE!!!!");
+          console.log(hucFilterList);
+        } else {
+          console.log("FALSE!!!");
+          console.log(hucIDSelected);
+          setHucIDSelected((hucIDSelected) => [
+            ...hucIDSelected,
+            featureClicked.HUC12,
+          ]);
+          setHucFilter(["in", "HUC12", featureClicked.HUC12]);
+        }
       }
     }
   };
@@ -381,18 +398,25 @@ const Map = ({
 
   useEffect(() => {
     if (clickedProperty) {
-      // For HUC-12 boundary layer, same watershed area won't be counted twice
-      if (
-        clickedProperty.HUC12 &&
-        !hucIDSelected.includes(clickedProperty.HUC12)
-      ) {
-        // Array hucIDSelected is stored in a format like [{value: 'xx', label: 'xx'}]
-        hucIDSelected.push({
-          value: clickedProperty.HUC12,
-          label: clickedProperty.HUC12,
-        });
-        setFilter(["in", "HUC12", clickedProperty.HUC12]);
-      }
+      // console.log(clickedProperty.HUC12);
+      // // For HUC-12 boundary layer, same watershed area won't be counted twice
+      // if (
+      //   clickedProperty.HUC12 &&
+      //   hucIDSelected.includes(clickedProperty.HUC12)
+      // ) {
+      //   const indexToRemove = hucIDSelected.indexOf(clickedProperty.HUC12);
+      //   console.log(clickedProperty.HUC12);
+      // } else if (
+      //   clickedProperty.HUC12 &&
+      //   !hucIDSelected.includes(clickedProperty.HUC12)
+      // ) {
+      //   // Array hucIDSelected is stored in a format like [{value: 'xx', label: 'xx'}]
+      //   hucIDSelected.push({
+      //     value: clickedProperty.HUC12,
+      //     label: clickedProperty.HUC12,
+      //   });
+      //   setHucFilter(["in", "HUC12", clickedProperty.HUC12]);
+      // }
 
       // For hex grid layer, same hexagon won't be counted twice
       if (
@@ -418,8 +442,8 @@ const Map = ({
   }, [clickedProperty, hexIDDeselected, hucIDSelected]);
 
   useEffect(() => {
-    filterList.push(filter);
-  }, [filter, filterList]);
+    setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
+  }, [hucFilter]);
 
   useEffect(() => {
     hexFilterList.push(hexFilter);
@@ -628,7 +652,7 @@ const Map = ({
                 "fill-opacity": 0.2,
               }}
             />
-            {filterList.map((filter) => (
+            {hucFilterList.map((filter) => (
               <Layer
                 id={filter[2]}
                 key={filter[2]}

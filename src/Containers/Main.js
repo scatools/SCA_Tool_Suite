@@ -49,7 +49,7 @@ const Main = ({
   const [editAOI, setEditAOI] = useState(false);
   const [hucBoundary, setHucBoundary] = useState(false);
   const [hucIDSelected, setHucIDSelected] = useState([]);
-  const [filterList, setFilterList] = useState([]);
+  const [hucFilterList, setHucFilterList] = useState([]);
   const [hexGrid, setHexGrid] = useState(false);
   const [hexDeselection, setHexDeselection] = useState(false);
   const [hexIDDeselected, setHexIDDeselected] = useState([]);
@@ -62,6 +62,7 @@ const Main = ({
   const [visualizedHexagon, setVisualizedHexagon] = useState(null);
   const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
+  const [clickedProperty, setClickedProperty] = useState(null);
 
   const [scoreTableClass, setScoreTableClass] = useState("score-table");
   const [viewport, setViewport] = useState({
@@ -116,7 +117,7 @@ const Main = ({
         setHucBoundary={setHucBoundary}
         hucIDSelected={hucIDSelected}
         setHucIDSelected={setHucIDSelected}
-        setFilterList={setFilterList}
+        setHucFilterList={setHucFilterList}
         setReportLink={setReportLink}
         customizedMeasures={customizedMeasures}
         setCustomizedMeasures={setCustomizedMeasures}
@@ -148,6 +149,7 @@ const Main = ({
         showTableContainer={showTableContainer}
         setInteractiveLayerIds={setInteractiveLayerIds}
         setScoreTableClass={setScoreTableClass}
+        setClickedProperty={setClickedProperty}
       />
       <div className="content">
         <Button
@@ -174,7 +176,9 @@ const Main = ({
           editAOI={editAOI}
           hucBoundary={hucBoundary}
           hucIDSelected={hucIDSelected}
-          filterList={filterList}
+          setHucIDSelected={setHucIDSelected}
+          hucFilterList={hucFilterList}
+          setHucFilterList={setHucFilterList}
           mode={mode}
           setMode={setMode}
           interactiveLayerIds={interactiveLayerIds}
@@ -198,6 +202,8 @@ const Main = ({
           setViewport={setViewport}
           setInstruction={setInstruction}
           view={view}
+          clickedProperty={clickedProperty}
+          setClickedProperty={setClickedProperty}
         />
       </div>
     </div>

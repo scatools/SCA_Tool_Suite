@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table, Container } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoFilter } from "react-icons/io5";
@@ -30,6 +30,10 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
   const [newPlanLink, setNewPlanLink] = useState(null);
   const [userLikedPlans, setUserLikedPlans] = useState([]);
   const user = useSelector((state) => state.user);
+
+  const handleBack = () => {
+    history.push("/tool");
+  };
 
   const onFilterConfigChange = (newConfig) => {
     setFilterConfig(newConfig);
@@ -189,17 +193,35 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
           </Modal.Body>
         </Modal>
       )}
-      <Button
-        variant="secondary"
-        className="filter-button"
-        onClick={toggleFilterPane}
+      <Container
+        style={{
+          width: "50%",
+          padding: "10px",
+          margin: "0",
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
       >
-        <IoFilter /> &nbsp; Filter
-      </Button>
-      <a className="plan-submission-entry" onClick={fileMissingPlan}>
-        <FcQuestions size={"1.5em"} />
-        File A Missing Plan
-      </a>
+        <Button
+          variant="secondary"
+          className="filter-button"
+          onClick={toggleFilterPane}
+        >
+          <IoFilter /> &nbsp; Filter
+        </Button>
+        <Button
+          variant="secondary"
+          className="filter-button"
+          style={{ marginLeft: "auto" }}
+          onClick={handleBack}
+        >
+          Back
+        </Button>
+        <a className="plan-submission-entry" onClick={fileMissingPlan}>
+          <FcQuestions size={"1.5em"} />
+          File A Missing Plan
+        </a>
+      </Container>
       <div className="plan-table">
         <Table hover borderless striped>
           <thead>

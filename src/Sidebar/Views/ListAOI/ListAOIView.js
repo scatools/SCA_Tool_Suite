@@ -50,6 +50,7 @@ const ListAOIView = ({
 
   useEffect(() => {
     setAoiListLength(aoiList.length);
+    if (aoiList.length === 0) setView("add");
   }, [aoiList]);
 
   useEffect(() => {
@@ -91,9 +92,15 @@ const ListAOIView = ({
           <Button
             variant="primary"
             onClick={() => {
-              dispatch(setUseCase("prioritization"));
-              setShowTableContainer(false);
-              setView("add");
+              if (aoiList && aoiList.length > 1) {
+                dispatch(setUseCase("prioritization"));
+                setShowTableContainer(false);
+                setView("assess");
+              } else {
+                dispatch(setUseCase("prioritization"));
+                setShowTableContainer(false);
+                setView("add");
+              }
             }}
           >
             Compare Multiple AOIs
