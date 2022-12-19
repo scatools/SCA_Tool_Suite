@@ -30,7 +30,6 @@ const AddBoundary = ({
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [retrievingOptions, setRetrievingOptions] = useState("");
-
   const handleSubmitBoundaryAsSingle = async () => {
     if (hucNameSelected.length === 0 && hucIDSelected.length === 0) {
       setAlertType("danger");
@@ -52,7 +51,6 @@ const AddBoundary = ({
               .map((hucID) => hucID.value)
               .includes(feature.properties.HUC12)
         );
-        // console.log(newList);
         const data = {
           type: "MultiPolygon",
           coordinates: newList.map((feature) => feature.geometry.coordinates),
@@ -109,6 +107,7 @@ const AddBoundary = ({
           setClickedProperty(null);
         }
         setAlertText(false);
+        dispatch(setLoader(true));
         const newList = hucList.filter(
           (feature) =>
             hucNameSelected
@@ -125,7 +124,7 @@ const AddBoundary = ({
             // For development on local server
             // const res = await axios.post('http://localhost:5000/data', { data });
             // For production on Heroku
-            dispatch(setLoader(true));
+
             const res = await axios.post(
               "https://sca-cpt-backend.herokuapp.com/data",
               { data }
@@ -143,6 +142,10 @@ const AddBoundary = ({
                 id: uuid(),
               })
             );
+            setHucNameSelected([]);
+            setHucIDSelected([]);
+            setHucFilterList([]);
+            setView("list");
             dispatch(setLoader(false));
           } else {
             setAlertType("danger");
@@ -153,10 +156,6 @@ const AddBoundary = ({
             return;
           }
         });
-        setHucNameSelected([]);
-        setHucIDSelected([]);
-        setHucFilterList([]);
-        setView("list");
       } else {
         setAlertType("danger");
         setAlertText(

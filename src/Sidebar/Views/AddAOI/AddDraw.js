@@ -33,6 +33,7 @@ const AddDraw = ({
   setAlertText,
   setAlertType,
   setLargeAoiProgress,
+  stopDraw,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const AddDraw = ({
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (aoiList.length < 10) {
+        stopDraw();
         dispatch(setLoader(true));
         setAlertText(false);
         const newList = JSON.parse(JSON.stringify(featureList));

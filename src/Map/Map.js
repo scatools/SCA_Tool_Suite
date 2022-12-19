@@ -11,11 +11,13 @@ import shp from "shpjs";
 import Legend from "../Components/Legend";
 import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
+import { feature } from "@turf/turf";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  stopDraw,
   mapRef,
   drawingMode,
   setFeatureList,
@@ -65,7 +67,7 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [hucFilter, setHucFilter] = useState(["in", "HUC12", "default"]);
+  const [hucFilter, setHucFilter] = useState([]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
   const [visualizationFilter, setVisualizationFilter] = useState([
     "in",
@@ -73,6 +75,13 @@ const Map = ({
     "default",
   ]);
   const editorRef = useRef(null);
+  const [hucIDArray, _setHucIDArray] = useState([]);
+
+  const hucIDArrayREF = useRef(hucIDArray);
+  const setHucIDArray = (data) => {
+    hucIDArrayREF.current = data;
+    _setHucIDArray(data);
+  };
 
   const overlaySources = {
     secas: "mapbox://chuck0520.dkcwxuvl",
@@ -138,25 +147,46 @@ const Map = ({
       const featureClicked = e.features[0].properties;
       if (featureClicked) {
         setClickedProperty(featureClicked);
-
         if (
           featureClicked.HUC12 &&
-          hucIDSelected.includes(featureClicked.HUC12)
+          hucIDArrayREF.current.includes(featureClicked.HUC12)
         ) {
-          console.log("TRUE!!!!");
-          console.log(hucFilterList);
+          let removeIndex = hucIDArrayREF.current.indexOf(featureClicked.HUC12);
+          let newHucIDList = [...hucIDArrayREF.current];
+          newHucIDList.splice(removeIndex, 1);
+          setHucIDArray(newHucIDList);
+          let newFilterList = [];
+          let toSetHucIDSelected = [];
+          newHucIDList.forEach((hucID) => {
+            newFilterList.push(["in", "HUC12", hucID]);
+            toSetHucIDSelected.push({ value: hucID, label: hucID });
+          });
+          setHucFilterList([...newFilterList]);
+          setHucIDSelected(toSetHucIDSelected);
         } else {
-          console.log("FALSE!!!");
-          console.log(hucIDSelected);
-          setHucIDSelected((hucIDSelected) => [
-            ...hucIDSelected,
-            featureClicked.HUC12,
-          ]);
-          setHucFilter(["in", "HUC12", featureClicked.HUC12]);
+          let toSetHucIDSelected = [];
+          let toSetHucFilter = [];
+          setHucIDArray([...hucIDArrayREF.current, featureClicked.HUC12]);
+          hucIDArrayREF.current.forEach((hucID) => {
+            toSetHucFilter.push(["in", "HUC12", hucID]);
+            toSetHucIDSelected.push({ value: hucID, label: hucID });
+          });
+          // toSetHucIDSelected.push({
+          //   value: featureClicked.HUC12,
+          //   label: featureClicked.HUC12,
+          // });
+          // toSetHucFilter.push(["in", "HUC12", featureClicked.HUC12]);
+          setHucIDSelected(toSetHucIDSelected);
+          setHucFilterList(toSetHucFilter);
         }
       }
     }
   };
+
+  useEffect(() => {
+    setHucIDArray([]);
+    stopDraw();
+  }, [view]);
 
   const onDelete = () => {
     const selectedIndex = selectedFeatureIndex;
@@ -431,19 +461,19 @@ const Map = ({
       // For visualization layer
 
       if (
-        useCase === "visualization" &&
-        interactiveLayerIds[0] !== "huc" &&
+        interactiveLayerIds[0] === "visualization-layer" &&
         clickedProperty.objectid
       ) {
+        console.log("clicked");
         setVisualizedHexagon(clickedProperty);
         setVisualizationFilter(["in", "OBJECTID", clickedProperty.objectid]);
       }
     }
   }, [clickedProperty, hexIDDeselected, hucIDSelected]);
 
-  useEffect(() => {
-    setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
-  }, [hucFilter]);
+  // useEffect(() => {
+  //   setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
+  // }, [hucFilter]);
 
   useEffect(() => {
     hexFilterList.push(hexFilter);

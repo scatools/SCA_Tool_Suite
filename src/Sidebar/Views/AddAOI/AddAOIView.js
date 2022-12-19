@@ -171,6 +171,7 @@ const AddAOIView = ({
           setAlertText={setAlertText}
           setAlertType={setAlertType}
           setLargeAoiProgress={setLargeAoiProgress}
+          stopDraw={stopDraw}
         />
       )}
 

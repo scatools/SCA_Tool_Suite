@@ -168,6 +168,7 @@ const Main = ({
           {expandIcon}
         </Button>
         <Map
+          stopDraw={stopDraw}
           mapRef={mapRef}
           drawingMode={drawingMode}
           setFeatureList={setFeatureList}
