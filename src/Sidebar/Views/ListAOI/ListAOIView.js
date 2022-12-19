@@ -182,7 +182,7 @@ const ListAOIView = ({
       </ButtonGroup>
     </Container>
     <Container>
-      <Carousel style={{cursor: "pointer"}}>
+      <Carousel style={{cursor: "pointer"}} interval={null}>
         <Carousel.Item
           onClick={() => {
             history.push("/report");
