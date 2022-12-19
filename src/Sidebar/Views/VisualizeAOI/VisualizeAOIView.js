@@ -33,6 +33,11 @@ const VisualizeAOIView = ({
   const user = useSelector((state) => state.user);
   const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
+  const aoi = useSelector((state) => state.aoi);
+  const aoiList = Object.values(aoi).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
 
   const handleClose = () => setShow(false);
 
@@ -157,7 +162,10 @@ const VisualizeAOIView = ({
             dispatch(setUseCase("prioritization"));
             setScoreTableClass("score-table");
             setVisualizationOpacity(0);
-            setView("add");
+            if (aoiList && aoiList.length > 1) {
+              setAssessStep("selectAOI");
+              setView("assess");
+            } else setView("add");
           }}
         >
           Evaluate Multiple AOIs

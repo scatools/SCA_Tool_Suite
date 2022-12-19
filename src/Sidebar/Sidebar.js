@@ -105,6 +105,7 @@ const Sidebar = ({
         <hr className={useCase === "inventory" ? "lg-padding" : "sm-padding"} />
         {view === "selectUseCase" && (
           <UseCaseView
+            setAssessStep={setAssessStep}
             setVisualizationScale={setVisualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}

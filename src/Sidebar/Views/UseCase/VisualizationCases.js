@@ -7,13 +7,15 @@ const VisualizationCases = ({
   setVisualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
-  setVisualizaitonHighlight
+  setVisualizaitonHighlight,
+  setAssessStep,
 }) => {
   const [visualizeStep, setVisualizeStep] = useState("selectScale");
   return (
     <div>
       {visualizeStep === "selectScale" && (
         <SelectVisualizeScale
+          setAssessStep={setAssessStep}
           setView={setView}
           setVisualizeStep={setVisualizeStep}
           setVisualizationScale={setVisualizationScale}

@@ -37,6 +37,7 @@ const ListAOIView = ({
   setAlertText,
   setAlertType,
   setLargeAoiProgress,
+  setAssessStep,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
@@ -95,6 +96,7 @@ const ListAOIView = ({
               if (aoiList && aoiList.length > 1) {
                 dispatch(setUseCase("prioritization"));
                 setShowTableContainer(false);
+                setAssessStep("selectAOI");
                 setView("assess");
               } else {
                 dispatch(setUseCase("prioritization"));
@@ -111,11 +113,23 @@ const ListAOIView = ({
           </Button>
         )}
         {useCase === "visualization" ? (
-          <Button variant="primary" onClick={() => setView("assess")}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAssessStep("selectAOI");
+              setView("assess");
+            }}
+          >
             Visualize AOI {arrowRight}
           </Button>
         ) : useCase === "prioritization" ? (
-          <Button variant="primary" onClick={() => setView("assess")}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAssessStep("selectAOI");
+              setView("assess");
+            }}
+          >
             Evaluate AOIs {arrowRight}
           </Button>
         ) : (
@@ -124,6 +138,7 @@ const ListAOIView = ({
             onClick={() => {
               dispatch(setUseCase("visualization"));
               setShowTableContainer(false);
+              setAssessStep("selectAOI");
               setView("assess");
             }}
           >

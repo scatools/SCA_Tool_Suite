@@ -42,9 +42,9 @@ const SelectAOIForAssess = ({
 
   console.log(aoiAssembled);
 
-  useEffect(() => {
-    setAoiAssembled([]);
-  }, []);
+  // useEffect(() => {
+  //   setAoiAssembled([]);
+  // }, []);
 
   const handleNext = () => {
     if (
@@ -99,41 +99,41 @@ const SelectAOIForAssess = ({
       } else {
         // aoiAssembled is an array for multiple selects
         if (aoiAssembled && aoiAssembled.length > 1) {
-          console.log("RESETTING GOAL WEIGHTS");
-          const measures = {
-            hab: {
-              selected: null,
-              weight: 0,
-            },
-            wq: {
-              selected: null,
-              weight: 0,
-            },
-            lcmr: {
-              selected: null,
-              weight: 0,
-            },
-            cl: {
-              selected: null,
-              weight: 0,
-            },
-            eco: {
-              selected: null,
-              weight: 0,
-            },
-          };
+          // console.log("RESETTING GOAL WEIGHTS");
+          // const measures = {
+          //   hab: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   wq: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   lcmr: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   cl: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   eco: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          // };
 
-          let keys = Object.keys(measures);
-          keys.map((value, index) => {
-            const newValue =
-              Number(measures[value].weight) > 100
-                ? 100
-                : Number(measures[value].weight);
-            console.log(measures[value].selected);
-            dispatch(changeGoalWeights(newValue, value));
-            dispatch(changeMeasures(value, measures[value].selected));
-          });
-          dispatch(setCurrentWeight("No Saved Measures"));
+          // let keys = Object.keys(measures);
+          // keys.map((value, index) => {
+          //   const newValue =
+          //     Number(measures[value].weight) > 100
+          //       ? 100
+          //       : Number(measures[value].weight);
+          //   console.log(measures[value].selected);
+          //   dispatch(changeGoalWeights(newValue, value));
+          //   dispatch(changeMeasures(value, measures[value].selected));
+          // });
+          // dispatch(setCurrentWeight("No Saved Measures"));
           setAssessStep("selectRestoreWeights");
         } else {
           setAlertType("danger");
@@ -160,7 +160,7 @@ const SelectAOIForAssess = ({
           options={aoiList}
           isMulti={false}
           isClearable={true}
-          placeholder="Select areas of interests..."
+          placeholder="Select ab area of interest..."
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
