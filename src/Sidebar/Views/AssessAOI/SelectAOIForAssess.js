@@ -42,9 +42,9 @@ const SelectAOIForAssess = ({
 
   console.log(aoiAssembled);
 
-  useEffect(() => {
-    if (aoiList && aoiList.length > 1) setAoiAssembled([aoiList[0]]);
-  }, []);
+  // useEffect(() => {
+  //   setAoiAssembled([]);
+  // }, []);
 
   const handleNext = () => {
     if (
