@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { Accordion, Button, Card, Container, FormControl, InputGroup, Modal } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { MdDelete, MdEdit, MdMore, MdSave, MdViewList } from "react-icons/md";
 import { HiDocumentReport } from "react-icons/hi";
@@ -12,7 +12,6 @@ import { download } from "shp-write";
 import axios from "axios";
 import { delete_aoi, edit_aoi, setLoader } from "../../../Redux/action";
 import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
-import { WebMercatorViewport } from "react-map-gl";
 
 import {
   squareGrid,
@@ -514,25 +513,29 @@ const SidebarViewDetail = ({
               >
                 <MdEdit /> &nbsp; Edit
               </Button>
-              <Button
-                variant="dark"
-                className="ml-1"
-                onClick={() => {
-                  setActiveTable(aoiSelected);
-                }}
-              >
-                <MdViewList /> &nbsp; Summary
-              </Button>
-              <Button
-                variant="dark"
-                className="ml-1"
-                onClick={() => {
-                  history.push("/report");
-                  setReportLink(true);
-                }}
-              >
-                <HiDocumentReport /> &nbsp; Report
-              </Button>
+              {useCase !== "inventory" && (
+                <Button
+                  variant="dark"
+                  className="ml-1"
+                  onClick={() => {
+                    setActiveTable(aoiSelected);
+                  }}
+                >
+                  <MdViewList /> &nbsp; Summary
+                </Button>
+              )}
+              {useCase !== "inventory" && (
+                <Button
+                  variant="dark"
+                  className="ml-1"
+                  onClick={() => {
+                    history.push("/report");
+                    setReportLink(true);
+                  }}
+                >
+                  <HiDocumentReport /> &nbsp; Report
+                </Button>
+              )}
               <Button
                 variant="dark"
                 className="ml-1"
