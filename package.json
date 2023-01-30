@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dhaiwat10/react-link-preview": "^1.14.1",
+    "@babel/helper-string-parser": "^7.18.10",
     "@emailjs/browser": "^3.4.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "@humanwhocodes/gitignore-to-minimatch": "^1.0.2",
+    "@microlink/react": "^5.5.9",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^7.2.1",
+    "@tmcw/togeojson": "^5.2.2",
     "@turf/area": "^6.0.1",
     "@turf/difference": "^6.5.0",
     "@turf/turf": "^6.5.0",
@@ -52,6 +55,7 @@
     "redux-thunk": "^2.3.0",
     "shp-write": "^0.3.2",
     "shpjs": "^4.0.2",
+    "styled-components": "^5.3.5",
     "survey-react": "^1.9.5"
   },
   "devDependencies": {

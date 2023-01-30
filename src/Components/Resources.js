@@ -3,7 +3,7 @@ import { Container, Jumbotron } from "react-bootstrap";
 import { MdVideoLibrary } from "react-icons/md";
 import { AiFillDatabase } from "react-icons/ai";
 import { SiGitbook, SiGithub } from "react-icons/si";
-import { LinkPreview } from '@dhaiwat10/react-link-preview';
+import Microlink from '@microlink/react';
 
 const Resources = () => {
   return (
@@ -23,9 +23,14 @@ const Resources = () => {
                   <MdVideoLibrary size={25} /> &nbsp;
                   <b>Video Tutorial</b>
                 </div>
-                <LinkPreview 
+                <Microlink
                   url="https://www.quest.fwrc.msstate.edu/sca/help-docs.php"
-                  descriptionLength={300}
+                  size="large"
+                  setData={data => ({
+                    ...data,
+                    title: "Video Tutorial for Strategic Conservation Assessment Tool",
+                    description: "Our tool comes with a tutorial to help the user fully understand the purpose, organization, and details of it."
+                  })}
                 />
               </p>
               <p className="resources-block text-muted">
@@ -33,9 +38,14 @@ const Resources = () => {
                   <AiFillDatabase size={25} /> &nbsp;
                   <b>Data Overview</b>
                 </div>
-                <LinkPreview
+                <Microlink
                   url="https://scholarsjunction.msstate.edu/cfr-publications/4/"
-                  descriptionLength={300}
+                  size="large"
+                  setData={data => ({
+                    ...data,
+                    title: "Conservation Database for the Gulf Coast Region",
+                    image: {url: "https://raw.githubusercontent.com/scatools/SCA_Tool_Suite/main/public/Scholars_Junction_Thumbnail.PNG"}
+                  })}
                 />
               </p>
             </div>
@@ -45,9 +55,15 @@ const Resources = () => {
                   <SiGitbook size={25} /> &nbsp;
                   <b>GitBook Documentation</b>
                 </div>
-                <LinkPreview
+                <Microlink
                   url="https://scatoolsuite.gitbook.io/sca-tool-suite/"
-                  descriptionLength={300}
+                  size="large"
+                  setData={data => ({
+                    ...data,
+                    title: "Documentation for Strategic Conservation Assessment Tool",
+                    description: "This document is a Technical Design Document for the Strategic Conservation Assessment (SCA) Tool.",
+                    image: {url: "https://raw.githubusercontent.com/scatools/SCA_Tool_Suite/main/public/Gitbook_Thumbnail.png"},
+                  })}
                 />
               </p>
               <p className="resources-block text-muted">
@@ -55,10 +71,10 @@ const Resources = () => {
                   <SiGithub size={25} /> &nbsp;
                   <b>GitHub Repository</b>
                 </div>
-                <LinkPreview
+                <Microlink
                   url="https://github.com/scatools/SCA_Tool_Suite"
-                  descriptionLength={300}
-                />
+                  size="large"
+                />  
               </p>
             </div>
           </div>

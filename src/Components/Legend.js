@@ -6,7 +6,7 @@ const Legend = ({ aoiList, aoiColors, visualizationOpacity }) => {
   const legendOpacity = parseInt(visualizationOpacity) / 100;
   const useCase = useSelector((state) => state.usecase.useCase);
   return (
-    <div className="legend">
+    <div id="legend" className="legend">
       {/* {aoiList.length > 0 && visualizationOpacity === 0 && (
      
       )} */}

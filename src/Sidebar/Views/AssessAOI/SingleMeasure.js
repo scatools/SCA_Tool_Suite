@@ -656,7 +656,7 @@ const SingleMeasure = ({
                 delayHide={500}
                 delayUpdate={500}
                 id={measure.value}
-                clickable="true"
+                clickable={true}
                 type="dark"
               >
                 <span>{parse(`${measure.toolTip}`)}</span>
@@ -875,7 +875,7 @@ const SingleMeasure = ({
           </div>
         ))}
       <br />
-      <Container className="add-assess-cont">
+      <Container className="button-container">
         <Button variant="secondary" onClick={handleBack}>
           {arrowIcon} Back
         </Button>

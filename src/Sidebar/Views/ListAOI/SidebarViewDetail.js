@@ -10,7 +10,7 @@ import {
   Modal,
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { MdViewList, MdEdit, MdDelete, MdSave } from "react-icons/md";
+import { MdDelete, MdEdit, MdMore, MdSave, MdViewList } from "react-icons/md";
 import { HiDocumentReport } from "react-icons/hi";
 import { FaFileExport } from "react-icons/fa";
 import { IoFileTrayFull } from "react-icons/io5";
@@ -567,10 +567,28 @@ const SidebarViewDetail = ({
               >
                 <FaFileExport /> &nbsp; Export Shapefile
               </Button>
-
-              {useCase !== "inventory" && (
+              {useCase === "inventory" ? (
+                <Button variant="secondary" className="ml-1" onClick={showPlan}>
+                  <IoFileTrayFull /> &nbsp;{" "}
+                  {showTableContainer ? "Hide" : "View"} Related Plans
+                </Button>
+              ) : (
                 <Button variant="dark" className="ml-1" onClick={showPlan}>
                   <IoFileTrayFull /> &nbsp; Related Conservation Plans
+                </Button>
+              )}
+              {useCase === "inventory" && (
+                <Button
+                  variant="secondary"
+                  className="ml-1"
+                  onClick={() => {
+                    setShowTableContainer(false);
+                    history.push("/");
+                    setView("selectUseCase");
+                    history.push("/tool");
+                  }}
+                >
+                  <MdMore /> &nbsp; More Methods to View Plans
                 </Button>
               )}
               {userLoggedIn && (
@@ -583,31 +601,6 @@ const SidebarViewDetail = ({
               </Button>
             </Container>
 
-            {useCase === "inventory" && (
-              <Container
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginTop: "20px",
-                }}
-              >
-                <Button variant="secondary" onClick={showPlan}>
-                  <IoFileTrayFull /> &nbsp;{" "}
-                  {showTableContainer ? "Hide" : "View"} Related Plans
-                </Button>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    setShowTableContainer(false);
-                    history.push("/");
-                    setView("selectUseCase");
-                    history.push("/tool");
-                  }}
-                >
-                  More Methods to View Plans
-                </Button>
-              </Container>
-            )}
             {editAOI && (
               <>
                 <Accordion>

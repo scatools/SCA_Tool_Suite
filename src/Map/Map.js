@@ -138,6 +138,7 @@ const Map = ({
 
     if (e.features && useCase === "visualization" && zoom >= 10) {
       const featureClicked = e.features[0];
+      console.log(featureClicked);
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
@@ -352,8 +353,8 @@ const Map = ({
           <Layer
             {...visualizationHighlight}
             id="visualization-highlight"
-            filter={visualizationFilter}
             type="fill"
+            filter={visualizationFilter}
           />
         </Source>
         <Legend
@@ -461,8 +462,12 @@ const Map = ({
       // For visualization layer
 
       if (
-        interactiveLayerIds[0] === "visualization-layer" &&
-        clickedProperty.objectid
+        //ANTHONY VERSION
+        // interactiveLayerIds[0] === "visualization-layer" &&
+        // clickedProperty.objectid
+
+        useCase === "visualization" &&
+        clickedProperty.gid
       ) {
         console.log("clicked");
         setVisualizedHexagon(clickedProperty);

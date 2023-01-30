@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
-
 import {
-  squareGrid,
-  intersect,
-  distance,
-  square,
   bbox,
   buffer,
+  distance,
+  intersect,
+  square,
+  squareGrid,
 } from "@turf/turf";
-
 import axios from "axios";
 import {
   calculateArea,

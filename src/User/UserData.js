@@ -9,19 +9,16 @@ import {
   loadUserShapeList,
   loadUserReportList,
 } from "../Redux/action";
+import { calculateArea, aggregate, getStatus } from "../Helper/aggregateHex";
 import {
-  calculateArea,
-  aggregate,
-  getStatus,
-} from "../Helper/aggregateHex";
-import { input_aoi, setLoader, mutipleSavedWeightsDelete, setCurrentWeight } from "../Redux/action";
+  input_aoi,
+  setLoader,
+  mutipleSavedWeightsDelete,
+  setCurrentWeight,
+} from "../Redux/action";
 import "../App.css";
 
-const UserData = ({
-  setReportScript,
-  setAlertText,
-  setAlertType,
-}) => {
+const UserData = ({ setReportScript, setAlertText, setAlertType }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [password, setPassword] = useState(null);
@@ -35,7 +32,6 @@ const UserData = ({
   const [updateInfo, setUpdateInfo] = useState(false);
   const [updatePassword, setUpdatePassword] = useState(false);
   const user = useSelector((state) => state.user);
-
 
   const showUpdateInfo = () => setUpdateInfo(true);
 
@@ -52,7 +48,7 @@ const UserData = ({
     setNewPassword(null);
   };
 
-  const lst = useSelector((state) => state.multipleWeights)
+  const lst = useSelector((state) => state.multipleWeights);
 
   const getUserData = async () => {
     // For development on local server
@@ -374,7 +370,7 @@ const UserData = ({
 
           <hr className="my-4" />
           <p className="h3">Saved Reports</p>
-         
+
           <br />
           {user.reportList.length > 0 ? (
             user.reportList.map((report) => (
@@ -405,28 +401,32 @@ const UserData = ({
           <p className="h3">Saved Measures</p>
           <br />
           {lst.names.length > 1 ? (
-            lst.names.map((value, indx) => (
-              (indx > 0) ?
-              <div className="d-flex mb-2" key={uuid()}>
-                <span className="mr-auto">{value.title}</span>
-                <Button
-                  className="btn btn-primary ml-2"
-                  onClick={(e) =>  {dispatch(setCurrentWeight(value.title)); history.push("/user/measures") } }
-                >
-                  View Measure
-                </Button>
-                <Button
-                  className="btn btn-danger ml-2"
-                  onClick={() => {
-                   dispatch(mutipleSavedWeightsDelete(indx))
-                  }}
-                >
-                  Delete Measure
-                </Button>
-              </div>
-              : 
-              ""
-            ))
+            lst.names.map((value, indx) =>
+              indx > 0 ? (
+                <div className="d-flex mb-2" key={uuid()}>
+                  <span className="mr-auto">{value.title}</span>
+                  <Button
+                    className="btn btn-primary ml-2"
+                    onClick={(e) => {
+                      dispatch(setCurrentWeight(value.title));
+                      history.push("/user/measures");
+                    }}
+                  >
+                    View Measure
+                  </Button>
+                  <Button
+                    className="btn btn-danger ml-2"
+                    onClick={() => {
+                      dispatch(mutipleSavedWeightsDelete(indx));
+                    }}
+                  >
+                    Delete Measure
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )
+            )
           ) : (
             <p className="lead">No measures saved yet!</p>
           )}

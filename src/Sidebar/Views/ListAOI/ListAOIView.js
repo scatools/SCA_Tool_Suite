@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, ButtonGroup, Container, ToggleButton } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+import { Button, ButtonGroup, Carousel, Container, ToggleButton } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
@@ -42,6 +43,7 @@ const ListAOIView = ({
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
+  const history = useHistory();
   let dismissButton = document.querySelector("#dismiss-detail");
   const [aoiListLength, setAoiListLength] = useState(aoiList.length);
 
@@ -82,6 +84,7 @@ const ListAOIView = ({
   }, [view]);
 
   return (
+<<<<<<< HEAD
     <Container className="test">
       <h3 style={{ marginBottom: "20px" }}>
         {useCase === "inventory"
@@ -146,6 +149,37 @@ const ListAOIView = ({
           </Button>
         )}
       </Container>
+=======
+    <>
+    <h3 style={{ marginBottom: "20px" }}>
+      {useCase === "inventory"
+        ? "View Plans for Selected AOI"
+        : "Review/Edit Current AOIs"}
+    </h3>
+    <Container className="button-container">
+      {useCase === "prioritization" ? (
+        <Button variant="secondary" onClick={() => setView("add")}>
+          {arrowLeft} Add More AOIs
+        </Button>
+      ) : (
+        <Button variant="secondary" onClick={() => setView("add")}>
+          {arrowLeft} Add Another AOI
+        </Button>
+      )}
+      {useCase === "visualization" ? (
+        <Button variant="primary" onClick={() => setView("assess")}>
+          Visualize AOI {arrowRight}
+        </Button>
+      ) : useCase === "prioritization" ? (
+        <Button variant="primary" onClick={() => setView("assess")}>
+          Evaluate AOIs {arrowRight}
+        </Button>
+      ) : (
+        <></>
+      )}
+    </Container>
+    <Container className="aoi-list-container">
+>>>>>>> main
       <ButtonGroup toggle className="mb-2 " vertical style={{ width: "100%" }}>
         {aoiList.length > 0 &&
           aoiList.map((aoi) => (
@@ -216,6 +250,88 @@ const ListAOIView = ({
         />
       </ButtonGroup>
     </Container>
+    <Container>
+      <Carousel style={{cursor: "pointer"}} interval={null}>
+        <Carousel.Item
+          onClick={() => {
+            history.push("/report");
+            setReportLink(true);
+          }}
+        >
+          <img
+            className="d-block w-100"
+            src="/Banner_gray.png"
+          />
+          <Carousel.Caption>
+            <h6 style={{margin: 0, padding: 0}}>
+              Would you like to...
+            </h6>
+            <p style={{fontSize: 12, margin: 0, padding: 0}}>
+              Quantify this area of interest according to its conservation values?
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>
+        {useCase !== "visualization" && (<Carousel.Item
+          onClick={() => {
+            dispatch(setUseCase("visualization"));
+            setShowTableContainer(false);
+            setView("assess");
+          }}
+        >
+          <img
+            className="d-block w-100"
+            src="/Banner_gray.png"
+          />
+          <Carousel.Caption>
+            <h6 style={{margin: 0, padding: 0}}>
+              Would you like to...
+            </h6>
+            <p style={{fontSize: 11, margin: 0, padding: 0}}>
+              Visualize this area of interest based on your conservation priorities?
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>)}
+        {useCase !== "prioritization" && (<Carousel.Item
+          onClick={() => {
+            dispatch(setUseCase("prioritization"));
+            setShowTableContainer(false);
+            setView("add");
+          }}
+        >
+          <img
+            className="d-block w-100"
+            src="/Banner_gray.png"
+          />
+          <Carousel.Caption>
+            <h6 style={{margin: 0, padding: 0}}>
+              Would you like to...
+            </h6>
+            <p style={{fontSize: 11, margin: 0, padding: 0}}>
+              Compare multiple areas of interest under certain conservation scenario?
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>)}
+        {useCase !== "inventory" && (<Carousel.Item
+          onClick={() => {
+            setShowTableContainer(!showTableContainer);
+          }}
+        >
+          <img
+            className="d-block w-100"
+            src="/Banner_gray.png"
+          />
+          <Carousel.Caption>
+            <h6 style={{margin: 0, padding: 0}}>
+              Would you like to...
+            </h6>
+            <p style={{fontSize: 12, margin: 0, padding: 0}}>
+              View the list of conservation plans related to this area of interest?
+            </p>
+          </Carousel.Caption>
+        </Carousel.Item>)}
+      </Carousel>
+    </Container>
+    </>
   );
 };
 

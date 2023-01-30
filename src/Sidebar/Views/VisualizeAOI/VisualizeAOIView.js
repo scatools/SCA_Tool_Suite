@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Container, Modal } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
-import {
-  RiFileDownloadLine,
-  RiSaveLine,
-  RiScreenshot2Fill,
-} from "react-icons/ri";
+import html2canvas from 'html2canvas';
+import { RiFileDownloadLine, RiSaveLine, RiScreenshot2Fill } from "react-icons/ri";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheck, faBan } from "@fortawesome/free-solid-svg-icons";
 import { setUseCase } from "../../../Redux/action";
@@ -60,7 +57,21 @@ const VisualizeAOIView = ({
   };
 
   const getImage = async () => {
-    var originalImage = mapRef.current.getMap().getCanvas().toDataURL();
+    // The map canvas only has webgl context and cannot retrive any 2D context
+    var mapCanvas = mapRef.current.getMap().getCanvas();
+    var mapCanvasGL = mapCanvas.getContext("webgl");
+    var legendCanvas = await html2canvas(document.getElementById("legend"));
+
+    var imageCanvas = document.createElement("canvas");
+    imageCanvas.width = mapCanvasGL.drawingBufferWidth;
+    imageCanvas.height = mapCanvasGL.drawingBufferHeight;
+    var imageCanvas2D = imageCanvas.getContext('2d');
+    var legendPositionX = imageCanvas.width - legendCanvas.width;
+    var legendPositionY = imageCanvas.height - legendCanvas.height;
+    imageCanvas2D.drawImage(mapCanvasGL.canvas, 0, 0);
+    imageCanvas2D.drawImage(legendCanvas, legendPositionX, legendPositionY);
+
+    var originalImage = imageCanvas.toDataURL();
     var resizedImage = await resizeImageURL(originalImage, 750, 500);
     setImageURL(originalImage);
     setResizedImageURL(resizedImage);
@@ -107,7 +118,7 @@ const VisualizeAOIView = ({
         <RiScreenshot2Fill /> &nbsp; Export Current View
       </Button>
 
-      <div className="add-assess-cont container">
+      <div className="button-container container">
         <Button
           style={{ float: "left" }}
           variant="secondary"
