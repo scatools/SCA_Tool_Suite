@@ -210,10 +210,6 @@ const AddBoundary = ({
     </Button>
   );
 
-  console.log(hucBoundary);
-  console.log(hucIDSelected);
-  console.log(hucNameSelected);
-
   return (
     <Container className="m-auto" style={{ width: "80%" }}>
       <div>

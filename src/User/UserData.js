@@ -158,7 +158,7 @@ const UserData = ({ setReportScript, setAlertText, setAlertType }) => {
     );
 
     const shapeListArr = [];
-    console.log(response.data.rows);
+
     dispatch(loadUserShapeList(shapeListArr));
     if (response) {
       response.data.rows.map((row) => shapeListArr.push(row.file_name));

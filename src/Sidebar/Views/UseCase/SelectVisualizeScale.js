@@ -21,7 +21,7 @@ const SelectVisualizeScale = ({
     label: item.name,
     value: item.id,
   }));
-  console.log(aoiList);
+
   return (
     <div>
       <h4>I would like to create the visualization within ...</h4>

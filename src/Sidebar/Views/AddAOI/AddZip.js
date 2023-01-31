@@ -52,7 +52,7 @@ const AddZip = ({
     const res = await axios.post("https://sca-cpt-backend.herokuapp.com/data", {
       data,
     });
-    console.log(res.status);
+
     const planArea = calculateArea(newList);
     dispatch(
       input_aoi({
@@ -86,7 +86,6 @@ const AddZip = ({
                   new DOMParser().parseFromString(reader.result, "text/xml")
                 );
                 result = truncate(result3D, { precision: 14, coordinates: 2 });
-                console.log(result);
               } catch (e) {
                 clearTimeout(myTimeoutError);
                 setAlertType("danger");
@@ -104,7 +103,6 @@ const AddZip = ({
                 dispatch(setLoader(false));
                 return;
               });
-              console.log(result);
             }
 
             if (result) {

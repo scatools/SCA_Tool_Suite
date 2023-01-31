@@ -35,12 +35,9 @@ const SelectAOIForAssess = ({
 
   const changeToArray = (obj) => {
     if (typeof obj === "object" && !Array.isArray(obj) && obj !== null) {
-      console.log("CHANGE FROM OBJECT TO ARRAY");
       setAoiAssembled([obj]);
     }
   };
-
-  console.log(aoiAssembled);
 
   // useEffect(() => {
   //   setAoiAssembled([]);
@@ -58,11 +55,9 @@ const SelectAOIForAssess = ({
     } else {
       if (useCase === "visualization") {
         if (aoiAssembled) {
-          console.log(aoi);
           const aoiVisualized = Object.values(aoi).filter(
             (item) => item.id === aoiAssembled[0].value
           );
-          console.log(aoiVisualized);
 
           const hexFeatureList = aoiVisualized[0].hexagons.map((hex) => {
             // Parse all the properties for measure scores to numbers

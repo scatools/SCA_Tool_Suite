@@ -6,7 +6,6 @@ import axios from "axios";
 import "../App.css";
 import { logInUser } from "../Redux/action";
 
-
 const Login = ({
   setLoggedIn,
   setUserLoggedIn,
@@ -18,9 +17,6 @@ const Login = ({
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
-  console.log("this is before dispatch");
-  console.log(user);
 
   const onSubmit = async () => {
     // For development on local server
