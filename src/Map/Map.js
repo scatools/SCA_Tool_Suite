@@ -36,6 +36,8 @@ const Map = ({
   autoDraw,
   hexGrid,
   hexDeselection,
+  setHexIDDeselected,
+  setHexFilterList,
   hexIDDeselected,
   hexFilterList,
   visualizationSource,
@@ -67,7 +69,6 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [hucFilter, setHucFilter] = useState([]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
   const [visualizationFilter, setVisualizationFilter] = useState([
     "in",
@@ -75,13 +76,21 @@ const Map = ({
     "default",
   ]);
   const editorRef = useRef(null);
-  const [hucIDArray, _setHucIDArray] = useState([]);
+
   const [mousePos, setMoustPos] = useState([0, 0]);
 
+  const [hucIDArray, _setHucIDArray] = useState([]);
   const hucIDArrayREF = useRef(hucIDArray);
   const setHucIDArray = (data) => {
     hucIDArrayREF.current = data;
     _setHucIDArray(data);
+  };
+
+  const [hexIDArray, _setHexIDArray] = useState([]);
+  const hexIDArrayREF = useRef(hexIDArray);
+  const setHexIDArray = (data) => {
+    hexIDArrayREF.current = data;
+    _setHexIDArray(data);
   };
 
   const overlaySources = {
@@ -186,10 +195,20 @@ const Map = ({
         }
       }
     }
+
+    //hexIDDeselcted is goal
+    if (e.features && hexGrid && hexDeselection) {
+      const featureClicked = e.features[0].properties;
+      if (featureClicked) {
+        console.log("test");
+        console.log(hexFilterList);
+      }
+    }
   };
 
   useEffect(() => {
     setHucIDArray([]);
+    setHexIDArray([]);
     stopDraw();
   }, [view]);
 
@@ -479,9 +498,9 @@ const Map = ({
   //   setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
   // }, [hucFilter]);
 
-  useEffect(() => {
-    hexFilterList.push(hexFilter);
-  }, [hexFilter, hexFilterList]);
+  // useEffect(() => {
+  //   hexFilterList.push(hexFilter);
+  // }, [hexFilter, hexFilterList]);
 
   useEffect(() => {
     if (zoom >= 10) {
@@ -494,6 +513,8 @@ const Map = ({
       );
     }
   }, [zoom]);
+
+  console.log(hucFilterList);
 
   return (
     <>
