@@ -385,7 +385,7 @@ button.sidebarControlBtn.btn.btn-secondary {
 }
 
 /* Shadow to show depth and that content is scrollable */
-.test.container:before,
+/* .test.container:before,
 .aoi-list-container:before {
   content: "";
   position: fixed;
@@ -405,7 +405,7 @@ button.sidebarControlBtn.btn.btn-secondary {
 
 .test.container:before {
   top: calc(100vh - 70px);
-}
+} */
 
 .carousel-container {
   padding: 20px 0;
@@ -1262,4 +1262,12 @@ a img.logo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+}
+
+.add-more-aois-btn {
+  margin-top: 30px;
+}
+
+.options-accordion .accordion-dropdown:hover {
+  cursor: pointer;
 }

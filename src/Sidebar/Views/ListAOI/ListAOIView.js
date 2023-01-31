@@ -6,18 +6,30 @@ import {
   Carousel,
   Container,
   ToggleButton,
+  Accordion,
+  Card,
 } from "react-bootstrap";
+import OptionsAccordion from "../../../Components/OptionsAccordion";
 import { useSelector } from "react-redux";
 import { WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
+import { MdDelete, MdEdit, MdMore, MdSave, MdViewList } from "react-icons/md";
+import { HiDocumentReport } from "react-icons/hi";
+import { FaFileExport } from "react-icons/fa";
+import { IoFileTrayFull } from "react-icons/io5";
 import SidebarViewDetail from "./SidebarViewDetail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { setUseCase } from "../../../Redux/action";
 
 const arrowLeft = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 const arrowRight = <FontAwesomeIcon icon={faArrowRight} size="lg" />;
+const downArrow = <FontAwesomeIcon icon={faChevronDown} color="white" />;
 
 const ListAOIView = ({
   aoiSelected,
@@ -258,7 +270,7 @@ const ListAOIView = ({
             setView={setView}
           />
         </ButtonGroup>
-        <Carousel style={{ cursor: "pointer" }} interval={null}>
+        {/* <Carousel style={{ cursor: "pointer" }} interval={null}>
           <Carousel.Item
             onClick={() => {
               history.push("/report");
@@ -326,9 +338,9 @@ const ListAOIView = ({
               </Carousel.Caption>
             </Carousel.Item>
           )}
-        </Carousel>
+        </Carousel> */}
+        <OptionsAccordion />
       </Container>
-      <Container></Container>
     </>
   );
 };

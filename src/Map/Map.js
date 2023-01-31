@@ -113,7 +113,6 @@ const Map = ({
   };
 
   const onHover = (e) => {
-    console.log(e.lngLat);
     if (e.lngLat) {
       setMoustPos(e.lngLat);
     }
@@ -250,21 +249,14 @@ const Map = ({
   };
 
   const renderPopup = () => {
-    var aoiBbox = bbox({
-      type: "Feature",
-      geometry: hoveredGeometry,
-    });
-    var popupLongitude = mousePos[0];
-    var popupLatitude = mousePos[1];
-
     // Use HUC12 as the unique property to filter out undesired layer
-    if (popupLongitude && popupLatitude && hoveredProperty.HUC12) {
+    if (mousePos[0] && mousePos[1] && hoveredProperty.HUC12) {
       return (
         <Popup
           tipSize={5}
           anchor="bottom"
-          longitude={popupLongitude}
-          latitude={popupLatitude}
+          longitude={mousePos[0]}
+          latitude={mousePos[1]}
           closeOnClick={false}
           closeButton={false}
           offsetTop={-12}

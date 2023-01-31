@@ -140,6 +140,8 @@ const SelectAOIForAssess = ({
     }
   };
 
+  console.log(aoi);
+
   return (
     <Container>
       {useCase === "visualization" ? (
@@ -187,6 +189,12 @@ const SelectAOIForAssess = ({
           className="basic-multi-select"
           classNamePrefix="select"
         />
+      )}
+      {aoiList && aoiList.length < 2 && (
+        <div className="add-more-aois-btn">
+          <p>You must create at least 2 AOIs</p>
+          <Button onClick={() => setView("add")}>Add More AOIs</Button>
+        </div>
       )}
       <br />
       <Container className="button-container">

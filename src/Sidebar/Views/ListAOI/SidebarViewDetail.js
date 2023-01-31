@@ -539,7 +539,7 @@ const SidebarViewDetail = ({
                   setReportLink(true);
                 }}
               >
-                <HiDocumentReport /> &nbsp; Report
+                <HiDocumentReport /> &nbsp;Single AOI Report
               </Button>
               <Button
                 variant="dark"
