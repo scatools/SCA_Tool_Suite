@@ -1,14 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { Button, Accordion, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { setUseCase } from "../Redux/action";
 
 const downArrow = <FontAwesomeIcon icon={faChevronDown} color="white" />;
 
-const OptionsAccordion = () => {
+const OptionsAccordion = ({
+  view,
+  setView,
+  setAssessStep,
+  setVisualizationOpacity,
+  setShowTableContainer,
+}) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <Accordion className="options-accordion">
@@ -22,73 +32,102 @@ const OptionsAccordion = () => {
         <Accordion.Collapse eventKey="2">
           <Card.Body>
             <Accordion>
-              <Card>
-                <Accordion.Toggle as={Card.Header} eventKey="0">
-                  <div className="accordion-dropdown">
-                    <p>Evaluate Multiple AOIs</p>
-                    <p>{downArrow}</p>
-                  </div>
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey="0">
-                  <Card.Body>
-                    <p className="edit-instructions">
-                      Use your RESTORE council goal weights and data measure
-                      priorities to evaluate multiple areas of interest.
-                    </p>
-
-                    <div className="option-nav-cont">
-                      <Button variant="primary" style={{ height: "40px" }}>
-                        Find Related Plans
-                      </Button>
+              {useCase !== "prioritization" && (
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="0">
+                    <div className="accordion-dropdown">
+                      <p>Evaluate Multiple AOIs</p>
+                      <p>{downArrow}</p>
                     </div>
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              <Card>
-                <Accordion.Toggle as={Card.Header} eventKey="3">
-                  <div className="accordion-dropdown">
-                    <p>Heatmap Visualization</p>
-                    <p>{downArrow}</p>
-                  </div>
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey="3">
-                  <Card.Body>
-                    <p className="edit-instructions">
-                      Use your goal weights and priorities to produce a heatmap
-                      that allows for at-a-glance comparisons over a specific
-                      AOI.
-                    </p>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="0">
+                    <Card.Body>
+                      <p className="edit-instructions">
+                        Use your RESTORE council goal weights and data measure
+                        priorities to evaluate multiple areas of interest.
+                      </p>
 
-                    <div className="option-nav-cont">
-                      <Button variant="primary" style={{ height: "40px" }}>
-                        Visualize AOI Heatmap
-                      </Button>
+                      <div className="option-nav-cont">
+                        <Button
+                          onClick={() => {
+                            setView("list");
+                            dispatch(setUseCase("prioritization"));
+                            setVisualizationOpacity(0);
+                            setShowTableContainer(false);
+                          }}
+                          variant="primary"
+                          style={{ height: "40px" }}
+                        >
+                          Compare AOIs
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              )}
+              {useCase !== "visualization" && (
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="3">
+                    <div className="accordion-dropdown">
+                      <p>Heatmap Visualization</p>
+                      <p>{downArrow}</p>
                     </div>
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              <Card>
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  <div className="accordion-dropdown">
-                    <p>Find Related Conservation Plans</p>
-                    <p>{downArrow}</p>
-                  </div>
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>
-                    <p className="edit-instructions">
-                      Use our conservation plan inventory to track down plans
-                      that are related to your area of interest.
-                    </p>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="3">
+                    <Card.Body>
+                      <p className="edit-instructions">
+                        Use your goal weights and priorities to produce a
+                        heatmap that allows for at-a-glance comparisons over a
+                        specific AOI.
+                      </p>
 
-                    <div className="option-nav-cont">
-                      <Button variant="primary" style={{ height: "40px" }}>
-                        Find Related Plans
-                      </Button>
+                      <div className="option-nav-cont">
+                        <Button
+                          onClick={() => {
+                            dispatch(setUseCase("visualization"));
+                            setAssessStep("selectAOI");
+                            setView("assess");
+                            setVisualizationOpacity(0);
+                            setShowTableContainer(false);
+                          }}
+                          variant="primary"
+                          style={{ height: "40px" }}
+                        >
+                          Visualize AOI Heatmap
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              )}
+              {useCase !== "inventory" && (
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    <div className="accordion-dropdown">
+                      <p>Find Related Conservation Plans</p>
+                      <p>{downArrow}</p>
                     </div>
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <p className="edit-instructions">
+                        Use our extensive inventory of conservation plas to
+                        track down conservation plans related to your AOI from
+                        across the SCA region.
+                      </p>
+                      <div className="option-nav-cont">
+                        <Button
+                          onClick={() => history.push("/plans")}
+                          variant="primary"
+                          style={{ height: "40px" }}
+                        >
+                          Find Related Plans
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              )}
             </Accordion>
           </Card.Body>
         </Accordion.Collapse>

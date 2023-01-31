@@ -188,7 +188,13 @@ const ListAOIView = ({
             Visualize AOI {arrowRight}
           </Button>
         ) : useCase === "prioritization" ? (
-          <Button variant="primary" onClick={() => setView("assess")}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAssessStep("selectAOI");
+              setView("assess");
+            }}
+          >
             Evaluate AOIs {arrowRight}
           </Button>
         ) : (
@@ -339,7 +345,12 @@ const ListAOIView = ({
             </Carousel.Item>
           )}
         </Carousel> */}
-        <OptionsAccordion />
+        <OptionsAccordion
+          view={view}
+          setView={setView}
+          setAssessStep={setAssessStep}
+          setShowTableContainer={setShowTableContainer}
+        />
       </Container>
     </>
   );

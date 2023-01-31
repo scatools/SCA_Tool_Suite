@@ -194,6 +194,7 @@ const Sidebar = ({
             setAssessStep={setAssessStep}
             setView={setView}
             setScoreTableClass={setScoreTableClass}
+            setShowTableContainer={setShowTableContainer}
           />
         )}
       </div>

@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Container, Modal } from "react-bootstrap";
 import RangeSlider from "react-bootstrap-range-slider";
-import html2canvas from 'html2canvas';
-import { RiFileDownloadLine, RiSaveLine, RiScreenshot2Fill } from "react-icons/ri";
+import html2canvas from "html2canvas";
+import {
+  RiFileDownloadLine,
+  RiSaveLine,
+  RiScreenshot2Fill,
+} from "react-icons/ri";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheck, faBan } from "@fortawesome/free-solid-svg-icons";
 import { setUseCase } from "../../../Redux/action";
+import OptionsAccordion from "../../../Components/OptionsAccordion";
 
 const arrowIcon = <FontAwesomeIcon icon={faArrowLeft} size="lg" />;
 
@@ -22,6 +27,7 @@ const VisualizeAOIView = ({
   instruction,
   setAssessStep,
   setView,
+  setShowTableContainer,
   setScoreTableClass,
 }) => {
   const [show, setShow] = useState(false);
@@ -65,7 +71,7 @@ const VisualizeAOIView = ({
     var imageCanvas = document.createElement("canvas");
     imageCanvas.width = mapCanvasGL.drawingBufferWidth;
     imageCanvas.height = mapCanvasGL.drawingBufferHeight;
-    var imageCanvas2D = imageCanvas.getContext('2d');
+    var imageCanvas2D = imageCanvas.getContext("2d");
     var legendPositionX = imageCanvas.width - legendCanvas.width;
     var legendPositionY = imageCanvas.height - legendCanvas.height;
     imageCanvas2D.drawImage(mapCanvasGL.canvas, 0, 0);
@@ -99,7 +105,7 @@ const VisualizeAOIView = ({
   };
 
   return (
-    <Container>
+    <Container className="test container">
       <p>
         <em>{instruction}</em>
       </p>
@@ -161,38 +167,15 @@ const VisualizeAOIView = ({
 
       <Container
         style={{
-          marginTop: "30px",
-          display: "flex",
-          justifyContent: "space-around",
+          marginTop: "60px",
         }}
-        className="view-change-vis"
       >
-        <Button
-          variant="primary"
-          onClick={() => {
-            dispatch(setUseCase("prioritization"));
-            setScoreTableClass("score-table");
-            setVisualizationOpacity(0);
-            if (aoiList && aoiList.length > 1) {
-              setAssessStep("selectAOI");
-              setView("assess");
-            } else setView("add");
-          }}
-        >
-          Evaluate Multiple AOIs
-        </Button>
-
-        <Button
-          variant="primary"
-          onClick={() => {
-            dispatch(setUseCase("inventory"));
-            setScoreTableClass("score-table");
-            setVisualizationOpacity(0);
-            setView("selectUseCase");
-          }}
-        >
-          View Related Plans
-        </Button>
+        <OptionsAccordion
+          setVisualizationOpacity={setVisualizationOpacity}
+          setView={setView}
+          setAssessStep={setAssessStep}
+          setShowTableContainer={setShowTableContainer}
+        />
       </Container>
     </Container>
   );

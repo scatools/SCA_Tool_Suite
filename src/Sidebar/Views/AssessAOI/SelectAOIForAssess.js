@@ -43,6 +43,10 @@ const SelectAOIForAssess = ({
   //   setAoiAssembled([]);
   // }, []);
 
+  useEffect(() => {
+    if (aoiList && aoiList.length > 1) setAoiAssembled([aoiList[0]]);
+  }, []);
+
   const handleNext = () => {
     if (
       aoiAssembled &&
@@ -157,7 +161,7 @@ const SelectAOIForAssess = ({
           options={aoiList}
           isMulti={false}
           isClearable={true}
-          placeholder="Select ab area of interest..."
+          placeholder="Select an area of interest..."
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
