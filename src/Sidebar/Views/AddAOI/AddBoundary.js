@@ -30,6 +30,7 @@ const AddBoundary = ({
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [retrievingOptions, setRetrievingOptions] = useState("");
+
   const handleSubmitBoundaryAsSingle = async () => {
     if (hucNameSelected.length === 0 && hucIDSelected.length === 0) {
       setAlertType("danger");
@@ -154,7 +155,7 @@ const AddBoundary = ({
         });
         setHucNameSelected([]);
         setHucIDSelected([]);
-        // setFilterList([]); NOT DEFINED EHTAN VERSION
+        setHucFilterList([]);
         setView("list");
       } else {
         setAlertType("danger");
@@ -182,6 +183,36 @@ const AddBoundary = ({
     }),
     menuPlacement: "auto",
   };
+
+  const AddSingleButton = (
+    <Button
+      variant="primary"
+      style={{ float: "left" }}
+      onClick={handleSubmitBoundaryAsSingle}
+    >
+      {hucNameSelected && hucNameSelected.length > 1
+        ? "Add as Combined AOI"
+        : hucIDSelected && hucIDSelected.length > 1
+        ? "Add as Combined AOI"
+        : hucBoundary && hucIDSelected && hucIDSelected.length > 1
+        ? "Add as Combined AOI"
+        : "Submit as AOI"}
+    </Button>
+  );
+
+  const AddMultiButton = (
+    <Button
+      variant="primary"
+      style={{ float: "right" }}
+      onClick={handleSubmitBoundaryAsMultiple}
+    >
+      Add as Multiple AOIs
+    </Button>
+  );
+
+  console.log(hucBoundary);
+  console.log(hucIDSelected);
+  console.log(hucNameSelected);
 
   return (
     <Container className="m-auto" style={{ width: "80%" }}>
@@ -286,77 +317,35 @@ const AddBoundary = ({
           />
         </div>
       )}
+      {retrievingOptions === "hucBoundary" && (
+        <div>
+          <p
+            style={{ fontSize: "16px", paddingBottom: "0", marginBottom: "0" }}
+          >
+            To select, CLICK within one or multiple HUC 12 Watershed boundaries.
+          </p>
+          <p
+            style={{ fontSize: "16px", paddingBottom: "0", marginBottom: "0" }}
+          >
+            Once selected, you can add the watersheds as either a single
+            comibned AOI, or as multiple individual AOIs.
+          </p>
+          <p style={{ fontSize: "16px" }}>Click boundary again to deselect.</p>
+        </div>
+      )}
       <br />
       {hucNameSelected && hucNameSelected.length ? (
         <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
+          {AddSingleButton}
+          {hucNameSelected.length > 1 && AddMultiButton}
         </div>
       ) : hucIDSelected && hucIDSelected.length ? (
         <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
-        </div>
-      ) : retrievingOptions === "hucBoundary" ? (
-        <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
+          {AddSingleButton}
+          {hucIDSelected.length > 1 && AddMultiButton}
         </div>
       ) : (
-        <div>
-          <Button
-            disabled
-            variant="secondary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            disabled
-            variant="secondary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
-        </div>
+        <div></div>
       )}
     </Container>
   );
