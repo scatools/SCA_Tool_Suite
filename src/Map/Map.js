@@ -76,6 +76,7 @@ const Map = ({
   ]);
   const editorRef = useRef(null);
   const [hucIDArray, _setHucIDArray] = useState([]);
+  const [mousePos, setMoustPos] = useState([0, 0]);
 
   const hucIDArrayREF = useRef(hucIDArray);
   const setHucIDArray = (data) => {
@@ -112,6 +113,10 @@ const Map = ({
   };
 
   const onHover = (e) => {
+    console.log(e.lngLat);
+    if (e.lngLat) {
+      setMoustPos(e.lngLat);
+    }
     setHovered(true);
     if (e.features) {
       const featureHovered = e.features[0];
@@ -249,18 +254,20 @@ const Map = ({
       type: "Feature",
       geometry: hoveredGeometry,
     });
-    var popupLongitude = (aoiBbox[0] + aoiBbox[2]) / 2;
-    var popupLatitude = (aoiBbox[1] + aoiBbox[3]) / 2;
+    var popupLongitude = mousePos[0];
+    var popupLatitude = mousePos[1];
 
     // Use HUC12 as the unique property to filter out undesired layer
     if (popupLongitude && popupLatitude && hoveredProperty.HUC12) {
       return (
         <Popup
           tipSize={5}
-          anchor="top"
+          anchor="bottom"
           longitude={popupLongitude}
           latitude={popupLatitude}
           closeOnClick={false}
+          closeButton={false}
+          offsetTop={-12}
         >
           <div>
             <p>
