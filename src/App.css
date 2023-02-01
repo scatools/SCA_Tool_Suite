@@ -1072,6 +1072,7 @@ table.table.table-striped:hover {
 .map-table-filter-button {
   position: absolute;
   margin: 5px;
+  top: 0;
 }
 
 #small-filter-pane {
