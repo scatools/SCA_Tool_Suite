@@ -201,10 +201,15 @@ const Map = ({
       const featureClicked = e.features[0].properties;
       if (featureClicked) {
         console.log("test");
-        console.log(hexFilterList);
+        const toHexFilterList = [["in", "objectid", "1753653"]];
+        toHexFilterList.push(["in", "objectid", featureClicked.objectid]);
+        console.log(featureClicked);
+        setHexFilterList(toHexFilterList);
       }
     }
   };
+
+  console.log(hexFilterList);
 
   useEffect(() => {
     setHucIDArray([]);
@@ -269,7 +274,12 @@ const Map = ({
 
   const renderPopup = () => {
     // Use HUC12 as the unique property to filter out undesired layer
-    if (mousePos[0] && mousePos[1] && hoveredProperty.HUC12) {
+    if (
+      mousePos[0] &&
+      mousePos[1] &&
+      hoveredProperty &&
+      hoveredProperty.HUC12
+    ) {
       return (
         <Popup
           tipSize={5}
@@ -513,8 +523,6 @@ const Map = ({
       );
     }
   }, [zoom]);
-
-  console.log(hucFilterList);
 
   return (
     <>
