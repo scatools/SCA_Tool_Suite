@@ -58,7 +58,6 @@ const Map = ({
   setClickedProperty,
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
-  const [showMarker, setShowMarker] = useState(false);
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [selectOverlay, setSelectOverlay] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -136,11 +135,6 @@ const Map = ({
     }
   };
 
-  useEffect(() => {
-    console.log(coordinates);
-    coordinates[0] !== undefined ? setShowMarker(true) : setShowMarker(false);
-  }, [coordinates]);
-
   const onClick = (e) => {
     if (
       useCase === "inventory" &&
@@ -150,10 +144,8 @@ const Map = ({
       !hexGrid
     ) {
       setCoordinates(e.lngLat);
-      setShowTableContainer(true);
     } else if (useCase === "inventory" && aoiSelected !== false) {
       setCoordinates([undefined, undefined]);
-      setShowMarker(false);
     }
 
     if (e.features && useCase === "visualization" && zoom >= 10) {
