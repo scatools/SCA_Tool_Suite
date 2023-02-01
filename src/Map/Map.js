@@ -199,17 +199,46 @@ const Map = ({
     //hexIDDeselcted is goal
     if (e.features && hexGrid && hexDeselection) {
       const featureClicked = e.features[0].properties;
+
       if (featureClicked) {
-        console.log("test");
-        const toHexFilterList = [["in", "objectid", "1753653"]];
-        toHexFilterList.push(["in", "objectid", featureClicked.objectid]);
-        console.log(featureClicked);
-        setHexFilterList(toHexFilterList);
+        setClickedProperty(featureClicked);
+        if (
+          featureClicked.objectid &&
+          hexIDArrayREF.current.includes(featureClicked.objectid)
+        ) {
+          let removeIndex = hexIDArrayREF.current.indexOf(
+            featureClicked.objectid
+          );
+          let newHexIDList = [...hexIDArrayREF.current];
+          newHexIDList.splice(removeIndex, 1);
+          setHexIDArray(newHexIDList);
+          let newFilterList = [];
+          let toSetHexIDDeselected = [];
+          newHexIDList.forEach((hexID) => {
+            newFilterList.push(["in", "objectid", hexID]);
+            toSetHexIDDeselected.push(hexID);
+          });
+          setHexFilterList([...newFilterList]);
+          setHexIDDeselected(toSetHexIDDeselected);
+        } else {
+          let toSetHexIDDeselected = [];
+          let toSetHexFilter = [];
+          setHexIDArray([...hexIDArrayREF.current, featureClicked.objectid]);
+          hexIDArrayREF.current.forEach((hexID) => {
+            toSetHexFilter.push(["in", "objectid", hexID]);
+            toSetHexIDDeselected.push(hexID);
+          });
+          setHexIDDeselected(toSetHexIDDeselected);
+          setHexFilterList(toSetHexFilter);
+        }
+        // console.log("test");
+        // const toHexFilterList = [["in", "objectid", "default"]];
+        // toHexFilterList.push(["in", "objectid", featureClicked.objectid]);
+        // console.log(featureClicked);
+        // setHexFilterList(toHexFilterList);
       }
     }
   };
-
-  console.log(hexFilterList);
 
   useEffect(() => {
     setHucIDArray([]);
