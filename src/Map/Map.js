@@ -144,6 +144,7 @@ const Map = ({
       !hexGrid
     ) {
       setCoordinates(e.lngLat);
+      setShowTableContainer(true);
     } else if (useCase === "inventory" && aoiSelected !== false) {
       setCoordinates([undefined, undefined]);
     }
