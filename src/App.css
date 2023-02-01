@@ -1036,6 +1036,14 @@ a img.logo {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
+.table-container-wrapper:hover {
+  cursor: move;
+}
+
+table.table.table-striped:hover {
+  cursor: default;
+}
+
 #map-table-container {
   background-color: none;
 }

@@ -66,9 +66,6 @@ const TableContainer = ({
     if (showTableContainer) {
       setTableDetails(response.data.data);
       setTotalCount(response.data.totalRowCount);
-      if (response.data.totalRowCount === 0) {
-        setShowTableContainer(false);
-      }
     }
   };
 
@@ -97,9 +94,6 @@ const TableContainer = ({
     if (showTableContainer) {
       setTableDetails(response.data.data);
       setTotalCount(response.data.totalRowCount);
-      if (response.data.totalRowCount === 0) {
-        setShowTableContainer(false); //Change this to show when no plans are available
-      }
     }
   };
 
