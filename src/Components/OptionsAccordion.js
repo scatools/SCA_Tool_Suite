@@ -20,8 +20,6 @@ const OptionsAccordion = ({
   const dispatch = useDispatch();
   const history = useHistory();
 
-  console.log(aoi);
-
   return (
     <Accordion className="options-accordion">
       <Card>

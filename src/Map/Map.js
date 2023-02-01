@@ -111,6 +111,8 @@ const Map = ({
     "#68217a",
   ];
 
+  console.log(interactiveLayerIds);
+
   const aoiFullList = Object.values(useSelector((state) => state.aoi));
 
   const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
@@ -121,6 +123,8 @@ const Map = ({
     return isDragging
       ? "grabbing"
       : isHovering && view !== "list"
+      ? "crosshair"
+      : isHovering && hexDeselection
       ? "crosshair"
       : "default";
   };
@@ -484,55 +488,6 @@ const Map = ({
     visualizationOpacity,
     setInteractiveLayerIds,
   ]);
-
-  useEffect(() => {
-    if (clickedProperty) {
-      // console.log(clickedProperty.HUC12);
-      // // For HUC-12 boundary layer, same watershed area won't be counted twice
-      // if (
-      //   clickedProperty.HUC12 &&
-      //   hucIDSelected.includes(clickedProperty.HUC12)
-      // ) {
-      //   const indexToRemove = hucIDSelected.indexOf(clickedProperty.HUC12);
-      //   console.log(clickedProperty.HUC12);
-      // } else if (
-      //   clickedProperty.HUC12 &&
-      //   !hucIDSelected.includes(clickedProperty.HUC12)
-      // ) {
-      //   // Array hucIDSelected is stored in a format like [{value: 'xx', label: 'xx'}]
-      //   hucIDSelected.push({
-      //     value: clickedProperty.HUC12,
-      //     label: clickedProperty.HUC12,
-      //   });
-      //   setHucFilter(["in", "HUC12", clickedProperty.HUC12]);
-      // }
-
-      // For hex grid layer, same hexagon won't be counted twice
-      if (
-        clickedProperty.objectid &&
-        !hexIDDeselected.includes(clickedProperty.objectid)
-      ) {
-        // Array hexIDDeselected is stored in a simple array format
-        hexIDDeselected.push(clickedProperty.objectid);
-        setHexFilter(["in", "objectid", clickedProperty.objectid]);
-      }
-
-      // For visualization layer
-
-      if (
-        //ANTHONY VERSION
-        // interactiveLayerIds[0] === "visualization-layer" &&
-        // clickedProperty.objectid
-
-        useCase === "visualization" &&
-        clickedProperty.gid
-      ) {
-        console.log("clicked");
-        setVisualizedHexagon(clickedProperty);
-        setVisualizationFilter(["in", "OBJECTID", clickedProperty.objectid]);
-      }
-    }
-  }, [clickedProperty, hexIDDeselected, hucIDSelected]);
 
   // useEffect(() => {
   //   setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
