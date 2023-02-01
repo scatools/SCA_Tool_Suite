@@ -98,7 +98,7 @@ const TableContainer = ({
       setTableDetails(response.data.data);
       setTotalCount(response.data.totalRowCount);
       if (response.data.totalRowCount === 0) {
-        setShowTableContainer(false);
+        setShowTableContainer(false); //Change this to show when no plans are available
       }
     }
   };

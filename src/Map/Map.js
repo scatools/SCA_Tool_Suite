@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import MapGL, { Source, Layer, Popup } from "react-map-gl";
+import MapGL, { Source, Layer, Popup, Marker } from "react-map-gl";
 import { Editor, EditingMode } from "react-map-gl-draw";
 import MultiSwitch from "react-multi-switch-toggle";
 import { Button } from "react-bootstrap";
@@ -58,6 +58,7 @@ const Map = ({
   setClickedProperty,
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
+  const [showMarker, setShowMarker] = useState(false);
   const [selectBasemap, setSelectBasemap] = useState(false);
   const [selectOverlay, setSelectOverlay] = useState(false);
   const [basemapStyle, setBasemapStyle] = useState("light-v10");
@@ -135,6 +136,11 @@ const Map = ({
     }
   };
 
+  useEffect(() => {
+    console.log(coordinates);
+    coordinates[0] !== undefined ? setShowMarker(true) : setShowMarker(false);
+  }, [coordinates]);
+
   const onClick = (e) => {
     if (
       useCase === "inventory" &&
@@ -147,6 +153,7 @@ const Map = ({
       setShowTableContainer(true);
     } else if (useCase === "inventory" && aoiSelected !== false) {
       setCoordinates([undefined, undefined]);
+      setShowMarker(false);
     }
 
     if (e.features && useCase === "visualization" && zoom >= 10) {
@@ -231,11 +238,6 @@ const Map = ({
           setHexIDDeselected(toSetHexIDDeselected);
           setHexFilterList(toSetHexFilter);
         }
-        // console.log("test");
-        // const toHexFilterList = [["in", "objectid", "default"]];
-        // toHexFilterList.push(["in", "objectid", featureClicked.objectid]);
-        // console.log(featureClicked);
-        // setHexFilterList(toHexFilterList);
       }
     }
   };
@@ -467,6 +469,8 @@ const Map = ({
       viewport.zoom >= 10
     ) {
       setInteractiveLayerIds(["visualization-layer"]);
+    } else if (!drawingMode && useCase === "inventory") {
+      setInteractiveLayerIds(["sca-boundary"]);
     } else if (!drawingMode && useCase !== "visualization") {
       setInteractiveLayerIds([]);
     }
@@ -768,6 +772,21 @@ const Map = ({
           visualizationFillColor &&
           visualizationOpacity > 0 &&
           renderVisualization()}
+
+        {coordinates[0] && (
+          <Marker
+            longitude={coordinates[0]}
+            latitude={coordinates[1]}
+            offsetTop={-26}
+            offsetLeft={-15}
+          >
+            <img
+              style={{ width: "60%" }}
+              alt="pin for marker"
+              src="https://img.icons8.com/color/48/000000/marker.png"
+            />
+          </Marker>
+        )}
       </MapGL>
     </>
   );
