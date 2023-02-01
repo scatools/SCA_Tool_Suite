@@ -15,10 +15,12 @@ const OptionsAccordion = ({
   setVisualizationOpacity,
   setShowTableContainer,
 }) => {
-  const aoiList = Object.values(useSelector((state) => state.aoi));
+  const aoi = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  console.log(aoi);
 
   return (
     <Accordion className="options-accordion">
@@ -50,10 +52,12 @@ const OptionsAccordion = ({
                       <div className="option-nav-cont">
                         <Button
                           onClick={() => {
-                            setView("list");
+                            setShowTableContainer(false);
+                            Object.keys(aoi).length > 1
+                              ? setView("list")
+                              : setView("add");
                             dispatch(setUseCase("prioritization"));
                             setVisualizationOpacity(0);
-                            setShowTableContainer(false);
                           }}
                           variant="primary"
                           style={{ height: "40px" }}

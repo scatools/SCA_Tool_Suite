@@ -118,7 +118,11 @@ const Map = ({
   );
 
   const getCursor = ({ isHovering, isDragging }) => {
-    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
+    return isDragging
+      ? "grabbing"
+      : isHovering && view !== "list"
+      ? "crosshair"
+      : "default";
   };
 
   const onHover = (e) => {
@@ -766,20 +770,23 @@ const Map = ({
           visualizationOpacity > 0 &&
           renderVisualization()}
 
-        {coordinates[0] && (
-          <Marker
-            longitude={coordinates[0]}
-            latitude={coordinates[1]}
-            offsetTop={-26}
-            offsetLeft={-15}
-          >
-            <img
-              style={{ width: "60%" }}
-              alt="pin for marker"
-              src="https://img.icons8.com/color/48/000000/marker.png"
-            />
-          </Marker>
-        )}
+        {coordinates[0] &&
+          useCase === "inventory" &&
+          view !== "list" &&
+          view !== "add" && (
+            <Marker
+              longitude={coordinates[0]}
+              latitude={coordinates[1]}
+              offsetTop={-26}
+              offsetLeft={-15}
+            >
+              <img
+                style={{ width: "60%" }}
+                alt="pin for marker"
+                src="https://img.icons8.com/color/48/000000/marker.png"
+              />
+            </Marker>
+          )}
       </MapGL>
     </>
   );
