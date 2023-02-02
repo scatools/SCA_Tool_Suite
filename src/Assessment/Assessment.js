@@ -447,7 +447,6 @@ const Assessment = ({
       console.error(e);
     }
   };
-  console.log(useCase);
   useEffect(() => {
     if (!assessment.hasOwnProperty("aoi")) {
       return <Redirect to="/" />;

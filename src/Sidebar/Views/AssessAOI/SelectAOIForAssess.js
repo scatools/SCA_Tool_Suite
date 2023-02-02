@@ -144,8 +144,6 @@ const SelectAOIForAssess = ({
     }
   };
 
-  console.log(aoi);
-
   return (
     <Container>
       {useCase === "visualization" ? (

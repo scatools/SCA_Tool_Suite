@@ -157,7 +157,6 @@ const Map = ({
 
     if (e.features && useCase === "visualization" && zoom >= 10) {
       const featureClicked = e.features[0];
-      console.log(featureClicked);
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
