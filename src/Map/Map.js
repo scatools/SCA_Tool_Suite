@@ -111,8 +111,6 @@ const Map = ({
     "#68217a",
   ];
 
-  console.log(interactiveLayerIds);
-
   const aoiFullList = Object.values(useSelector((state) => state.aoi));
 
   const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
