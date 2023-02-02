@@ -979,14 +979,20 @@ a img.logo {
   align-items: stretch;
 }
 
-.filter-button {
+.table-button-container {
+  position: relative;
+  display: flex;
   margin: 20px 20px 0px;
+}
+
+.table-button {
+  margin-right: 20px;
 }
 
 .plan-submission-entry {
   position: absolute;
-  right: 10px;
-  margin: 25px 25px 0px;
+  right: 0px;
+  margin: auto 25px 0px;
   cursor: pointer;
 }
 
@@ -1069,10 +1075,12 @@ table.table.table-striped:hover {
   width: 400px;
 }
 
-.map-table-filter-button {
-  position: absolute;
+.map-table-button-container {
+  position: relative;
+  display: flex;
   margin: 5px;
-  top: 0;
+  margin-right: 5% !important;
+  justify-content: space-between;
 }
 
 #small-filter-pane {

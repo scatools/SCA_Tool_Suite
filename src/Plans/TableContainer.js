@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, CloseButton } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { CSVLink } from "react-csv";
+import { IoFilter } from "react-icons/io5";
+import { GoDesktopDownload, GoInfo } from "react-icons/go";
+import ReactTooltip from "react-tooltip";
+import Draggable from "react-draggable";
 import BeatLoader from "react-spinners/BeatLoader";
 import axios from "axios";
 import FilterPane from "./FilterPane";
 import CustomPagination from "./CustomPagination";
-import ReactTooltip from "react-tooltip";
-import { GoInfo } from "react-icons/go";
-import Draggable from "react-draggable";
 
 const TableContainer = ({
   coordinates,
@@ -18,6 +20,7 @@ const TableContainer = ({
   view,
 }) => {
   const history = useHistory();
+  const [entireTable, setEntireTable] = useState();
   const [tableDetails, setTableDetails] = useState();
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +31,15 @@ const TableContainer = ({
     time: "All",
     priority: "All",
   });
+
+  const csvHeader = [
+    {label: "Plan Name", key: "plan_name"},
+    {label: "Primary Planning Method", key: "planning_method"},
+    {label: "Plan Time Frame", key : "plan_timeframe"},
+    {label: "Agency Lead", key: "agency_lead"},
+    {label: "Related State", key: "related_state"},
+    {label: "Original Document", key: "plan_url"}
+  ];
 
   const aoiList = Object.values(useSelector((state) => state.aoi)).filter(
     (aoi) => aoi.id === aoiSelected
@@ -66,6 +78,23 @@ const TableContainer = ({
     if (showTableContainer) {
       setTableDetails(response.data.data);
       setTotalCount(response.data.totalRowCount);
+      if (response.data.totalRowCount === 0) {
+        setShowTableContainer(false);
+      };
+      // Get entire table for download
+      const download = await axios.get(
+        `https://sca-cpt-backend.herokuapp.com/plan`,
+        {
+          params: {
+            start: 0,
+            end: response.data.totalRowCount,
+            state: filterConfig.state,
+            time: filterConfig.time,
+            priority: filterConfig.priority,
+          },
+        }
+      );
+      setEntireTable(download.data.data);
     }
   };
 
@@ -94,6 +123,23 @@ const TableContainer = ({
     if (showTableContainer) {
       setTableDetails(response.data.data);
       setTotalCount(response.data.totalRowCount);
+      if (response.data.totalRowCount === 0) {
+        setShowTableContainer(false);
+      };
+      // Get entire table for download
+      const download = await axios.get(
+        `https://sca-cpt-backend.herokuapp.com/plan`,
+        {
+          params: {
+            start: 0,
+            end: response.data.totalRowCount,
+            state: filterConfig.state,
+            time: filterConfig.time,
+            priority: filterConfig.priority,
+          },
+        }
+      );
+      setEntireTable(download.data.data);
     }
   };
 
@@ -122,13 +168,20 @@ const TableContainer = ({
               size="small"
             />
           )}
-          <div className="map-table-filter-button">
-            <Button variant="secondary" onClick={toggleFilterPane}>
-              Filter
-            </Button>
-          </div>
           <div id="map-table-container">
             <CloseButton onClick={() => setShowTableContainer(false)} />
+            {!!tableDetails && !!entireTable && !loadingTable && (
+              <div className="map-table-button-container">
+                <Button variant="secondary" onClick={toggleFilterPane}>
+                  <IoFilter /> &nbsp; Filter
+                </Button>
+                <CSVLink data={entireTable} filename="Related Plans.csv" headers={csvHeader}>
+                  <Button variant="secondary">
+                    <GoDesktopDownload /> &nbsp; Download
+                  </Button>
+                </CSVLink>
+              </div>
+            )}
             <Table hover borderless striped>
               <thead>
                 <tr style={{ borderBottom: "1px solid black" }}>
