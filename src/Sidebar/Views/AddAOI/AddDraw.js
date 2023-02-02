@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import { Button, Container, FormControl, InputGroup } from "react-bootstrap";
-import { bbox, buffer, distance, intersect, square, squareGrid } from "@turf/turf";
+import {
+  bbox,
+  buffer,
+  distance,
+  intersect,
+  square,
+  squareGrid,
+} from "@turf/turf";
 import axios from "axios";
-import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
+import {
+  calculateArea,
+  aggregate,
+  getStatus,
+} from "../../../Helper/aggregateHex";
 import { v4 as uuid } from "uuid";
 import { setLoader, input_aoi } from "../../../Redux/action";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,11 +26,12 @@ const AddDraw = ({
   setReportLink,
   autoDraw,
   timeoutError,
-  timeoutHandler,
+  setHucBoundary,
   setView,
   setAlertText,
   setAlertType,
   setLargeAoiProgress,
+  stopDraw,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
@@ -41,6 +53,7 @@ const AddDraw = ({
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
       if (aoiList.length < 10) {
+        stopDraw();
         dispatch(setLoader(true));
         setAlertText(false);
         const newList = JSON.parse(JSON.stringify(featureList));
@@ -113,7 +126,6 @@ const AddDraw = ({
             )
           );
 
-          console.log("Size of each box side: " + cellSide);
           const options = { units: "kilometers" };
           const grid = squareGrid(bufferedBox, cellSide, options);
 
@@ -126,7 +138,7 @@ const AddDraw = ({
               const newProgress = oldProgress + 100 / maxProgress;
               return newProgress;
             });
-            console.log(res);
+
             // clearTimeout(myTimeoutError);
             return res;
           };
@@ -143,7 +155,7 @@ const AddDraw = ({
           const overlapArray = overlapping.map((square) => {
             return intersect(data, square).geometry;
           });
-          console.log("Number of requests: " + overlapArray.length);
+
           maxProgress = overlapArray.length;
 
           const getAllAoiInfo = async (arrayOfAOIs) => {
@@ -156,8 +168,6 @@ const AddDraw = ({
           };
 
           getAllAoiInfo(overlapArray).then((lotsOfObjects) => {
-            console.log("lotsOfObjects");
-            console.log(lotsOfObjects);
             let speciesNames = [];
             let allData = [];
 
@@ -194,9 +204,6 @@ const AddDraw = ({
                 ])
             );
 
-            console.log("All The Data with no Dups");
-            console.log(allData);
-
             dispatch(
               input_aoi({
                 name: drawData,
@@ -232,6 +239,8 @@ const AddDraw = ({
     }
   };
 
+  setHucBoundary(false);
+
   return (
     <Container className="mt-3">
       {timeoutError && <TimeoutError />}
@@ -258,36 +267,29 @@ const AddDraw = ({
       </InputGroup>
       <hr />
       <Container>
-        <Button
-          variant="warning"
-          style={{ float: "left" }}
-          onClick={() => {
-            setDrawingMode(true);
-            autoDraw();
-            setAoiSelected(false);
-            setReportLink(false);
-          }}
-        >
-          Draw a New Shape
-        </Button>
-
-        {drawData && featureList.length !== 0 ? (
+        {featureList.length > 0 && (
           <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmit}
+            variant="warning"
+            style={{ float: "left" }}
+            onClick={() => {
+              setDrawingMode(true);
+              autoDraw();
+              setAoiSelected(false);
+              setReportLink(false);
+            }}
           >
-            Review AOI
-          </Button>
-        ) : (
-          <Button
-            variant="secondary"
-            style={{ float: "right" }}
-            onClick={handleSubmit}
-          >
-            Review AOI
+            Draw a New Shape
           </Button>
         )}
+        <Button
+          variant={
+            drawData && featureList.length !== 0 ? "primary" : "secondary"
+          }
+          style={{ float: "right" }}
+          onClick={handleSubmit}
+        >
+          Create AOI
+        </Button>
       </Container>
       <hr />
     </Container>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import MapGL, { Source, Layer, Popup } from "react-map-gl";
+import MapGL, { Source, Layer, Popup, Marker } from "react-map-gl";
 import { Editor, EditingMode } from "react-map-gl-draw";
 import MultiSwitch from "react-multi-switch-toggle";
 import { Button } from "react-bootstrap";
@@ -11,11 +11,13 @@ import shp from "shpjs";
 import Legend from "../Components/Legend";
 import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
+import { feature } from "@turf/turf";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
 
 const Map = ({
+  stopDraw,
   mapRef,
   drawingMode,
   setFeatureList,
@@ -24,7 +26,9 @@ const Map = ({
   editAOI,
   hucBoundary,
   hucIDSelected,
-  filterList,
+  setHucIDSelected,
+  hucFilterList,
+  setHucFilterList,
   mode,
   setMode,
   interactiveLayerIds,
@@ -32,6 +36,8 @@ const Map = ({
   autoDraw,
   hexGrid,
   hexDeselection,
+  setHexIDDeselected,
+  setHexFilterList,
   hexIDDeselected,
   hexFilterList,
   visualizationSource,
@@ -48,6 +54,8 @@ const Map = ({
   setViewport,
   setInstruction,
   view,
+  clickedProperty,
+  setClickedProperty,
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
   const [selectBasemap, setSelectBasemap] = useState(false);
@@ -61,8 +69,6 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [clickedProperty, setClickedProperty] = useState(null);
-  const [filter, setFilter] = useState(["in", "HUC12", "default"]);
   const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
   const [visualizationFilter, setVisualizationFilter] = useState([
     "in",
@@ -70,6 +76,22 @@ const Map = ({
     "default",
   ]);
   const editorRef = useRef(null);
+
+  const [mousePos, setMoustPos] = useState([0, 0]);
+
+  const [hucIDArray, _setHucIDArray] = useState([]);
+  const hucIDArrayREF = useRef(hucIDArray);
+  const setHucIDArray = (data) => {
+    hucIDArrayREF.current = data;
+    _setHucIDArray(data);
+  };
+
+  const [hexIDArray, _setHexIDArray] = useState([]);
+  const hexIDArrayREF = useRef(hexIDArray);
+  const setHexIDArray = (data) => {
+    hexIDArrayREF.current = data;
+    _setHexIDArray(data);
+  };
 
   const overlaySources = {
     secas: "mapbox://chuck0520.dkcwxuvl",
@@ -96,10 +118,19 @@ const Map = ({
   );
 
   const getCursor = ({ isHovering, isDragging }) => {
-    return isDragging ? "grabbing" : isHovering ? "crosshair" : "default";
+    return isDragging
+      ? "grabbing"
+      : isHovering && view !== "list"
+      ? "crosshair"
+      : isHovering && hexDeselection
+      ? "crosshair"
+      : "default";
   };
 
   const onHover = (e) => {
+    if (e.lngLat) {
+      setMoustPos(e.lngLat);
+    }
     setHovered(true);
     if (e.features) {
       const featureHovered = e.features[0];
@@ -111,31 +142,17 @@ const Map = ({
   };
 
   useEffect(() => {
-    console.log("VISUALIZATION VARIABLES: ");
-    console.log("LAYER: ");
-    console.log(visualizationLayer);
-    console.log("OPACITY: ");
-    console.log(visualizationOpacity);
-    console.log("SOURCE: ");
-    console.log(visualizationSource);
-    console.log("FILL COLOR: ");
-    console.log(visualizationFillColor);
-    console.log("FILTER: ");
-    console.log(visualizationFilter);
-    console.log("HIGHLIGHT: ");
-    console.log(visualizationHighlight);
-  }, [
-    visualizationFillColor,
-    visualizationFilter,
-    visualizationHighlight,
-    visualizationLayer,
-    visualizationOpacity,
-    visualizationSource,
-  ]);
+    let testCase;
+    if (clickedProperty) {
+      testCase = clickedProperty.OBJECTID || clickedProperty.objectid;
+    }
+    if (useCase === "visualization" && testCase) {
+      console.log(clickedProperty);
+      setVisualizedHexagon(clickedProperty);
+    }
+  }, [clickedProperty]);
 
   const onClick = (e) => {
-    console.log("click");
-    console.log(interactiveLayerIds);
     if (
       useCase === "inventory" &&
       view !== "list" &&
@@ -149,16 +166,97 @@ const Map = ({
       setCoordinates([undefined, undefined]);
     }
 
-    if (e.features) {
+    if (e.features && useCase === "visualization" && zoom >= 10) {
       const featureClicked = e.features[0];
-      console.log(featureClicked);
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
-        console.log("clicked");
-        console.log(e.features);
+      }
+      console.log(clickedProperty);
+    }
+
+    if (e.features && hucBoundary) {
+      const featureClicked = e.features[0].properties;
+      if (featureClicked) {
+        setClickedProperty(featureClicked);
+        if (
+          featureClicked.HUC12 &&
+          hucIDArrayREF.current.includes(featureClicked.HUC12)
+        ) {
+          let removeIndex = hucIDArrayREF.current.indexOf(featureClicked.HUC12);
+          let newHucIDList = [...hucIDArrayREF.current];
+          newHucIDList.splice(removeIndex, 1);
+          setHucIDArray(newHucIDList);
+          let newFilterList = [];
+          let toSetHucIDSelected = [];
+          newHucIDList.forEach((hucID) => {
+            newFilterList.push(["in", "HUC12", hucID]);
+            toSetHucIDSelected.push({ value: hucID, label: hucID });
+          });
+          setHucFilterList([...newFilterList]);
+          setHucIDSelected(toSetHucIDSelected);
+        } else {
+          let toSetHucIDSelected = [];
+          let toSetHucFilter = [];
+          setHucIDArray([...hucIDArrayREF.current, featureClicked.HUC12]);
+          hucIDArrayREF.current.forEach((hucID) => {
+            toSetHucFilter.push(["in", "HUC12", hucID]);
+            toSetHucIDSelected.push({ value: hucID, label: hucID });
+          });
+          // toSetHucIDSelected.push({
+          //   value: featureClicked.HUC12,
+          //   label: featureClicked.HUC12,
+          // });
+          // toSetHucFilter.push(["in", "HUC12", featureClicked.HUC12]);
+          setHucIDSelected(toSetHucIDSelected);
+          setHucFilterList(toSetHucFilter);
+        }
+      }
+    }
+
+    //hexIDDeselcted is goal
+    if (e.features && hexGrid && hexDeselection) {
+      const featureClicked = e.features[0].properties;
+
+      if (featureClicked) {
+        setClickedProperty(featureClicked);
+        if (
+          featureClicked.objectid &&
+          hexIDArrayREF.current.includes(featureClicked.objectid)
+        ) {
+          let removeIndex = hexIDArrayREF.current.indexOf(
+            featureClicked.objectid
+          );
+          let newHexIDList = [...hexIDArrayREF.current];
+          newHexIDList.splice(removeIndex, 1);
+          setHexIDArray(newHexIDList);
+          let newFilterList = [];
+          let toSetHexIDDeselected = [];
+          newHexIDList.forEach((hexID) => {
+            newFilterList.push(["in", "objectid", hexID]);
+            toSetHexIDDeselected.push(hexID);
+          });
+          setHexFilterList([...newFilterList]);
+          setHexIDDeselected(toSetHexIDDeselected);
+        } else {
+          let toSetHexIDDeselected = [];
+          let toSetHexFilter = [];
+          setHexIDArray([...hexIDArrayREF.current, featureClicked.objectid]);
+          hexIDArrayREF.current.forEach((hexID) => {
+            toSetHexFilter.push(["in", "objectid", hexID]);
+            toSetHexIDDeselected.push(hexID);
+          });
+          setHexIDDeselected(toSetHexIDDeselected);
+          setHexFilterList(toSetHexFilter);
+        }
       }
     }
   };
+
+  useEffect(() => {
+    setHucIDArray([]);
+    setHexIDArray([]);
+    stopDraw();
+  }, [view]);
 
   const onDelete = () => {
     const selectedIndex = selectedFeatureIndex;
@@ -216,22 +314,22 @@ const Map = ({
   };
 
   const renderPopup = () => {
-    var aoiBbox = bbox({
-      type: "Feature",
-      geometry: hoveredGeometry,
-    });
-    var popupLongitude = (aoiBbox[0] + aoiBbox[2]) / 2;
-    var popupLatitude = (aoiBbox[1] + aoiBbox[3]) / 2;
-
     // Use HUC12 as the unique property to filter out undesired layer
-    if (popupLongitude && popupLatitude && hoveredProperty.HUC12) {
+    if (
+      mousePos[0] &&
+      mousePos[1] &&
+      hoveredProperty &&
+      hoveredProperty.HUC12
+    ) {
       return (
         <Popup
           tipSize={5}
-          anchor="top"
-          longitude={popupLongitude}
-          latitude={popupLatitude}
+          anchor="bottom"
+          longitude={mousePos[0]}
+          latitude={mousePos[1]}
           closeOnClick={false}
+          closeButton={false}
+          offsetTop={-12}
         >
           <div>
             <p>
@@ -381,6 +479,8 @@ const Map = ({
       viewport.zoom >= 10
     ) {
       setInteractiveLayerIds(["visualization-layer"]);
+    } else if (!drawingMode && useCase === "inventory") {
+      setInteractiveLayerIds(["sca-boundary"]);
     } else if (!drawingMode && useCase !== "visualization") {
       setInteractiveLayerIds([]);
     }
@@ -398,53 +498,13 @@ const Map = ({
     setInteractiveLayerIds,
   ]);
 
-  useEffect(() => {
-    if (clickedProperty) {
-      // For HUC-12 boundary layer, same watershed area won't be counted twice
-      if (
-        clickedProperty.HUC12 &&
-        !hucIDSelected.includes(clickedProperty.HUC12)
-      ) {
-        // Array hucIDSelected is stored in a format like [{value: 'xx', label: 'xx'}]
-        hucIDSelected.push({
-          value: clickedProperty.HUC12,
-          label: clickedProperty.HUC12,
-        });
-        setFilter(["in", "HUC12", clickedProperty.HUC12]);
-      }
+  // useEffect(() => {
+  //   setHucFilterList((hucFilterList) => [...hucFilterList, hucFilter]);
+  // }, [hucFilter]);
 
-      // For hex grid layer, same hexagon won't be counted twice
-      if (
-        clickedProperty.objectid &&
-        !hexIDDeselected.includes(clickedProperty.objectid)
-      ) {
-        // Array hexIDDeselected is stored in a simple array format
-        hexIDDeselected.push(clickedProperty.objectid);
-        setHexFilter(["in", "objectid", clickedProperty.objectid]);
-      }
-
-      // For visualization layer
-
-      console.log(useCase);
-      console.log(interactiveLayerIds);
-      console.log(clickedProperty.objectid);
-      if (
-        useCase === "visualization" &&
-        clickedProperty.gid
-      ) {
-        setVisualizedHexagon(clickedProperty);
-        setVisualizationFilter(["in", "OBJECTID", clickedProperty.objectid]);
-      }
-    }
-  }, [clickedProperty, hexIDDeselected, hucIDSelected]);
-
-  useEffect(() => {
-    filterList.push(filter);
-  }, [filter, filterList]);
-
-  useEffect(() => {
-    hexFilterList.push(hexFilter);
-  }, [hexFilter, hexFilterList]);
+  // useEffect(() => {
+  //   hexFilterList.push(hexFilter);
+  // }, [hexFilter, hexFilterList]);
 
   useEffect(() => {
     if (zoom >= 10) {
@@ -649,7 +709,7 @@ const Map = ({
                 "fill-opacity": 0.2,
               }}
             />
-            {filterList.map((filter) => (
+            {hucFilterList.map((filter) => (
               <Layer
                 id={filter[2]}
                 key={filter[2]}
@@ -673,6 +733,24 @@ const Map = ({
           visualizationFillColor &&
           visualizationOpacity > 0 &&
           renderVisualization()}
+
+        {coordinates[0] &&
+          useCase === "inventory" &&
+          view !== "list" &&
+          view !== "add" && (
+            <Marker
+              longitude={coordinates[0]}
+              latitude={coordinates[1]}
+              offsetTop={-26}
+              offsetLeft={-15}
+            >
+              <img
+                style={{ width: "60%" }}
+                alt="pin for marker"
+                src="https://img.icons8.com/color/48/000000/marker.png"
+              />
+            </Marker>
+          )}
       </MapGL>
     </>
   );

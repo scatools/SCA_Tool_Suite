@@ -12,7 +12,6 @@ const Homepage = ({ setView }) => {
     let path = `/tool`;
     navigate.push(path);
     dispatch(setUseCase(useCase));
-    console.log(useCase);
     setView("selectUseCase");
   };
   const homePageCards = [

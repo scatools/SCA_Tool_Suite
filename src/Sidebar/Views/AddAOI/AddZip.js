@@ -8,7 +8,11 @@ import shp from "shpjs";
 import axios from "axios";
 import { truncate } from "@turf/turf";
 import { setLoader, input_aoi } from "../../../Redux/action";
-import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
+import {
+  calculateArea,
+  aggregate,
+  getStatus,
+} from "../../../Helper/aggregateHex";
 import TimeoutError from "../../../Components/TimeoutError";
 
 const AddZip = ({
@@ -45,11 +49,10 @@ const AddZip = ({
     // const res = await axios.post('http://localhost:5000/data', { data });
     // For production on Heroku
 
-    const res = await axios.post(
-      "https://sca-cpt-backend.herokuapp.com/data",
-      { data }
-    );
-    console.log(res.status);
+    const res = await axios.post("https://sca-cpt-backend.herokuapp.com/data", {
+      data,
+    });
+
     const planArea = calculateArea(newList);
     dispatch(
       input_aoi({
@@ -79,19 +82,19 @@ const AddZip = ({
             let result = null;
             if (fileType === "kml") {
               try {
-                let result3D = kml(new DOMParser().parseFromString(reader.result,"text/xml"));
-                result = truncate(result3D, {precision: 14, coordinates: 2});
-                console.log(result);
-              } catch(e) {
+                let result3D = kml(
+                  new DOMParser().parseFromString(reader.result, "text/xml")
+                );
+                result = truncate(result3D, { precision: 14, coordinates: 2 });
+              } catch (e) {
                 clearTimeout(myTimeoutError);
                 setAlertType("danger");
                 setAlertText("The KML file uploaded is misconfigured!");
                 window.setTimeout(() => setAlertText(false), 4000);
                 dispatch(setLoader(false));
                 return;
-              };
-            }
-            else if (fileType === "zip") {
+              }
+            } else if (fileType === "zip") {
               result = await shp(reader.result).catch((e) => {
                 clearTimeout(myTimeoutError);
                 setAlertType("danger");
@@ -100,8 +103,7 @@ const AddZip = ({
                 dispatch(setLoader(false));
                 return;
               });
-              console.log(result);
-            };
+            }
 
             if (result) {
               // Features are stored as [0:{}, 1:{}, 2:{}, ...]
@@ -139,31 +141,32 @@ const AddZip = ({
                   window.setTimeout(() => setAlertText(false), 4000);
                   dispatch(setLoader(false));
                   return;
-                };
-              };
-            };
+                }
+              }
+            }
           };
 
           if (fileType === "kml") {
             reader.readAsText(file);
-          }
-          else if (fileType === "zip") {
+          } else if (fileType === "zip") {
             reader.readAsArrayBuffer(file);
-          };
-        }
-        else {
+          }
+        } else {
           setAlertType("danger");
-          setAlertText("Unsupported file type. Only KML or ZIP files will be accepted!");
+          setAlertText(
+            "Unsupported file type. Only KML or ZIP files will be accepted!"
+          );
           window.setTimeout(() => setAlertText(false), 4000);
           dispatch(setLoader(false));
           return;
-        };
-      };
+        }
+      }
       dispatch(setLoader(true));
       // let loadTimer = setTimeout(() => timeoutHandler(), 20);
-    },[dispatch]
+    },
+    [dispatch]
   );
-  
+
   setHucBoundary(false);
   setDrawingMode(false);
 
@@ -171,31 +174,30 @@ const AddZip = ({
     <div>
       {timeoutError && <TimeoutError />}
 
-      <Container className="instruction">
+      <Container className=" instruction">
         <p>
-          You can upload a zipped shapefile or KML file with one or more areas of interest.
-          Each record in the file will become a separate area of interest. Please make sure
-          the geometry of your area of interest is either Polygon or MultiPolygon. Note that
-          a MultiPolygon will be recognized as a single area of interest.{" "}
+          You can upload a zipped shapefile or KML file with one or more areas
+          of interest. Each record in the file will become a separate area of
+          interest. Please make sure the geometry of your area of interest is
+          either Polygon or MultiPolygon. Note that a MultiPolygon will be
+          recognized as a single area of interest.
         </p>
-        <p>
-          If uploading a zip file, please make sure it includes at least the following files:
-          <ul>
-            <li>.shp</li>
-            <li>.shx</li>
-            <li>.prj</li>
-          </ul>
-        </p>
-      </Container>
-      <Container className="m-auto file-drop">
-        <Dropzone onDrop={onDrop} accept={[".zip", ".kml"]}>
-          {({ getRootProps, getInputProps }) => (
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              Click me to upload a file!
-            </div>
-          )}
-        </Dropzone>
+        <p>Zip files must at least include the following files:</p>
+        <ul>
+          <li>.shp</li>
+          <li>.shx</li>
+          <li>.prj</li>
+        </ul>
+        <Container className="m-auto file-drop">
+          <Dropzone onDrop={onDrop} accept={[".zip", ".kml"]}>
+            {({ getRootProps, getInputProps }) => (
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                Click me to upload a file!
+              </div>
+            )}
+          </Dropzone>
+        </Container>
       </Container>
     </div>
   );

@@ -21,12 +21,13 @@ const AddBoundary = ({
   setHucIDSelected,
   hucBoundary,
   setHucBoundary,
-  setFilterList,
+  setHucFilterList,
   setView,
   setAlertText,
   setAlertType,
+  setClickedProperty,
 }) => {
-  const aoiList = Object.values(useSelector((state) => state.aoi)) 
+  const aoiList = Object.values(useSelector((state) => state.aoi));
   const dispatch = useDispatch();
   const [retrievingOptions, setRetrievingOptions] = useState("");
 
@@ -36,9 +37,10 @@ const AddBoundary = ({
       setAlertText("At least one of the existing boundaries is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      if(aoiList.length < 10){
+      if (aoiList.length < 10) {
         if (hucBoundary) {
           setHucBoundary(false);
+          setClickedProperty(null);
         }
         setAlertText(false);
         const newList = hucList.filter(
@@ -50,7 +52,6 @@ const AddBoundary = ({
               .map((hucID) => hucID.value)
               .includes(feature.properties.HUC12)
         );
-        // console.log(newList);
         const data = {
           type: "MultiPolygon",
           coordinates: newList.map((feature) => feature.geometry.coordinates),
@@ -67,7 +68,10 @@ const AddBoundary = ({
         const planArea = calculateArea(newList);
         dispatch(
           input_aoi({
-            name: newList.length === 1 ? newList[0].properties.NAME : "Combined Watershed Area",
+            name:
+              newList.length === 1
+                ? newList[0].properties.NAME
+                : "Combined Watershed Area",
             geometry: newList,
             hexagons: res.data.data,
             rawScore: aggregate(res.data.data, planArea),
@@ -79,12 +83,13 @@ const AddBoundary = ({
         dispatch(setLoader(false));
         setHucNameSelected([]);
         setHucIDSelected([]);
-        setFilterList([]);
+        setHucFilterList([]);
         setView("list");
-      }
-      else{
+      } else {
         setAlertType("danger");
-        setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
         window.setTimeout(() => setAlertText(false), 4000);
       }
     }
@@ -96,9 +101,10 @@ const AddBoundary = ({
       setAlertText("At least one of the existing boundaries is required.");
       window.setTimeout(() => setAlertText(false), 4000);
     } else {
-      if(aoiList.length < 10){
+      if (aoiList.length < 10) {
         if (hucBoundary) {
           setHucBoundary(false);
+          setClickedProperty(null);
         }
         setAlertText(false);
         const newList = hucList.filter(
@@ -112,46 +118,49 @@ const AddBoundary = ({
         );
         // console.log(newList);
         newList.forEach(async (feature, idx) => {
-          if(aoiList.length + idx < 10){
-          const data = feature.geometry;
-          // For development on local server
-          // const res = await axios.post('http://localhost:5000/data', { data });
-          // For production on Heroku
-          dispatch(setLoader(true));
-          const res = await axios.post(
-            "https://sca-cpt-backend.herokuapp.com/data",
-            { data }
-          );
-          const planArea = calculateArea([feature]);
-          // Geometry needs to be a list
-          dispatch(
-            input_aoi({
-              name: feature.properties.NAME,
-              geometry: [feature],
-              hexagons: res.data.data,
-              rawScore: aggregate(res.data.data, planArea),
-              scaleScore: getStatus(aggregate(res.data.data, planArea)),
-              speciesName: res.data.speciesName,
-              id: uuid(),
-            })
-          );
-          dispatch(setLoader(false));
-        }
-        else{
-          setAlertType("danger");
-          setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
-          window.setTimeout(() => setAlertText(false), 4000);
-          return;
-        }
+          if (aoiList.length + idx < 10) {
+            const data = feature.geometry;
+            // For development on local server
+            // const res = await axios.post('http://localhost:5000/data', { data });
+            // For production on Heroku
+
+            dispatch(setLoader(true));
+            const res = await axios.post(
+              "https://sca-cpt-backend.herokuapp.com/data",
+              { data }
+            );
+            const planArea = calculateArea([feature]);
+            // Geometry needs to be a list
+            dispatch(
+              input_aoi({
+                name: feature.properties.NAME,
+                geometry: [feature],
+                hexagons: res.data.data,
+                rawScore: aggregate(res.data.data, planArea),
+                scaleScore: getStatus(aggregate(res.data.data, planArea)),
+                speciesName: res.data.speciesName,
+                id: uuid(),
+              })
+            );
+            dispatch(setLoader(false));
+            setHucNameSelected([]);
+            setHucIDSelected([]);
+            setHucFilterList([]);
+            setView("list");
+          } else {
+            setAlertType("danger");
+            setAlertText(
+              "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+            );
+            window.setTimeout(() => setAlertText(false), 4000);
+            return;
+          }
         });
-        setHucNameSelected([]);
-        setHucIDSelected([]);
-        setFilterList([]);
-        setView("list");
-      }
-      else{
+      } else {
         setAlertType("danger");
-        setAlertText("The max limit of 10 AOIs was reached. Remove AOIs and try again.");
+        setAlertText(
+          "The max limit of 10 AOIs was reached. Remove AOIs and try again."
+        );
         window.setTimeout(() => setAlertText(false), 4000);
       }
     }
@@ -173,6 +182,32 @@ const AddBoundary = ({
     }),
     menuPlacement: "auto",
   };
+
+  const AddSingleButton = (
+    <Button
+      variant="primary"
+      style={{ float: "left" }}
+      onClick={handleSubmitBoundaryAsSingle}
+    >
+      {hucNameSelected && hucNameSelected.length > 1
+        ? "Add as Combined AOI"
+        : hucIDSelected && hucIDSelected.length > 1
+        ? "Add as Combined AOI"
+        : hucBoundary && hucIDSelected && hucIDSelected.length > 1
+        ? "Add as Combined AOI"
+        : "Submit as AOI"}
+    </Button>
+  );
+
+  const AddMultiButton = (
+    <Button
+      variant="primary"
+      style={{ float: "right" }}
+      onClick={handleSubmitBoundaryAsMultiple}
+    >
+      Add as Multiple AOIs
+    </Button>
+  );
 
   return (
     <Container className="m-auto" style={{ width: "80%" }}>
@@ -201,7 +236,7 @@ const AddBoundary = ({
             setRetrievingOptions(e.value);
             setHucNameSelected([]);
             setHucIDSelected([]);
-            setFilterList([]);
+            setHucFilterList([]);
             if (e.value === "hucBoundary") {
               setHucBoundary(true);
             } else {
@@ -277,77 +312,35 @@ const AddBoundary = ({
           />
         </div>
       )}
+      {retrievingOptions === "hucBoundary" && (
+        <div>
+          <p
+            style={{ fontSize: "16px", paddingBottom: "0", marginBottom: "0" }}
+          >
+            To select, CLICK within one or multiple HUC 12 Watershed boundaries.
+          </p>
+          <p
+            style={{ fontSize: "16px", paddingBottom: "0", marginBottom: "0" }}
+          >
+            Once selected, you can add the watersheds as either a single
+            comibned AOI, or as multiple individual AOIs.
+          </p>
+          <p style={{ fontSize: "16px" }}>Click boundary again to deselect.</p>
+        </div>
+      )}
       <br />
       {hucNameSelected && hucNameSelected.length ? (
         <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
+          {AddSingleButton}
+          {hucNameSelected.length > 1 && AddMultiButton}
         </div>
       ) : hucIDSelected && hucIDSelected.length ? (
         <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
-        </div>
-      ) : retrievingOptions === "hucBoundary" ? (
-        <div>
-          <Button
-            variant="primary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            variant="primary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
+          {AddSingleButton}
+          {hucIDSelected.length > 1 && AddMultiButton}
         </div>
       ) : (
-        <div>
-          <Button
-            disabled
-            variant="secondary"
-            style={{ float: "left" }}
-            onClick={handleSubmitBoundaryAsSingle}
-          >
-            Add as Single AOI
-          </Button>
-          <Button
-            disabled
-            variant="secondary"
-            style={{ float: "right" }}
-            onClick={handleSubmitBoundaryAsMultiple}
-          >
-            Add as Multiple AOIs
-          </Button>
-        </div>
+        <div></div>
       )}
     </Container>
   );

@@ -139,10 +139,8 @@ const ReviewAssessSettings = ({
     await setVisualizationFillColor(fillColor);
     setVisualizationOpacity(50);
   };
-  console.log("Aoi Assembled: ");
-  console.log(aoiAssembled);
+
   const createAssessment = () => {
-    console.log(aoiAssembled);
     dispatch(setLoader(true));
     async function calculateNewData() {
       const newAoiData = aoiAssembled.map((item) =>

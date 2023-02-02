@@ -43,7 +43,7 @@ const Sidebar = ({
   setHucBoundary,
   hucIDSelected,
   setHucIDSelected,
-  setFilterList,
+  setHucFilterList,
   setReportLink,
   customizedMeasures,
   setCustomizedMeasures,
@@ -75,6 +75,7 @@ const Sidebar = ({
   setLargeAoiProgress,
   setInteractiveLayerIds,
   setScoreTableClass,
+  setClickedProperty,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -104,6 +105,7 @@ const Sidebar = ({
         <hr className={useCase === "inventory" ? "lg-padding" : "sm-padding"} />
         {view === "selectUseCase" && (
           <UseCaseView
+            setAssessStep={setAssessStep}
             setVisualizationScale={setVisualizationScale}
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
@@ -121,7 +123,7 @@ const Sidebar = ({
             setHucBoundary={setHucBoundary}
             hucIDSelected={hucIDSelected}
             setHucIDSelected={setHucIDSelected}
-            setFilterList={setFilterList}
+            setHucFilterList={setHucFilterList}
             setReportLink={setReportLink}
             autoDraw={autoDraw}
             stopDraw={stopDraw}
@@ -129,6 +131,7 @@ const Sidebar = ({
             setAlertText={setAlertText}
             setAlertType={setAlertType}
             setLargeAoiProgress={setLargeAoiProgress}
+            setClickedProperty={setClickedProperty}
           />
         )}
         {view === "list" && (
@@ -191,6 +194,7 @@ const Sidebar = ({
             setAssessStep={setAssessStep}
             setView={setView}
             setScoreTableClass={setScoreTableClass}
+            setShowTableContainer={setShowTableContainer}
           />
         )}
       </div>

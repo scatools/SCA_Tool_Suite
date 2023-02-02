@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { Accordion, Button, Card, Container, FormControl, InputGroup, Modal } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { MdDelete, MdEdit, MdMore, MdSave, MdViewList } from "react-icons/md";
 import { HiDocumentReport } from "react-icons/hi";
@@ -12,16 +12,7 @@ import { download } from "shp-write";
 import axios from "axios";
 import { delete_aoi, edit_aoi, setLoader } from "../../../Redux/action";
 import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
-import { WebMercatorViewport } from "react-map-gl";
-
-import {
-  squareGrid,
-  intersect,
-  distance,
-  square,
-  bbox,
-  buffer,
-} from "@turf/turf";
+import { squareGrid, intersect, distance, square, bbox, buffer } from "@turf/turf";
 
 const alertIcon = (
   <FontAwesomeIcon
@@ -211,7 +202,6 @@ const SidebarViewDetail = ({
             )
           );
 
-          console.log("Size of each box side: " + cellSide);
           const options = { units: "kilometers" };
           const grid = squareGrid(bufferedBox, cellSide, options);
 
@@ -224,7 +214,7 @@ const SidebarViewDetail = ({
               const newProgress = oldProgress + 100 / maxProgress;
               return newProgress;
             });
-            console.log(res);
+
             return res;
           };
 
@@ -240,7 +230,7 @@ const SidebarViewDetail = ({
           const overlapArray = overlapping.map((square) => {
             return intersect(data, square).geometry;
           });
-          console.log("Number of requests: " + overlapArray.length);
+
           maxProgress = overlapArray.length;
 
           const getAllAoiInfo = async (arrayOfAOIs) => {
@@ -253,8 +243,6 @@ const SidebarViewDetail = ({
           };
 
           getAllAoiInfo(overlapArray).then((lotsOfObjects) => {
-            console.log("lotsOfObjects");
-            console.log(lotsOfObjects);
             let speciesNames = [];
             let allData = [];
 
@@ -290,9 +278,6 @@ const SidebarViewDetail = ({
                   ),
                 ])
             );
-
-            console.log("All The Data with no Dups");
-            console.log(allData);
 
             dispatch(
               edit_aoi(aoiList[0].id, {
@@ -343,7 +328,6 @@ const SidebarViewDetail = ({
       const filteredHexList = aoiList[0].hexagons.filter(
         (hexagon) => !hexIDDeselected.includes(hexagon.objectid)
       );
-      console.log(filteredHexList);
 
       const planArea = aoiList[0].rawScore.hab0;
       dispatch(
@@ -514,25 +498,29 @@ const SidebarViewDetail = ({
               >
                 <MdEdit /> &nbsp; Edit
               </Button>
-              <Button
-                variant="dark"
-                className="ml-1"
-                onClick={() => {
-                  setActiveTable(aoiSelected);
-                }}
-              >
-                <MdViewList /> &nbsp; Summary
-              </Button>
-              <Button
-                variant="dark"
-                className="ml-1"
-                onClick={() => {
-                  history.push("/report");
-                  setReportLink(true);
-                }}
-              >
-                <HiDocumentReport /> &nbsp; Report
-              </Button>
+              {useCase !== "inventory" && (
+                <Button
+                  variant="dark"
+                  className="ml-1"
+                  onClick={() => {
+                    setActiveTable(aoiSelected);
+                  }}
+                >
+                  <MdViewList /> &nbsp; Summary
+                </Button>
+              )}
+              {useCase !== "inventory" && (
+                <Button
+                  variant="dark"
+                  className="ml-1"
+                  onClick={() => {
+                    history.push("/report");
+                    setReportLink(true);
+                  }}
+                >
+                  <HiDocumentReport /> &nbsp; Report
+                </Button>
+              )}
               <Button
                 variant="dark"
                 className="ml-1"
@@ -562,7 +550,7 @@ const SidebarViewDetail = ({
                   <IoFileTrayFull /> &nbsp; Related Conservation Plans
                 </Button>
               )}
-              {useCase === "inventory" && (  
+              {useCase === "inventory" && (
                 <Button
                   variant="secondary"
                   className="ml-1"
@@ -573,8 +561,7 @@ const SidebarViewDetail = ({
                     history.push("/tool");
                   }}
                 >
-                  <MdMore /> &nbsp;{" "}
-                  More Methods to View Plans
+                  <MdMore /> &nbsp; More Methods to View Plans
                 </Button>
               )}
               {userLoggedIn && (

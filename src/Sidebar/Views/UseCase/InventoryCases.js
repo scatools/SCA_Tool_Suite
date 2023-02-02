@@ -7,8 +7,23 @@ import { useSelector } from "react-redux";
 const InventoryCases = ({ setView, setShowTableContainer }) => {
   const aoi = useSelector((state) => state.aoi);
   const history = useHistory();
+  const useCase = useSelector((state) => state.usecase.useCase);
+
+  const handleBack = () => {
+    if (useCase === "inventory") {
+      history.push("/");
+    }
+  };
+
   return (
     <div>
+      {useCase === "inventory" && (
+        <Container style={{ marginTop: "-85px", marginBottom: "35px" }}>
+          <Button variant="secondary" onClick={handleBack}>
+            Back
+          </Button>
+        </Container>
+      )}
       <h4>
         Please click on the map to find related conservation plans to a specific
         Point of Interest

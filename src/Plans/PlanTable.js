@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table, Container } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { CSVLink } from "react-csv";
 import { IoFilter } from "react-icons/io5";
 import { FcQuestions } from "react-icons/fc";
+import { GoDesktopDownload, GoInfo } from "react-icons/go";
+import ReactTooltip from "react-tooltip";
 import UseAnimations from "react-useanimations";
 import heart from "react-useanimations/lib/heart";
 import axios from "axios";
 import emailjs from "@emailjs/browser";
 import FilterPane from "./FilterPane";
 import CustomPagination from "./CustomPagination";
-import ReactTooltip from "react-tooltip";
-import { GoInfo } from "react-icons/go";
 
 const PlanTable = ({ setAlertText, setAlertType }) => {
   const history = useHistory();
+  const [entireTable, setEntireTable] = useState();
   const [tableDetails, setTableDetails] = useState();
   const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +32,19 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
   const [newPlanLink, setNewPlanLink] = useState(null);
   const [userLikedPlans, setUserLikedPlans] = useState([]);
   const user = useSelector((state) => state.user);
+
+  const csvHeader = [
+    {label: "Plan Name", key: "plan_name"},
+    {label: "Primary Planning Method", key: "planning_method"},
+    {label: "Plan Time Frame", key : "plan_timeframe"},
+    {label: "Agency Lead", key: "agency_lead"},
+    {label: "Related State", key: "related_state"},
+    {label: "Original Document", key: "plan_url"}
+  ];
+  
+  const handleBack = () => {
+    history.push("/tool");
+  };
 
   const onFilterConfigChange = (newConfig) => {
     setFilterConfig(newConfig);
@@ -100,6 +115,20 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
     );
     setTableDetails(response.data.data);
     setTotalCount(response.data.totalRowCount);
+    // Get entire table for download
+    const download = await axios.get(
+      `https://sca-cpt-backend.herokuapp.com/plan`,
+      {
+        params: {
+          start: 0,
+          end: response.data.totalRowCount,
+          state: filterConfig.state,
+          time: filterConfig.time,
+          priority: filterConfig.priority,
+        },
+      }
+    );
+    setEntireTable(download.data.data);
   };
 
   const getUserLikedPlans = async () => {
@@ -189,17 +218,22 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
           </Modal.Body>
         </Modal>
       )}
-      <Button
-        variant="secondary"
-        className="filter-button"
-        onClick={toggleFilterPane}
-      >
-        <IoFilter /> &nbsp; Filter
-      </Button>
-      <a className="plan-submission-entry" onClick={fileMissingPlan}>
-        <FcQuestions size={"1.5em"} />
-        File A Missing Plan
-      </a>
+      {tableDetails && entireTable && (
+        <div className="table-button-container">
+          <Button variant="secondary" className={"table-button"} onClick={toggleFilterPane}>
+            <IoFilter /> &nbsp; Filter
+          </Button>
+          <CSVLink data={entireTable} filename="Conservation Plans.csv" headers={csvHeader}>
+            <Button variant="secondary" className={"table-button"}>
+              <GoDesktopDownload /> &nbsp; Download
+            </Button>
+          </CSVLink>
+          <a className="plan-submission-entry" onClick={fileMissingPlan}>
+            <FcQuestions size={"1.5em"} />
+            File A Missing Plan
+          </a>
+        </div>
+      )}
       <div className="plan-table">
         <Table hover borderless striped>
           <thead>
