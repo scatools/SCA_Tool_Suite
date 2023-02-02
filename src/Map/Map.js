@@ -142,7 +142,12 @@ const Map = ({
   };
 
   useEffect(() => {
-    if (useCase === "visualization" && clickedProperty && clickedProperty.gid) {
+    let testCase;
+    if (clickedProperty) {
+      testCase = clickedProperty.OBJECTID || clickedProperty.objectid;
+    }
+    if (useCase === "visualization" && testCase) {
+      console.log(clickedProperty);
       setVisualizedHexagon(clickedProperty);
     }
   }, [clickedProperty]);
@@ -166,6 +171,7 @@ const Map = ({
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
+      console.log(clickedProperty);
     }
 
     if (e.features && hucBoundary) {
