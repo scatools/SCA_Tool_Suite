@@ -150,6 +150,7 @@ const Main = ({
         setInteractiveLayerIds={setInteractiveLayerIds}
         setScoreTableClass={setScoreTableClass}
         setClickedProperty={setClickedProperty}
+        setVisualizedHexagon={setVisualizedHexagon}
       />
       <div className="content">
         <Button

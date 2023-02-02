@@ -57,6 +57,7 @@ const ListAOIView = ({
   setAlertType,
   setLargeAoiProgress,
   setAssessStep,
+  setVisualizedHexagon,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
@@ -285,6 +286,7 @@ const ListAOIView = ({
           setView={setView}
           setAssessStep={setAssessStep}
           setShowTableContainer={setShowTableContainer}
+          setVisualizedHexagon={setVisualizedHexagon}
         />
       </Container>
     </>

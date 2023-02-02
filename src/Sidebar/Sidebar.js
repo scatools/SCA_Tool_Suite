@@ -76,6 +76,7 @@ const Sidebar = ({
   setInteractiveLayerIds,
   setScoreTableClass,
   setClickedProperty,
+  setVisualizedHexagon,
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -161,6 +162,7 @@ const Sidebar = ({
             setAlertType={setAlertType}
             setAssessStep={setAssessStep}
             setLargeAoiProgress={setLargeAoiProgress}
+            setVisualizedHexagon={setVisualizedHexagon}
           />
         )}
         {view === "assess" && (
@@ -195,6 +197,7 @@ const Sidebar = ({
             setView={setView}
             setScoreTableClass={setScoreTableClass}
             setShowTableContainer={setShowTableContainer}
+            setVisualizedHexagon={setVisualizedHexagon}
           />
         )}
       </div>
