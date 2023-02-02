@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import MapGL, { Source, Layer, Popup, Marker } from "react-map-gl";
 import { Editor, EditingMode } from "react-map-gl-draw";
 import MultiSwitch from "react-multi-switch-toggle";
@@ -69,12 +69,6 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
-  const [visualizationFilter, setVisualizationFilter] = useState([
-    "in",
-    "OBJECTID",
-    "default",
-  ]);
   const editorRef = useRef(null);
 
   const [mousePos, setMoustPos] = useState([0, 0]);
@@ -143,7 +137,7 @@ const Map = ({
 
   useEffect(() => {
     let testCase;
-    if (clickedProperty) {
+    if (clickedProperty && !clickedProperty.HUC12) {
       testCase = clickedProperty.OBJECTID || clickedProperty.objectid;
     }
     if (useCase === "visualization" && testCase) {
@@ -411,20 +405,20 @@ const Map = ({
             type="fill"
             paint={{
               "fill-color": visualizationFillColor,
-              "fill-opacity": [
-                "case",
-                ["boolean", ["feature-state", "hover"], false],
-                1,
-                parseInt(visualizationOpacity) / 100,
-              ],
+              "fill-opacity": parseInt(visualizationOpacity) / 100,
             }}
           />
-          <Layer
-            {...visualizationHighlight}
-            id="visualization-highlight"
-            type="fill"
-            filter={visualizationFilter}
-          />
+          {clickedProperty && (
+            <Layer
+              id="clicked-hex"
+              type="line"
+              paint={{
+                "line-color": "blue",
+                "line-width": 2,
+              }}
+              filter={["in", "objectid", clickedProperty.objectid]}
+            />
+          )}
         </Source>
         <Legend
           aoiList={[]}

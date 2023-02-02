@@ -603,6 +603,8 @@ const SingleMeasure = ({
       ? visualizationOptions[goalList[goalIndex]]
       : options[goalList[goalIndex]];
 
+  const selectedMeasures = weights[goalList[goalIndex]].selected;
+
   return (
     <div>
       <span>{options[goalList[goalIndex]].name}</span>
@@ -879,7 +881,13 @@ const SingleMeasure = ({
         <Button variant="secondary" onClick={handleBack}>
           {arrowIcon} Back
         </Button>
-        <Button variant="primary" onClick={handleNext}>
+        <Button
+          disabled={
+            selectedMeasures && selectedMeasures.length > 0 ? false : true
+          }
+          variant="primary"
+          onClick={handleNext}
+        >
           Next
         </Button>
       </Container>
