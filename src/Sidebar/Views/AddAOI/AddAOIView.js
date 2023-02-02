@@ -71,6 +71,9 @@ const AddAOIView = ({
     if (useCase === "inventory") {
       setView("selectUseCase");
     }
+    if (useCase === "visualization") {
+      setView("selectUseCase");
+    }
   };
 
   useEffect(() => {
@@ -84,9 +87,13 @@ const AddAOIView = ({
 
   return (
     <Container>
-      {useCase === "inventory" && (
-        <Container style={{ marginTop: "-85px", marginBottom: "35px" }}>
-          <Button variant="secondary" onClick={handleBack}>
+      {useCase !== "prioritization" && (
+        <Container style={{ marginTop: "-35px", marginBottom: "35px" }}>
+          <Button
+            style={{ position: "absolute", top: "10px", left: "10px" }}
+            variant="secondary"
+            onClick={handleBack}
+          >
             Back
           </Button>
         </Container>

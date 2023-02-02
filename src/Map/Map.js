@@ -141,6 +141,12 @@ const Map = ({
     }
   };
 
+  useEffect(() => {
+    if (useCase === "visualization" && clickedProperty && clickedProperty.gid) {
+      setVisualizedHexagon(clickedProperty);
+    }
+  }, [clickedProperty]);
+
   const onClick = (e) => {
     if (
       useCase === "inventory" &&

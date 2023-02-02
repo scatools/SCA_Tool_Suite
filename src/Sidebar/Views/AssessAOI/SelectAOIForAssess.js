@@ -192,7 +192,7 @@ const SelectAOIForAssess = ({
           classNamePrefix="select"
         />
       )}
-      {aoiList && aoiList.length < 2 && (
+      {useCase !== "visualization" && aoiList && aoiList.length < 2 && (
         <div className="add-more-aois-btn">
           <p>You must create at least 2 AOIs</p>
           <Button onClick={() => setView("add")}>Add More AOIs</Button>
