@@ -46,8 +46,6 @@ const UserDefinedResult = ({ aoiScoreCustomized }) => {
     };
   });
 
-  console.log(payloadData);
-
   return (
     <>
       <BarChart

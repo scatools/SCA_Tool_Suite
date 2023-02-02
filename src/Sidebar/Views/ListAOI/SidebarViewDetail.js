@@ -12,15 +12,7 @@ import { download } from "shp-write";
 import axios from "axios";
 import { delete_aoi, edit_aoi, setLoader } from "../../../Redux/action";
 import { calculateArea, aggregate, getStatus } from "../../../Helper/aggregateHex";
-
-import {
-  squareGrid,
-  intersect,
-  distance,
-  square,
-  bbox,
-  buffer,
-} from "@turf/turf";
+import { squareGrid, intersect, distance, square, bbox, buffer } from "@turf/turf";
 
 const alertIcon = (
   <FontAwesomeIcon
@@ -210,7 +202,6 @@ const SidebarViewDetail = ({
             )
           );
 
-          console.log("Size of each box side: " + cellSide);
           const options = { units: "kilometers" };
           const grid = squareGrid(bufferedBox, cellSide, options);
 
@@ -223,7 +214,7 @@ const SidebarViewDetail = ({
               const newProgress = oldProgress + 100 / maxProgress;
               return newProgress;
             });
-            console.log(res);
+
             return res;
           };
 
@@ -239,7 +230,7 @@ const SidebarViewDetail = ({
           const overlapArray = overlapping.map((square) => {
             return intersect(data, square).geometry;
           });
-          console.log("Number of requests: " + overlapArray.length);
+
           maxProgress = overlapArray.length;
 
           const getAllAoiInfo = async (arrayOfAOIs) => {
@@ -252,8 +243,6 @@ const SidebarViewDetail = ({
           };
 
           getAllAoiInfo(overlapArray).then((lotsOfObjects) => {
-            console.log("lotsOfObjects");
-            console.log(lotsOfObjects);
             let speciesNames = [];
             let allData = [];
 
@@ -289,9 +278,6 @@ const SidebarViewDetail = ({
                   ),
                 ])
             );
-
-            console.log("All The Data with no Dups");
-            console.log(allData);
 
             dispatch(
               edit_aoi(aoiList[0].id, {
@@ -342,7 +328,6 @@ const SidebarViewDetail = ({
       const filteredHexList = aoiList[0].hexagons.filter(
         (hexagon) => !hexIDDeselected.includes(hexagon.objectid)
       );
-      console.log(filteredHexList);
 
       const planArea = aoiList[0].rawScore.hab0;
       dispatch(
@@ -565,7 +550,7 @@ const SidebarViewDetail = ({
                   <IoFileTrayFull /> &nbsp; Related Conservation Plans
                 </Button>
               )}
-              {useCase === "inventory" && (  
+              {useCase === "inventory" && (
                 <Button
                   variant="secondary"
                   className="ml-1"
@@ -576,8 +561,7 @@ const SidebarViewDetail = ({
                     history.push("/tool");
                   }}
                 >
-                  <MdMore /> &nbsp;{" "}
-                  More Methods to View Plans
+                  <MdMore /> &nbsp; More Methods to View Plans
                 </Button>
               )}
               {userLoggedIn && (

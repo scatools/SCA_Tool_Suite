@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Container } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { gcrLayerSource } from "../../../Map/layerSource";
 import {
   gcrVisualizationLayer,
@@ -13,7 +14,14 @@ const SelectVisualizeScale = ({
   setVisualizationSource,
   setVisualizationLayer,
   setVisualizaitonHighlight,
+  setAssessStep,
 }) => {
+  const aoi = useSelector((state) => state.aoi);
+  const aoiList = Object.values(aoi).map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
   return (
     <div>
       <h4>I would like to create the visualization within ...</h4>
@@ -43,7 +51,10 @@ const SelectVisualizeScale = ({
           variant="outline-light"
           onClick={() => {
             setVisualizationScale("aoi");
-            setView("add");
+            if (aoiList && aoiList.length > 0) {
+              setAssessStep("selectAOI");
+              setView("assess");
+            } else setView("add");
           }}
         >
           A certain Area of Interest

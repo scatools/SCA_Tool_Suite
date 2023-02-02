@@ -35,15 +35,16 @@ const SelectAOIForAssess = ({
 
   const changeToArray = (obj) => {
     if (typeof obj === "object" && !Array.isArray(obj) && obj !== null) {
-      console.log("CHANGE FROM OBJECT TO ARRAY");
       setAoiAssembled([obj]);
     }
   };
 
-  console.log(aoiAssembled);
+  // useEffect(() => {
+  //   setAoiAssembled([]);
+  // }, []);
 
   useEffect(() => {
-    setAoiAssembled([]);
+    if (aoiList && aoiList.length > 1) setAoiAssembled([aoiList[0]]);
   }, []);
 
   const handleNext = () => {
@@ -58,11 +59,9 @@ const SelectAOIForAssess = ({
     } else {
       if (useCase === "visualization") {
         if (aoiAssembled) {
-          console.log(aoi);
           const aoiVisualized = Object.values(aoi).filter(
             (item) => item.id === aoiAssembled[0].value
           );
-          console.log(aoiVisualized);
 
           const hexFeatureList = aoiVisualized[0].hexagons.map((hex) => {
             // Parse all the properties for measure scores to numbers
@@ -99,40 +98,41 @@ const SelectAOIForAssess = ({
       } else {
         // aoiAssembled is an array for multiple selects
         if (aoiAssembled && aoiAssembled.length > 1) {
-          const measures = {
-            hab: {
-              selected: null,
-              weight: 0,
-            },
-            wq: {
-              selected: null,
-              weight: 0,
-            },
-            lcmr: {
-              selected: null,
-              weight: 0,
-            },
-            cl: {
-              selected: null,
-              weight: 0,
-            },
-            eco: {
-              selected: null,
-              weight: 0,
-            },
-          };
+          // console.log("RESETTING GOAL WEIGHTS");
+          // const measures = {
+          //   hab: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   wq: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   lcmr: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   cl: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          //   eco: {
+          //     selected: null,
+          //     weight: 0,
+          //   },
+          // };
 
-          let keys = Object.keys(measures);
-          keys.map((value, index) => {
-            const newValue =
-              Number(measures[value].weight) > 100
-                ? 100
-                : Number(measures[value].weight);
-            console.log(measures[value].selected);
-            dispatch(changeGoalWeights(newValue, value));
-            dispatch(changeMeasures(value, measures[value].selected));
-          });
-          dispatch(setCurrentWeight("No Saved Measures"));
+          // let keys = Object.keys(measures);
+          // keys.map((value, index) => {
+          //   const newValue =
+          //     Number(measures[value].weight) > 100
+          //       ? 100
+          //       : Number(measures[value].weight);
+          //   console.log(measures[value].selected);
+          //   dispatch(changeGoalWeights(newValue, value));
+          //   dispatch(changeMeasures(value, measures[value].selected));
+          // });
+          // dispatch(setCurrentWeight("No Saved Measures"));
           setAssessStep("selectRestoreWeights");
         } else {
           setAlertType("danger");
@@ -159,7 +159,7 @@ const SelectAOIForAssess = ({
           options={aoiList}
           isMulti={false}
           isClearable={true}
-          placeholder="Select areas of interests..."
+          placeholder="Select an area of interest..."
           value={aoiAssembled}
           onChange={(selectedOption) => {
             if (selectedOption) {
@@ -191,6 +191,12 @@ const SelectAOIForAssess = ({
           className="basic-multi-select"
           classNamePrefix="select"
         />
+      )}
+      {useCase !== "visualization" && aoiList && aoiList.length < 2 && (
+        <div className="add-more-aois-btn">
+          <p>You must create at least 2 AOIs</p>
+          <Button onClick={() => setView("add")}>Add More AOIs</Button>
+        </div>
       )}
       <br />
       <Container className="button-container">

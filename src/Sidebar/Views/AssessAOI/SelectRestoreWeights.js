@@ -275,15 +275,13 @@ const SelectRestoreWeights = ({
               </Button>
             )
           : ""}
-        {sumWeights === 100 ? (
-          <Button variant="primary" onClick={() => handleNext()}>
-            Next
-          </Button>
-        ) : (
-          <Button variant="secondary" disabled onClick={() => handleNext()}>
-            Next
-          </Button>
-        )}
+
+        <Button
+          variant={sumWeights === 100 ? "primary" : "secondary"}
+          onClick={() => handleNext()}
+        >
+          Next
+        </Button>
       </Container>
     </Container>
   );

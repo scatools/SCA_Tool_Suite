@@ -324,6 +324,10 @@ button.sidebarControlBtn.btn.btn-secondary {
   width: initial;
 }
 
+.btn-container {
+  display: flex;
+  flex-direction: row;
+}
 #resetButton {
   color: red;
   display: flex;
@@ -350,6 +354,18 @@ button.sidebarControlBtn.btn.btn-secondary {
   font-size: 14px;
 }
 
+.add-assess-cont {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  margin: 30px 0;
+  z-index: 9;
+  background: #292a2b;
+}
+
 .button-container {
   position: absolute;
   top: 20px;
@@ -363,14 +379,50 @@ button.sidebarControlBtn.btn.btn-secondary {
 }
 
 .aoi-list-container {
-  max-height: 67vh;
+  max-height: 62vh;
   overflow: auto;
+  position: relative;
 }
+
+/* Shadow to show depth and that content is scrollable */
+/* .test.container:before,
+.aoi-list-container:before {
+  content: "";
+  position: fixed;
+  height: 11px;
+  width: 550px;
+  left: 0px;
+  top: calc(100vh - 74px);
+  right: 0px;
+  bottom: 0px;
+
+  z-index: 9999999;
+
+  box-shadow: 0px -13px 10px -9px rgba(0, 0, 0, 0.75) inset;
+  -webkit-box-shadow: 0px -13px 10px -9px rgba(0, 0, 0, 0.75) inset;
+  -moz-box-shadow: 0px -13px 10px -9px rgba(0, 0, 0, 0.75) inset;
+}
+
+.test.container:before {
+  top: calc(100vh - 70px);
+} */
 
 .carousel-container {
   padding: 20px 0;
   margin: 30px 20px;
   z-index: 9;
+}
+
+.carousel-caption {
+  padding-bottom: 0 !important;
+}
+
+.carousel-indicators {
+  bottom: -15px !important;
+}
+
+.carousel.slide {
+  margin: 0 20px 10px !important;
 }
 
 #sidebar-view-detial {
@@ -990,6 +1042,14 @@ a img.logo {
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
+.table-container-wrapper:hover {
+  cursor: move;
+}
+
+table.table.table-striped:hover {
+  cursor: default;
+}
+
 #map-table-container {
   background-color: none;
 }
@@ -1187,4 +1247,44 @@ a img.logo {
   z-index: 901;
   height: 20px;
   width: 300px;
+}
+
+.test {
+  max-height: 68.5vh;
+  overflow: scroll;
+}
+
+#sidebar-view-detial {
+  margin: 20px 0 0 0;
+  border: 1px solid #363c3f;
+}
+
+.accordion .card:first-child {
+  margin-top: 20px;
+}
+
+.accordion .card:last-child {
+  margin-bottom: 20px;
+}
+
+.lg-padding {
+  padding: 50px;
+}
+
+.sm-padding {
+  padding: 0px;
+}
+
+.vis-select {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.add-more-aois-btn {
+  margin-top: 30px;
+}
+
+.options-accordion .accordion-dropdown:hover {
+  cursor: pointer;
 }

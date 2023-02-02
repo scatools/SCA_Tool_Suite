@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import Main from "./Main";
 import Homepage from "../Components/Homepage";
@@ -40,6 +40,7 @@ const Routes = ({
   const [alertType, setAlertType] = useState("danger");
   const [assessStep, setAssessStep] = useState("selectAOI");
   const useCase = useSelector((state) => state.usecase.useCase);
+  const url = useLocation();
 
   return (
     <>
@@ -68,9 +69,12 @@ const Routes = ({
             />
           </Route>
         ) : (
-          <Route>
-            <Redirect to="/" />
-          </Route>
+          !useCase &&
+          url.pathname === "/tool" && (
+            <Route>
+              <Redirect to="/" />
+            </Route>
+          )
         )}
         <Route exact path="/register">
           <Register

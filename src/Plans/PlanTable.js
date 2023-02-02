@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table, Container } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { CSVLink } from "react-csv";
@@ -41,6 +41,10 @@ const PlanTable = ({ setAlertText, setAlertType }) => {
     {label: "Related State", key: "related_state"},
     {label: "Original Document", key: "plan_url"}
   ];
+  
+  const handleBack = () => {
+    history.push("/tool");
+  };
 
   const onFilterConfigChange = (newConfig) => {
     setFilterConfig(newConfig);
