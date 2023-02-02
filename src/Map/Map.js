@@ -165,7 +165,6 @@ const Map = ({
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
-      console.log(clickedProperty);
     }
 
     if (e.features && hucBoundary) {
@@ -416,7 +415,11 @@ const Map = ({
                 "line-color": "blue",
                 "line-width": 2,
               }}
-              filter={["in", "objectid", clickedProperty.objectid]}
+              filter={
+                clickedProperty.objectid
+                  ? ["in", "objectid", clickedProperty.objectid]
+                  : ["in", "OBJECTID", clickedProperty.OBJECTID]
+              }
             />
           )}
         </Source>
