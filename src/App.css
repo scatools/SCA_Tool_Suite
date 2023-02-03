@@ -966,6 +966,10 @@ a img.logo {
   }
 }
 
+.graphRow .col {
+  width: 50% !important;
+}
+
 /* Entire plan table */
 
 .plan-table-wrapper {
