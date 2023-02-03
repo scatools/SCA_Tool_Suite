@@ -77,6 +77,7 @@ const Sidebar = ({
   setScoreTableClass,
   setClickedProperty,
   setVisualizedHexagon,
+  setSelectedState
 }) => {
   const aoi = useSelector((state) => state.aoi);
   const resetButton = () => {
@@ -111,6 +112,7 @@ const Sidebar = ({
             setVisualizationSource={setVisualizationSource}
             setVisualizationLayer={setVisualizationLayer}
             setVisualizaitonHighlight={setVisualizaitonHighlight}
+            setSelectedState={setSelectedState}
             setView={setView}
             setShowTableContainer={setShowTableContainer}
           />

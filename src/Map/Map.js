@@ -6,12 +6,19 @@ import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { FiMap, FiLayers } from "react-icons/fi";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { feature } from "@turf/turf";
 import bbox from "@turf/bbox";
 import shp from "shpjs";
 import Legend from "../Components/Legend";
 import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
-import { feature } from "@turf/turf";
+import {
+  flVisualizationHighlight,
+  alVisualizationHighlight,
+  laVisualizationHighlight,
+  msVisualizationHighlight,
+  txVisualizationHighlight,
+} from "./layerStyle";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
@@ -56,6 +63,7 @@ const Map = ({
   view,
   clickedProperty,
   setClickedProperty,
+  selectedState
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
   const [selectBasemap, setSelectBasemap] = useState(false);
@@ -89,6 +97,14 @@ const Map = ({
 
   const overlaySources = {
     secas: "mapbox://chuck0520.dkcwxuvl",
+  };
+
+  const stateLayer = {
+    Alabama: alVisualizationHighlight,
+    Florida: flVisualizationHighlight,
+    Louisiana: laVisualizationHighlight,
+    Mississippi: msVisualizationHighlight,
+    Texas: txVisualizationHighlight,
   };
 
   // Up to 10 colors for 10 different AOIs
@@ -407,20 +423,24 @@ const Map = ({
               "fill-opacity": parseInt(visualizationOpacity) / 100,
             }}
           />
-          {clickedProperty && (
+          {clickedProperty && clickedProperty.objectid ? (
             <Layer
               id="clicked-hex"
-              type="line"
+              type="fill"
               paint={{
-                "line-color": "blue",
-                "line-width": 2,
+                "fill-outline-color": "#484896",
+                "fill-color": "#6e599f",
+                "fill-opacity": 0.75,
               }}
-              filter={
-                clickedProperty.objectid
-                  ? ["in", "objectid", clickedProperty.objectid]
-                  : ["in", "OBJECTID", clickedProperty.OBJECTID]
-              }
+              filter={["in", "objectid", clickedProperty.objectid]}
             />
+          ) : (
+            clickedProperty && (
+              <Layer
+                {...stateLayer[selectedState]}
+                filter={["in", "OBJECTID", clickedProperty.OBJECTID]}
+              />
+            )
           )}
         </Source>
         <Legend

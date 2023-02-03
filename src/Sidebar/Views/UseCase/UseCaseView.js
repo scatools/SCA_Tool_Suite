@@ -5,13 +5,14 @@ import VisualizationCases from "./VisualizationCases";
 import { useSelector } from "react-redux";
 
 const UseCaseView = ({
+  setAssessStep,
   setVisualizationScale,
   setVisualizationSource,
   setVisualizationLayer,
   setVisualizaitonHighlight,
+  setSelectedState,
   setView,
   setShowTableContainer,
-  setAssessStep,
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
   const aoi = useSelector((state) => state.aoi);
@@ -43,6 +44,7 @@ const UseCaseView = ({
           setVisualizationSource={setVisualizationSource}
           setVisualizationLayer={setVisualizationLayer}
           setVisualizaitonHighlight={setVisualizaitonHighlight}
+          setSelectedState={setSelectedState}
         />
       )}
     </Container>

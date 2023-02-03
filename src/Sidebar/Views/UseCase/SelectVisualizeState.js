@@ -21,14 +21,14 @@ import {
   txVisualizationHighlight,
 } from "../../../Map/layerStyle";
 
-const VisualizationByState = ({
+const SelectVisualizeState = ({
   setView,
   setVisualizeStep,
   setVisualizationSource,
   setVisualizationLayer,
   setVisualizaitonHighlight,
+  setSelectedState
 }) => {
-  const [selectedState, setSelectedState] = useState(null);
   const onClick = (e) => {
     setSelectedState(e.target.value);
     setView("assess");
@@ -120,4 +120,4 @@ const VisualizationByState = ({
   );
 };
 
-export default VisualizationByState;
+export default SelectVisualizeState;
