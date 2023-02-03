@@ -124,7 +124,7 @@ const SelectRestoreWeights = ({
   };
 
   return (
-    <Container className="test">
+    <Container className="test" style={{height: "70vh"}}>
       <h3>RESTORE Council Goal Weights:</h3>
       <p className="smaller-text">
         Below are the 5 RESTORE Council Goals
