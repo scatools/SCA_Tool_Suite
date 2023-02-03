@@ -57,6 +57,7 @@ const ListAOIView = ({
   setAlertType,
   setLargeAoiProgress,
   setAssessStep,
+  setVisualizedHexagon,
 }) => {
   const aoiList = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
@@ -102,71 +103,6 @@ const ListAOIView = ({
   }, [view]);
 
   return (
-    //ANTHONY VERSION
-    // <Container className="test">
-    //   <h3 style={{ marginBottom: "20px" }}>
-    //     {useCase === "inventory"
-    //       ? "View Plans for Selected AOI"
-    //       : "Review/Edit Current AOIs"}
-    //   </h3>
-    //   <Container className="add-assess-cont">
-    //     {useCase === "inventory" ? (
-    //       <Button
-    //         variant="primary"
-    //         onClick={() => {
-    //           if (aoiList && aoiList.length > 1) {
-    //             dispatch(setUseCase("prioritization"));
-    //             setShowTableContainer(false);
-    //             setAssessStep("selectAOI");
-    //             setView("assess");
-    //           } else {
-    //             dispatch(setUseCase("prioritization"));
-    //             setShowTableContainer(false);
-    //             setView("add");
-    //           }
-    //         }}
-    //       >
-    //         Compare Multiple AOIs
-    //       </Button>
-    //     ) : (
-    //       <Button variant="secondary" onClick={() => setView("add")}>
-    //         {arrowLeft} Add More AOIs
-    //       </Button>
-    //     )}
-    //     {useCase === "visualization" ? (
-    //       <Button
-    //         variant="primary"
-    //         onClick={() => {
-    //           setAssessStep("selectAOI");
-    //           setView("assess");
-    //         }}
-    //       >
-    //         Visualize AOI {arrowRight}
-    //       </Button>
-    //     ) : useCase === "prioritization" ? (
-    //       <Button
-    //         variant="primary"
-    //         onClick={() => {
-    //           setAssessStep("selectAOI");
-    //           setView("assess");
-    //         }}
-    //       >
-    //         Evaluate AOIs {arrowRight}
-    //       </Button>
-    //     ) : (
-    //       <Button
-    //         variant="primary"
-    //         onClick={() => {
-    //           dispatch(setUseCase("visualization"));
-    //           setShowTableContainer(false);
-    //           setAssessStep("selectAOI");
-    //           setView("assess");
-    //         }}
-    //       >
-    //         Visualize AOI Heatmap
-    //       </Button>
-    //     )}
-    //   </Container>
     <>
       <h3 style={{ marginBottom: "20px" }}>
         {useCase === "inventory"
@@ -350,6 +286,7 @@ const ListAOIView = ({
           setView={setView}
           setAssessStep={setAssessStep}
           setShowTableContainer={setShowTableContainer}
+          setVisualizedHexagon={setVisualizedHexagon}
         />
       </Container>
     </>

@@ -63,7 +63,7 @@ const Main = ({
   const [showTableContainer, setShowTableContainer] = useState(false);
   const [zoom, setZoom] = useState(5);
   const [clickedProperty, setClickedProperty] = useState(null);
-
+  const [selectedState, setSelectedState] = useState(null);
   const [scoreTableClass, setScoreTableClass] = useState("score-table");
   const [viewport, setViewport] = useState({
     latitude: 27.8,
@@ -150,6 +150,8 @@ const Main = ({
         setInteractiveLayerIds={setInteractiveLayerIds}
         setScoreTableClass={setScoreTableClass}
         setClickedProperty={setClickedProperty}
+        setVisualizedHexagon={setVisualizedHexagon}
+        setSelectedState={setSelectedState}
       />
       <div className="content">
         <Button
@@ -207,6 +209,7 @@ const Main = ({
           view={view}
           clickedProperty={clickedProperty}
           setClickedProperty={setClickedProperty}
+          selectedState={selectedState}
         />
       </div>
     </div>

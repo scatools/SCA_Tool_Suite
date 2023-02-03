@@ -87,13 +87,9 @@ const AddAOIView = ({
 
   return (
     <Container>
-      {useCase !== "prioritization" && (
+      {useCase === "inventory" && (
         <Container style={{ marginTop: "-35px", marginBottom: "35px" }}>
-          <Button
-            style={{ position: "absolute", top: "10px", left: "10px" }}
-            variant="secondary"
-            onClick={handleBack}
-          >
+          <Button variant="secondary" onClick={handleBack}>
             Back
           </Button>
         </Container>

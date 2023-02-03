@@ -52,7 +52,7 @@ const MCDAResult = () => {
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
   ];
   const assessment = useSelector((state) => state.assessment);
-  const [aoi, setAoi] = useState(0);
+  const [aoi, setAoi] = useState("0");
   const [activeCharts, setActiveCharts] = useState([0]);
   const [fillColor, setFillColor] = useState(["#8884d8"]);
   const [pieColors, setPieColors] = useState(aoiColors);
@@ -74,12 +74,13 @@ const MCDAResult = () => {
   const [radarData, setRadarData] = useState([radarInit]);
 
   useEffect(() => {
-    if (aoi === -1) {
-      let activeCharts = [];
-      assessment.aoi.id.map((item, index) => {
-        activeCharts.push(index);
+    if (aoi === "10") {
+      console.log(true);
+      let toActiveCharts = [];
+      assessment.aoi.id.forEach((item, index) => {
+        toActiveCharts.push(index);
       });
-      setActiveCharts(activeCharts);
+      setActiveCharts([...toActiveCharts]);
     } else {
       setActiveCharts([aoi]);
     }
@@ -100,12 +101,16 @@ const MCDAResult = () => {
       if (index >= 1) {
         radar.push(radarInit);
       }
-      radar[index] = radar[index].map((goal, index) => {
-        return {
-          ...goal,
-          score: assessment.centralWeight[alt_aoi][index],
-        };
-      });
+      if (alt_aoi <= assessment.centralWeight.length) {
+        radar[index] = radar[index].map((goal, index) => {
+          console.log("alt_aoi:");
+          console.log(alt_aoi);
+          return {
+            ...goal,
+            score: assessment.centralWeight[alt_aoi][index],
+          };
+        });
+      }
       pieData.push(
         assessment.rankAccept.map((item, index) => {
           return { name: `Rank ${index + 1}`, value: item[alt_aoi] };
@@ -211,8 +216,8 @@ const MCDAResult = () => {
             type="radio"
             variant="outline-secondary"
             name="all"
-            value={-1}
-            checked={aoi === -1}
+            value={10}
+            checked={aoi === "10"}
             onChange={(e) => setAoi(e.currentTarget.value)}
           >
             All Results
@@ -224,7 +229,7 @@ const MCDAResult = () => {
               variant="outline-secondary"
               name={index}
               value={index}
-              checked={aoi === index}
+              checked={aoi === index.toString()}
               onChange={(e) => setAoi(e.currentTarget.value)}
             >
               {assessment.aoi.name[index]}

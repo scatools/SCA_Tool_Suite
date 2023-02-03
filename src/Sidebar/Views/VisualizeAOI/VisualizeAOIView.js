@@ -28,7 +28,7 @@ const VisualizeAOIView = ({
   setAssessStep,
   setView,
   setShowTableContainer,
-  setScoreTableClass,
+  setVisualizedHexagon,
 }) => {
   const [show, setShow] = useState(false);
   const [imageURL, setImageURL] = useState(null);
@@ -175,6 +175,7 @@ const VisualizeAOIView = ({
           setView={setView}
           setAssessStep={setAssessStep}
           setShowTableContainer={setShowTableContainer}
+          setVisualizedHexagon={setVisualizedHexagon}
         />
       </Container>
     </Container>

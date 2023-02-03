@@ -14,6 +14,7 @@ const OptionsAccordion = ({
   setAssessStep,
   setVisualizationOpacity,
   setShowTableContainer,
+  setVisualizedHexagon,
 }) => {
   const aoi = Object.values(useSelector((state) => state.aoi));
   const useCase = useSelector((state) => state.usecase.useCase);
@@ -56,6 +57,7 @@ const OptionsAccordion = ({
                               : setView("add");
                             dispatch(setUseCase("prioritization"));
                             setVisualizationOpacity(0);
+                            setVisualizedHexagon(null);
                           }}
                           variant="primary"
                           style={{ height: "40px" }}

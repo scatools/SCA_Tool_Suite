@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import MapGL, { Source, Layer, Popup, Marker } from "react-map-gl";
 import { Editor, EditingMode } from "react-map-gl-draw";
 import MultiSwitch from "react-multi-switch-toggle";
@@ -6,12 +6,19 @@ import { Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { FiMap, FiLayers } from "react-icons/fi";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { feature } from "@turf/turf";
 import bbox from "@turf/bbox";
 import shp from "shpjs";
 import Legend from "../Components/Legend";
 import TableContainer from "../Plans/TableContainer";
 import { getFeatureStyle, getEditHandleStyle } from "./drawStyle";
-import { feature } from "@turf/turf";
+import {
+  flVisualizationHighlight,
+  alVisualizationHighlight,
+  laVisualizationHighlight,
+  msVisualizationHighlight,
+  txVisualizationHighlight,
+} from "./layerStyle";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiY2h1Y2swNTIwIiwiYSI6ImNrMDk2NDFhNTA0bW0zbHVuZTk3dHQ1cGUifQ.dkjP73KdE6JMTiLcUoHvUA";
@@ -56,6 +63,7 @@ const Map = ({
   view,
   clickedProperty,
   setClickedProperty,
+  selectedState
 }) => {
   const useCase = useSelector((state) => state.usecase.useCase);
   const [selectBasemap, setSelectBasemap] = useState(false);
@@ -69,12 +77,6 @@ const Map = ({
   const [hovered, setHovered] = useState(false);
   const [hoveredProperty, setHoveredProperty] = useState(null);
   const [hoveredGeometry, setHoveredGeometry] = useState(null);
-  const [hexFilter, setHexFilter] = useState(["in", "objectid", "default"]);
-  const [visualizationFilter, setVisualizationFilter] = useState([
-    "in",
-    "OBJECTID",
-    "default",
-  ]);
   const editorRef = useRef(null);
 
   const [mousePos, setMoustPos] = useState([0, 0]);
@@ -95,6 +97,14 @@ const Map = ({
 
   const overlaySources = {
     secas: "mapbox://chuck0520.dkcwxuvl",
+  };
+
+  const stateLayer = {
+    Alabama: alVisualizationHighlight,
+    Florida: flVisualizationHighlight,
+    Louisiana: laVisualizationHighlight,
+    Mississippi: msVisualizationHighlight,
+    Texas: txVisualizationHighlight,
   };
 
   // Up to 10 colors for 10 different AOIs
@@ -143,7 +153,7 @@ const Map = ({
 
   useEffect(() => {
     let testCase;
-    if (clickedProperty) {
+    if (clickedProperty && !clickedProperty.HUC12) {
       testCase = clickedProperty.OBJECTID || clickedProperty.objectid;
     }
     if (useCase === "visualization" && testCase) {
@@ -171,7 +181,6 @@ const Map = ({
       if (featureClicked) {
         setClickedProperty(featureClicked.properties);
       }
-      console.log(clickedProperty);
     }
 
     if (e.features && hucBoundary) {
@@ -411,20 +420,28 @@ const Map = ({
             type="fill"
             paint={{
               "fill-color": visualizationFillColor,
-              "fill-opacity": [
-                "case",
-                ["boolean", ["feature-state", "hover"], false],
-                1,
-                parseInt(visualizationOpacity) / 100,
-              ],
+              "fill-opacity": parseInt(visualizationOpacity) / 100,
             }}
           />
-          <Layer
-            {...visualizationHighlight}
-            id="visualization-highlight"
-            type="fill"
-            filter={visualizationFilter}
-          />
+          {clickedProperty && clickedProperty.objectid ? (
+            <Layer
+              id="clicked-hex"
+              type="fill"
+              paint={{
+                "fill-outline-color": "#484896",
+                "fill-color": "#6e599f",
+                "fill-opacity": 0.75,
+              }}
+              filter={["in", "objectid", clickedProperty.objectid]}
+            />
+          ) : (
+            clickedProperty && (
+              <Layer
+                {...stateLayer[selectedState]}
+                filter={["in", "OBJECTID", clickedProperty.OBJECTID]}
+              />
+            )
+          )}
         </Source>
         <Legend
           aoiList={[]}
