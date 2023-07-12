@@ -55,7 +55,7 @@ const UserDefinedResult = ({ aoiScoreCustomized }) => {
         margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="none" label="Area of Interset" />
+        <XAxis dataKey="none" label="Areas of Interest" />
         <YAxis
           label={{ value: "Overall Score", angle: -90, position: "insideLeft" }}
         />
